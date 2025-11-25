@@ -7,4 +7,4 @@ Mechanic App: instead of the mechanic yelling from the other side of the buildin
 
 
 
-Smart Campus assistant (look [here](/research.md))
+Smart Campus assistant (look [here](/docs/research.md))
