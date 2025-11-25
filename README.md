@@ -1,10 +1,4 @@
 # GradProject
 > Uni Grad Project, lord help us
 
-the current ideas:
-
-Mechanic App: instead of the mechanic yelling from the other side of the building everytime he needs something you can communicate with him through the app and it tells you how is your repair going (what the mechanic is currently doing) (see the car maintainenance pdf)
-
-
-
-Smart Campus assistant (look [here](/docs/research.md))
+The docs folder has a notes.md which details what yall need to do to get set up at least on the dotnet side, for the flutter side create the project and give it the same name bnu_lms_app and copy everything from the folder in the repo to it
