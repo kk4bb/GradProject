@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/debug/cmake_install.cmake",
+		"/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/debug/flutter/cmake_install.cmake",
+		"/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/debug/runner/cmake_install.cmake",
+		"/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/debug/plugins/flutter_localization/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
