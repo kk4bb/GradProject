@@ -1,3 +1,14 @@
+# Notes for me
+this was mentioned by llm to start the setup for JWT by adding this to appsettings.json
+
+  "JwtSettings": {
+    "Secret": "YOUR_SUPER_SECRET_KEY",
+    "Issuer": "LMS",
+    "Audience": "LMS",
+    "ExpiryMinutes": 60
+},
+
+
 # Building and Running
 before anything install postgresql and .net , asp.net .
 before doing anything try running `createdb lms` if it works then you should have everything ready to go, if not then you need to setup the database manually till we figure out a way to host the database on a cloud platfrom or something.

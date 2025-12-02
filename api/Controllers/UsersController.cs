@@ -6,7 +6,7 @@ using LMS.Api.Models.Entities;
 namespace LMS.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -23,7 +23,7 @@ namespace LMS.Api.Controllers
             return await _context.Users.ToListAsync();
         }
 
-        // GET: api/users/5
+        // GET: users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
