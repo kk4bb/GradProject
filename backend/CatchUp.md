@@ -56,8 +56,8 @@ If yes then you're a lucky one because it worked with no hiccups (I hope lmao)
 
 # Credentials for testing
 **Instructor**
-dr.smith@campusconnect.edu   Password!123
+dr.smith@campusconnect.edu   Password123!
 
 **Student**
-john.doe@example.com   Password!123
+john.doe@example.com   Password123!
 
