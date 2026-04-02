@@ -2,6 +2,11 @@
 
 This is for anyone who makes some bug changes to explain/document them here (code should have comments explaining it though)
 
+# What remains
+- Attendance feature with qr codes
+- THOROUGH TESTING OF EVERYTHING
+
+
 ## The Big Start
 Mo started with the project and created the authentication so I'm writing all of this to make it easier for everyone else to setup everything and get started.
 You need:
@@ -54,10 +59,31 @@ info: Microsoft.Hosting.Lifetime[0]
 If yes then you're a lucky one because it worked with no hiccups (I hope lmao)
 
 
-# Credentials for testing
+# Notes for testing
+## Credentials
 **Instructor**
 dr.smith@campusconnect.edu   Password123!
 
 **Student**
 john.doe@example.com   Password123!
 
+## Commands
+to avoid issue with the copying and pasting the jwt token you can use httpie and jq with this command
+http GET localhost:5205/api/student/me "Authorization: Bearer $(http --ignore-stdin POST localhost:5205/api/auth/login email=john.doe@example.com password='Password123!' | jq -r .token)"
+
+# Gathering required features
+## Student View
+### Profile page
+the profile section for teaching staff has
+- name
+- Faculty
+- ID
+- academic year
+- credit hours
+
+ignoring
+- the rank thing
+
+
+# Miscellaneous
+there was some blabbering about removing the username variable being bad for the identity framework and such so I've made it to be the first and last name without spaces

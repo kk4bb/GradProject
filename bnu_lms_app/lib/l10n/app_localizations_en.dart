@@ -63,10 +63,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calendar => 'Calendar';
 
   @override
-  String get quiz => 'Quiz';
+  String get quizzes => 'Quizzes';
 
   @override
   String get grades => 'Grades';
+
+  @override
+  String get tasks => 'Tasks';
 
   @override
   String get attendance => 'Attendance';
@@ -79,4 +82,118 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete => 'Delete';
+
+  @override
+  String get searchForums => 'search forums';
+
+  @override
+  String get quizDetails => 'Quiz Details';
+
+  @override
+  String get quizQuestions => 'Quiz Questions';
+
+  @override
+  String get quizResults => 'Quiz Results';
+
+  @override
+  String get tuitionPayments => 'Tuition Payments';
+
+  @override
+  String get tuitionPaymentsDesc => 'View payment history and upcoming fees';
+
+  @override
+  String get advisingSessions => 'Advising Sessions';
+
+  @override
+  String get advisingSessionsDesc => 'Schedule and manage academic advising';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get helpCenter => 'Help Center';
+
+  @override
+  String get contactSupport => 'Contact Support';
+
+  @override
+  String get computerScience => 'Computer Science';
+
+  @override
+  String get advancedProgramming => 'Advanced Programming';
+
+  @override
+  String get dataStructuresAlgorithms => 'Data Structures & Algorithms';
+
+  @override
+  String get webDevelopment => 'Web Development';
+
+  @override
+  String get databaseManagement => 'Database Management Systems';
+
+  @override
+  String get artificialIntelligence => 'Artificial Intelligence';
+
+  @override
+  String get mobileAppDevelopment => 'Mobile App Development';
+
+  @override
+  String get drAngelaYu => 'Dr. Angela Yu';
+
+  @override
+  String get drRobertMartin => 'Dr. Robert Martin';
+
+  @override
+  String get profSarahJohnson => 'Prof. Sarah Johnson';
+
+  @override
+  String get drMichaelChen => 'Dr. Michael Chen';
+
+  @override
+  String get profEmilyWatson => 'Prof. Emily Watson';
+
+  @override
+  String get drAhmedHassan => 'Dr. Ahmed Hassan';
+
+  @override
+  String get fall2024 => 'Fall 2024';
+
+  @override
+  String get introEngineering => 'Introduction to Engineering';
+
+  @override
+  String get calculusOne => 'Calculus I';
+
+  @override
+  String get physicsForEngineers => 'Physics for Engineers';
+
+  @override
+  String get campusLife => 'Campus Life';
+
+  @override
+  String get studyGroups => 'Study Groups';
+
+  @override
+  String get postsParticipants_12_5 => '12 posts, 5 participants';
+
+  @override
+  String get postsParticipants_8_3 => '8 posts, 3 participants';
+
+  @override
+  String get postsParticipants_15_7 => '15 posts, 7 participants';
+
+  @override
+  String get postsParticipants_20_10 => '20 posts, 10 participants';
+
+  @override
+  String get postsParticipants_5_2 => '5 posts, 2 participants';
 }

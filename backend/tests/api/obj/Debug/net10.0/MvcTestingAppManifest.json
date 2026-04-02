@@ -1,0 +1,6 @@
+{
+  "api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/run\/media\/kab\/hdd\/Learn\/Code\/GradProject\/backend\/api",
+  "application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/run\/media\/kab\/hdd\/Learn\/Code\/GradProject\/backend\/application",
+  "domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/run\/media\/kab\/hdd\/Learn\/Code\/GradProject\/backend\/domain",
+  "infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/run\/media\/kab\/hdd\/Learn\/Code\/GradProject\/backend\/infrastructure"
+}

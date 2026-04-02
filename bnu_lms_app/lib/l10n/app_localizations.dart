@@ -206,17 +206,23 @@ abstract class AppLocalizations {
   /// **'Calendar'**
   String get calendar;
 
-  /// No description provided for @quiz.
+  /// No description provided for @quizzes.
   ///
   /// In en, this message translates to:
-  /// **'Quiz'**
-  String get quiz;
+  /// **'Quizzes'**
+  String get quizzes;
 
   /// No description provided for @grades.
   ///
   /// In en, this message translates to:
   /// **'Grades'**
   String get grades;
+
+  /// No description provided for @tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get tasks;
 
   /// No description provided for @attendance.
   ///
@@ -241,6 +247,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
+
+  /// No description provided for @searchForums.
+  ///
+  /// In en, this message translates to:
+  /// **'search forums'**
+  String get searchForums;
+
+  /// No description provided for @quizDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Details'**
+  String get quizDetails;
+
+  /// No description provided for @quizQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Questions'**
+  String get quizQuestions;
+
+  /// No description provided for @quizResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz Results'**
+  String get quizResults;
+
+  /// No description provided for @tuitionPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuition Payments'**
+  String get tuitionPayments;
+
+  /// No description provided for @tuitionPaymentsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'View payment history and upcoming fees'**
+  String get tuitionPaymentsDesc;
+
+  /// No description provided for @advisingSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Advising Sessions'**
+  String get advisingSessions;
+
+  /// No description provided for @advisingSessionsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule and manage academic advising'**
+  String get advisingSessionsDesc;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfile;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @helpCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Help Center'**
+  String get helpCenter;
+
+  /// No description provided for @contactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Support'**
+  String get contactSupport;
+
+  /// No description provided for @computerScience.
+  ///
+  /// In en, this message translates to:
+  /// **'Computer Science'**
+  String get computerScience;
+
+  /// No description provided for @advancedProgramming.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Programming'**
+  String get advancedProgramming;
+
+  /// No description provided for @dataStructuresAlgorithms.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Structures & Algorithms'**
+  String get dataStructuresAlgorithms;
+
+  /// No description provided for @webDevelopment.
+  ///
+  /// In en, this message translates to:
+  /// **'Web Development'**
+  String get webDevelopment;
+
+  /// No description provided for @databaseManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Database Management Systems'**
+  String get databaseManagement;
+
+  /// No description provided for @artificialIntelligence.
+  ///
+  /// In en, this message translates to:
+  /// **'Artificial Intelligence'**
+  String get artificialIntelligence;
+
+  /// No description provided for @mobileAppDevelopment.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile App Development'**
+  String get mobileAppDevelopment;
+
+  /// No description provided for @drAngelaYu.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. Angela Yu'**
+  String get drAngelaYu;
+
+  /// No description provided for @drRobertMartin.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. Robert Martin'**
+  String get drRobertMartin;
+
+  /// No description provided for @profSarahJohnson.
+  ///
+  /// In en, this message translates to:
+  /// **'Prof. Sarah Johnson'**
+  String get profSarahJohnson;
+
+  /// No description provided for @drMichaelChen.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. Michael Chen'**
+  String get drMichaelChen;
+
+  /// No description provided for @profEmilyWatson.
+  ///
+  /// In en, this message translates to:
+  /// **'Prof. Emily Watson'**
+  String get profEmilyWatson;
+
+  /// No description provided for @drAhmedHassan.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. Ahmed Hassan'**
+  String get drAhmedHassan;
+
+  /// No description provided for @fall2024.
+  ///
+  /// In en, this message translates to:
+  /// **'Fall 2024'**
+  String get fall2024;
+
+  /// No description provided for @introEngineering.
+  ///
+  /// In en, this message translates to:
+  /// **'Introduction to Engineering'**
+  String get introEngineering;
+
+  /// No description provided for @calculusOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculus I'**
+  String get calculusOne;
+
+  /// No description provided for @physicsForEngineers.
+  ///
+  /// In en, this message translates to:
+  /// **'Physics for Engineers'**
+  String get physicsForEngineers;
+
+  /// No description provided for @campusLife.
+  ///
+  /// In en, this message translates to:
+  /// **'Campus Life'**
+  String get campusLife;
+
+  /// No description provided for @studyGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Study Groups'**
+  String get studyGroups;
+
+  /// No description provided for @postsParticipants_12_5.
+  ///
+  /// In en, this message translates to:
+  /// **'12 posts, 5 participants'**
+  String get postsParticipants_12_5;
+
+  /// No description provided for @postsParticipants_8_3.
+  ///
+  /// In en, this message translates to:
+  /// **'8 posts, 3 participants'**
+  String get postsParticipants_8_3;
+
+  /// No description provided for @postsParticipants_15_7.
+  ///
+  /// In en, this message translates to:
+  /// **'15 posts, 7 participants'**
+  String get postsParticipants_15_7;
+
+  /// No description provided for @postsParticipants_20_10.
+  ///
+  /// In en, this message translates to:
+  /// **'20 posts, 10 participants'**
+  String get postsParticipants_20_10;
+
+  /// No description provided for @postsParticipants_5_2.
+  ///
+  /// In en, this message translates to:
+  /// **'5 posts, 2 participants'**
+  String get postsParticipants_5_2;
 }
 
 class _AppLocalizationsDelegate

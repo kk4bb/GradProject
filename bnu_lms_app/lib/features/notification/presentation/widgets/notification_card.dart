@@ -67,22 +67,22 @@ class NotificationCard extends StatelessWidget {
                 Text(
                   title,
                   style: isLight
-                      ? AppLightTextStyles.notificationTitle
-                      : AppDarkTextStyles.notificationTitle,
+                      ? AppLightTextStyles.bodyMedium
+                      : AppDarkTextStyles.bodyMedium.copyWith(color: ColorsManager.darkTextPrimary),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   description,
                   style: isLight
-                      ? AppLightTextStyles.notificationDescription
-                      : AppDarkTextStyles.notificationDescription,
+                      ? AppLightTextStyles.bodySmall
+                      : AppDarkTextStyles.bodySmall,
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   time,
                   style: isLight
-                      ? AppLightTextStyles.notificationTime
-                      : AppDarkTextStyles.notificationTime,
+                      ? AppLightTextStyles.bodySmall
+                      : AppDarkTextStyles.bodySmall,
                 ),
               ],
             ),

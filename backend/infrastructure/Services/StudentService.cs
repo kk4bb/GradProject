@@ -1,4 +1,5 @@
 using CampusConnect.Application.Dtos.Dashboard;
+using CampusConnect.Application.Dtos.Student;
 using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -28,11 +29,14 @@ namespace CampusConnect.Infrastructure.Services
                 .Include(e => e.Course)
                 .ToListAsync();
 
-            var courses = enrollments.Select(e => new EnrolledCourseDto
-            {
-                Id = e.Course.Id,
-                Title = e.Course.Title,
-                InstructorName = _context.Users.FirstOrDefault(u => u.Id == e.Course.InstructorId)?.UserName ?? "Unknown"
+            var courses = enrollments.Select(e => {
+                var instructor = _context.Users.FirstOrDefault(u => u.Id == e.Course.InstructorId);
+                return new EnrolledCourseDto
+                {
+                    Id = e.Course.Id,
+                    Title = e.Course.Title,
+                    InstructorName = instructor != null ? $"{instructor.FirstName} {instructor.LastName}" : "Unknown"
+                };
             }).ToList();
 
             var quizAttempts = await _context.QuizAttempts
@@ -55,7 +59,8 @@ namespace CampusConnect.Infrastructure.Services
 
             return new StudentDashboardDto
             {
-                FullName = user.UserName, // Using UserName as DisplayName for now
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Email = user.Email,
                 EnrolledCourses = courses,
                 QuizAttempts = quizAttempts,
@@ -63,9 +68,31 @@ namespace CampusConnect.Infrastructure.Services
             };
         }
 
+        public async Task<StudentProfileDto> GetStudentProfileAsync(string studentId)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == studentId);
+
+            if (user == null) return null;
+
+            var enrollmentsCount = await _context.Enrollments
+                .CountAsync(e => e.StudentId == studentId);
+
+            return new StudentProfileDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Faculty = user.Faculty,
+                AcademicYear = user.AcademicYear ?? 0,
+                CreditHours = user.CreditHours ?? 0,
+                EnrolledCoursesCount = enrollmentsCount
+            };
+        }
+
         public async Task<bool> IsInstructorForStudentAsync(string instructorId, string studentId)
         {
-            // Check if the instructor teaches ANY course the student is enrolled in
             return await _context.Enrollments
                 .AnyAsync(e => e.StudentId == studentId && e.Course.InstructorId == instructorId);
         }

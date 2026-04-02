@@ -6,7 +6,7 @@ import 'package:bnu_lms_app/shared/routes_manager/routes_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'features/home/presentation/screen/home_screen.dart';
+import 'features/home/presentation/ta/presentation/screens/ta_home_screen.dart';
 import 'l10n/app_localizations.dart';
 
 
@@ -36,14 +36,14 @@ class BNU extends StatelessWidget {
       splitScreenMode: true,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const HomeScreen(),
+        home: const TaHomeScreen(),
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
         themeMode: themeProvider.currentTheme,
         locale: Locale(languageProvider.currentLanguage),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        initialRoute: Routes.login,
+        initialRoute: Routes.taDashboard,
         onGenerateRoute: RoutesGenerator.getRoute,
       ),
     );

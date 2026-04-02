@@ -12,6 +12,8 @@ namespace CampusConnect.Domain.Entities
 
         public int DiscussionId { get; set; }
 
+        public Discussion Discussion { get; set; }
+
         public string UserId { get; set; }
 
         public string Content { get; set; }

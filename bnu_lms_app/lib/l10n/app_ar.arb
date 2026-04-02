@@ -17,11 +17,60 @@
   "quickAccess": "الوصول السريع",
   "upcoming": "القادمة",
   "courses": "المقررات",
+  "tasks": "المهام",
   "calendar": "التقويم",
-  "quiz": "الاختبارات",
+  "quizzes": "الاختبارات",
   "grades": "الدرجات",
   "attendance": "الحضور",
   "entrance": "البوابة",
   "welcomeBack": "مرحباً بعودتك،",
-  "delete": "حذف"
+  "delete": "حذف",
+  "searchForums": "بحث في المنتديات",
+  "quizDetails": "تفاصيل الاختبار",
+  "quizQuestions": "أسئلة الاختبار",
+  "quizResults": "نتيجة الاختبار",
+
+  "tuitionPayments": "الرسوم الدراسية",
+  "tuitionPaymentsDesc": "عرض سجل المدفوعات والرسوم القادمة",
+
+  "advisingSessions": "جلسات الإرشاد الأكاديمي",
+  "advisingSessionsDesc": "جدولة وإدارة جلسات الإرشاد الأكاديمي",
+
+  "account": "الحساب",
+  "support": "الدعم",
+  "editProfile": "تعديل الملف الشخصي",
+  "changePassword": "تغيير كلمة المرور",
+  "helpCenter": "مركز المساعدة",
+  "contactSupport": "التواصل مع الدعم",
+
+  "computerScience": "علوم الحاسب",
+
+  "advancedProgramming": "البرمجة المتقدمة",
+  "dataStructuresAlgorithms": "هياكل البيانات والخوارزميات",
+  "webDevelopment": "تطوير الويب",
+  "databaseManagement": "نظم إدارة قواعد البيانات",
+  "artificialIntelligence": "الذكاء الاصطناعي",
+  "mobileAppDevelopment": "تطوير تطبيقات الموبايل",
+
+  "drAngelaYu": "د. أنجيلا يو",
+  "drRobertMartin": "د. روبرت مارتن",
+  "profSarahJohnson": "أ. سارة جونسون",
+  "drMichaelChen": "د. مايكل تشين",
+  "profEmilyWatson": "أ. إيميلي واتسون",
+  "drAhmedHassan": "د. أحمد حسن",
+
+  "fall2024": "خريف 2024",
+
+  "introEngineering": "مقدمة في الهندسة",
+  "calculusOne": "التفاضل والتكامل 1",
+  "physicsForEngineers": "الفيزياء للمهندسين",
+
+  "campusLife": "الحياة الجامعية",
+  "studyGroups": "مجموعات المذاكرة",
+
+  "postsParticipants_12_5": "12 منشور، 5 مشاركين",
+  "postsParticipants_8_3": "8 منشورات، 3 مشاركين",
+  "postsParticipants_15_7": "15 منشور، 7 مشاركين",
+  "postsParticipants_20_10": "20 منشور، 10 مشاركين",
+  "postsParticipants_5_2": "5 منشورات، 2 مشاركين"
 }

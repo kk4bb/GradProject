@@ -1,4 +1,4 @@
-﻿using CampusConnect.Application.Dtos.Auth;
+using CampusConnect.Application.Dtos.Auth;
 using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Context;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CampusConnect.Infrastructure.Services
 {
@@ -28,7 +29,13 @@ namespace CampusConnect.Infrastructure.Services
         
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
         {
+            // Validate names - only letters allowed
+            if (!Regex.IsMatch(dto.FirstName, @"^[a-zA-Z]+$"))
+                throw new Exception("First name can only contain letters.");
             
+            if (!Regex.IsMatch(dto.LastName, @"^[a-zA-Z]+$"))
+                throw new Exception("Last name can only contain letters.");
+
             var existingUser = await _userManager.FindByEmailAsync(dto.Email);
             if (existingUser != null)
                 throw new Exception("Email already exists.");
@@ -36,7 +43,10 @@ namespace CampusConnect.Infrastructure.Services
             var user = new ApplicationUser
             {
                 Email = dto.Email,
-                UserName = dto.UserName
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                UserName = $"{dto.FirstName}{dto.LastName}", // Concatenated name
+                Faculty = dto.Faculty
             };
             
             var result = await _userManager.CreateAsync(user, dto.Password);
@@ -45,7 +55,6 @@ namespace CampusConnect.Infrastructure.Services
                 throw new Exception(string.Join(", ",
                     result.Errors.Select(e => e.Description)));
 
-            // تأكد إن الرول موجودة
             if (!await _roleManager.RoleExistsAsync(dto.Role))
                 await _roleManager.CreateAsync(new IdentityRole(dto.Role));
 
@@ -85,7 +94,9 @@ namespace CampusConnect.Infrastructure.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("FirstName", user.FirstName),
+                new Claim("LastName", user.LastName)
             };
 
             foreach (var role in roles)

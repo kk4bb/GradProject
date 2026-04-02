@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../shared/resources/colors_manager.dart';
+import '../../../../../shared/resources/colors_manager.dart';
 
 class SettingsBox extends StatelessWidget {
   final String icon;

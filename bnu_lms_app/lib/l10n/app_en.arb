@@ -18,10 +18,58 @@
   "upcoming": "Upcoming",
   "courses": "Courses",
   "calendar": "Calendar",
-  "quiz": "Quiz",
+  "quizzes": "Quizzes",
   "grades": "Grades",
+  "tasks": "Tasks",
   "attendance": "Attendance",
   "entrance": "Entrance",
   "welcomeBack": "Welcome back,",
-  "delete": "Delete"
+  "delete": "Delete",
+  "searchForums": "search forums",
+  "quizDetails": "Quiz Details",
+  "quizQuestions": "Quiz Questions",
+  "quizResults": "Quiz Results",
+
+  "tuitionPayments": "Tuition Payments",
+  "tuitionPaymentsDesc": "View payment history and upcoming fees",
+
+  "advisingSessions": "Advising Sessions",
+  "advisingSessionsDesc": "Schedule and manage academic advising",
+
+  "account": "Account",
+  "support": "Support",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password",
+  "helpCenter": "Help Center",
+  "contactSupport": "Contact Support",
+  "computerScience": "Computer Science",
+
+  "advancedProgramming": "Advanced Programming",
+  "dataStructuresAlgorithms": "Data Structures & Algorithms",
+  "webDevelopment": "Web Development",
+  "databaseManagement": "Database Management Systems",
+  "artificialIntelligence": "Artificial Intelligence",
+  "mobileAppDevelopment": "Mobile App Development",
+
+  "drAngelaYu": "Dr. Angela Yu",
+  "drRobertMartin": "Dr. Robert Martin",
+  "profSarahJohnson": "Prof. Sarah Johnson",
+  "drMichaelChen": "Dr. Michael Chen",
+  "profEmilyWatson": "Prof. Emily Watson",
+  "drAhmedHassan": "Dr. Ahmed Hassan",
+
+  "fall2024": "Fall 2024",
+
+  "introEngineering": "Introduction to Engineering",
+  "calculusOne": "Calculus I",
+  "physicsForEngineers": "Physics for Engineers",
+
+  "campusLife": "Campus Life",
+  "studyGroups": "Study Groups",
+
+  "postsParticipants_12_5": "12 posts, 5 participants",
+  "postsParticipants_8_3": "8 posts, 3 participants",
+  "postsParticipants_15_7": "15 posts, 7 participants",
+  "postsParticipants_20_10": "20 posts, 10 participants",
+  "postsParticipants_5_2": "5 posts, 2 participants"
 }

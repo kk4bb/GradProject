@@ -15,6 +15,7 @@ class CustomTextFormField extends StatefulWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final Color? prefixIconColor;
+  final Color? fillColor;
 
   const CustomTextFormField({
     super.key,
@@ -28,6 +29,7 @@ class CustomTextFormField extends StatefulWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.prefixIconColor,
+    this.fillColor,
   });
 
   @override
@@ -51,12 +53,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       style: widget.style ,
       obscureText: isObscure,
       decoration: InputDecoration(
-
         hintText: widget.hintText,
         hintStyle: widget.hintStyle,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         filled: true,
-        fillColor: ColorsManager.white,
+        fillColor: widget.fillColor ?? ColorsManager.white,
 
         // Consistent border design with 0px border and radius 15
         border: OutlineInputBorder(

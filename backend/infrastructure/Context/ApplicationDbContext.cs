@@ -1,4 +1,4 @@
-﻿using CampusConnect.Domain.Entities;
+using CampusConnect.Domain.Entities;
 using CampusConnect.Infrastructure.Context;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +36,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(c => c.Enrollments)
             .HasForeignKey(e => e.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Course ↔ Instructor (ApplicationUser)
+        modelBuilder.Entity<Course>()
+            .HasOne<ApplicationUser>()
+            .WithMany(u => u.AssignedCourses)
+            .HasForeignKey(c => c.InstructorId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Module ↔ Course
         modelBuilder.Entity<Module>()

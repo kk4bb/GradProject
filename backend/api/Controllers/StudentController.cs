@@ -46,5 +46,34 @@ namespace CampusConnect.API.Controllers
             var dashboard = await _studentService.GetStudentDashboardAsync(currentUserId);
             return Ok(dashboard);
         }
+
+        [HttpGet("profile/{studentId}")]
+        public async Task<IActionResult> GetProfile(string studentId)
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isInstructor = User.IsInRole("Instructor");
+
+            // Security Check
+            if (currentUserId != studentId)
+            {
+                if (!isInstructor || !await _studentService.IsInstructorForStudentAsync(currentUserId, studentId))
+                {
+                    return Forbid("You do not have permission to view this student's data.");
+                }
+            }
+
+            var profile = await _studentService.GetStudentProfileAsync(studentId);
+            if (profile == null) return NotFound();
+
+            return Ok(profile);
+        }
+
+        [HttpGet("profile/me")]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var profile = await _studentService.GetStudentProfileAsync(currentUserId);
+            return Ok(profile);
+        }
     }
 }

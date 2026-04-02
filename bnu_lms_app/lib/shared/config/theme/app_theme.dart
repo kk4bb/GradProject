@@ -4,9 +4,9 @@ import '../../resources/colors_manager.dart';
 
 class AppTheme {
   static ThemeData light = ThemeData(
-    scaffoldBackgroundColor: ColorsManager.white,
+    scaffoldBackgroundColor: ColorsManager.lightBackground,
     appBarTheme: const AppBarTheme(
-      backgroundColor: ColorsManager.white,
+      backgroundColor: ColorsManager.lightBackground,
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       type: BottomNavigationBarType.fixed,
@@ -16,8 +16,11 @@ class AppTheme {
        // unselectedItemColor: ColorsManager.textSecondary,
     ),
     // iconTheme: const IconThemeData(
-    //     color: ColorsManager.white
+    // color: ColorsManager.white
     // ),
+    iconTheme: const IconThemeData(
+        color: ColorsManager.blue
+    ),
   );
 
   static ThemeData dark = ThemeData(

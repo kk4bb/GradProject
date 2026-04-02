@@ -4,7 +4,8 @@ namespace CampusConnect.Application.Dtos.Dashboard
 {
     public class StudentDashboardDto
     {
-        public string FullName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Email { get; set; }
         public List<EnrolledCourseDto> EnrolledCourses { get; set; }
         public List<QuizAttemptDto> QuizAttempts { get; set; }

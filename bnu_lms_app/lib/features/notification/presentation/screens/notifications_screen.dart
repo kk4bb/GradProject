@@ -34,8 +34,8 @@ class NotificationsScreen extends StatelessWidget {
         title: Text(
           localizations.notifications,
           style: isLight
-              ? AppLightTextStyles.appBarTitle
-              : AppDarkTextStyles.appBarTitle,
+              ? AppLightTextStyles.headlineLarge
+              : AppDarkTextStyles.headlineLarge,
         ),
       ),
       body: const NotificationTabBar(),
