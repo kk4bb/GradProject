@@ -4,6 +4,8 @@ This is for anyone who makes some bug changes to explain/document them here (cod
 
 # What remains
 - Attendance feature with qr codes
+- AI chatbot
+- teaching staff side of things
 - THOROUGH TESTING OF EVERYTHING
 
 

@@ -25,6 +25,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<AttendanceSession> AttendanceSessions { get; set; }
+    public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -109,6 +111,34 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne<Quiz>()
             .WithMany()
             .HasForeignKey(q => q.QuizId);
+
+        // AttendanceSession ↔ Course
+        modelBuilder.Entity<AttendanceSession>()
+            .HasOne(s => s.Course)
+            .WithMany(c => c.AttendanceSessions)
+            .HasForeignKey(s => s.CourseId);
+
+        // AttendanceRecord ↔ AttendanceSession
+        modelBuilder.Entity<AttendanceRecord>()
+            .HasOne(r => r.Session)
+            .WithMany(s => s.Records)
+            .HasForeignKey(r => r.AttendanceSessionId);
+
+        // AttendanceRecord ↔ Student (ApplicationUser)
+        modelBuilder.Entity<AttendanceRecord>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(r => r.StudentId);
+
+        // Prevent duplicate attendance for same student in same session
+        modelBuilder.Entity<AttendanceRecord>()
+            .HasIndex(r => new { r.AttendanceSessionId, r.StudentId })
+            .IsUnique();
+
+        // Prevent duplicate attendance from same device in same session (optional but good)
+        modelBuilder.Entity<AttendanceRecord>()
+            .HasIndex(r => new { r.AttendanceSessionId, r.DeviceId })
+            .IsUnique();
 
         // Prevent duplicate enrollment
         modelBuilder.Entity<Enrollment>()
