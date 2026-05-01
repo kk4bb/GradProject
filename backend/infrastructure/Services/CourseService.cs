@@ -1,4 +1,5 @@
 using CampusConnect.Application.Dtos.Course;
+using CampusConnect.Application.Dtos.Student;
 using CampusConnect.Application.Interfaces;
 using CampusConnect.Domain.Entities;
 using CampusConnect.Infrastructure.Context;
@@ -102,6 +103,30 @@ namespace CampusConnect.Infrastructure.Services
                         .Select(u => $"{u.FirstName} {u.LastName}")
                         .FirstOrDefault() ?? "Unknown"
                 })
+                .ToListAsync();
+        }
+
+        public async Task<List<StudentProfileDto>> GetEnrolledStudentsAsync(int courseId, string instructorId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null || course.InstructorId != instructorId)
+                throw new UnauthorizedAccessException("Not authorized to view this course's students.");
+
+            return await _context.Enrollments
+                .Where(e => e.CourseId == courseId)
+                .Select(e => _context.Users
+                    .Where(u => u.Id == e.StudentId)
+                    .Select(u => new StudentProfileDto
+                    {
+                        Id = u.Id,
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        Email = u.Email,
+                        Faculty = u.Faculty,
+                        AcademicYear = 1, // Default or fetch if stored
+                        CreditHours = 0,
+                        EnrolledCoursesCount = 0
+                    }).FirstOrDefault())
                 .ToListAsync();
         }
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -8,8 +7,11 @@ import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
 import 'doctor_course_card.dart';
 
+import '../../../../../courses/data/models/course_model.dart';
+
 class DoctorMyCoursesSection extends StatelessWidget {
-  const DoctorMyCoursesSection({super.key});
+  final List<CourseSummary> courses;
+  const DoctorMyCoursesSection({required this.courses, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class DoctorMyCoursesSection extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Padding(
-      padding: REdgeInsets.all(22),
+      padding: const EdgeInsets.all(22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,26 +42,35 @@ class DoctorMyCoursesSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
-          DoctorCourseCard(
-            academicYear: 'Academic Year 2023/24',
-            courseName: 'Advanced Structural Engineering',
-            studentsCount: '120 Students',
-            timeString: 'Today, 10:00 AM',
-            courseIcon: Icons.engineering_outlined,
-            onManageTap: () {},
-          ),
-          SizedBox(height: 16.h),
-          DoctorCourseCard(
-            academicYear: 'Academic Year 2023/24',
-            courseName: 'Intro to Neural Networks',
-            studentsCount: '85 Students',
-            timeString: 'Tomorrow, 02:00 PM',
-            courseIcon: Icons.psychology_outlined,
-            onManageTap: () {},
-          ),
+          const SizedBox(height: 16.0),
+          if (courses.isEmpty)
+            const Center(child: Text('No assigned courses found.'))
+          else
+            ...courses.map((course) => Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: DoctorCourseCard(
+                academicYear: 'Academic Year 2023/24',
+                courseName: course.title,
+                studentsCount: '--- Students',
+                timeString: 'Assigned',
+                courseIcon: _getIconForCourse(course.title),
+                onManageTap: () {
+                  // Navigate to course management
+                },
+              ),
+            )),
         ],
       ),
     );
+  }
+
+  IconData _getIconForCourse(String title) {
+    title = title.toLowerCase();
+    if (title.contains('mobile')) return Icons.phone_android;
+    if (title.contains('web')) return Icons.language;
+    if (title.contains('data science') || title.contains('intelligence')) return Icons.psychology;
+    if (title.contains('database') || title.contains('cloud')) return Icons.storage;
+    if (title.contains('programming') || title.contains('code')) return Icons.code;
+    return Icons.engineering_outlined;
   }
 }

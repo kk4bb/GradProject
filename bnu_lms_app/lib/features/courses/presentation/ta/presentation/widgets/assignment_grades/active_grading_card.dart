@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -28,15 +27,15 @@ class ActiveGradingCard extends StatelessWidget {
     const cyan = Color(0xFF2FBAD7);
 
     final inputBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12.0),
       borderSide: BorderSide(color: ColorsManager.grayMedium.withValues(alpha: 0.3)),
     );
 
     return Container(
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20.0),
         border: Border.all(color: cyan, width: 1.5),
         boxShadow: isLight
             ? [BoxShadow(color: cyan.withValues(alpha: 0.1), blurRadius: 15, offset: const Offset(0, 4))]
@@ -48,8 +47,8 @@ class ActiveGradingCard extends StatelessWidget {
           // Header
           Row(
             children: [
-              CircleAvatar(radius: 20.r, backgroundColor: Colors.orange.shade200),
-              SizedBox(width: 12.w),
+              CircleAvatar(radius: 20.0, backgroundColor: Colors.orange.shade200),
+              SizedBox(width: 12.0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,44 +60,44 @@ class ActiveGradingCard extends StatelessWidget {
                     ),
                     Text(
                       'ID: $studentId • $submissionTime',
-                      style: TextStyle(fontSize: 10.sp, color: ColorsManager.grayMedium),
+                      style: TextStyle(fontSize: 10.0, color: ColorsManager.grayMedium),
                     ),
                   ],
                 ),
               ),
               OutlinedButton.icon(
                 onPressed: () {},
-                icon: Icon(Icons.visibility_outlined, size: 14.sp, color: cyan),
-                label: Text('View PDF', style: TextStyle(color: cyan, fontSize: 10.sp)),
+                icon: Icon(Icons.visibility_outlined, size: 14.0, color: cyan),
+                label: Text('View PDF', style: TextStyle(color: cyan, fontSize: 10.0)),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: cyan.withValues(alpha: 0.5)),
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                 ),
               ),
             ],
           ),
 
-          SizedBox(height: 20.h),
+          SizedBox(height: 20.0),
           Divider(color: ColorsManager.grayMedium.withValues(alpha: 0.1)),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20.0),
 
           // Grade Input
           Text(
             'GRADE (0-100)',
-            style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold, color: ColorsManager.grayMedium),
+            style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: ColorsManager.grayMedium),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8.0),
           Row(
             children: [
               SizedBox(
-                width: 100.w,
+                width: 100.0,
                 child: TextField(
                   style: isLight ? AppLightTextStyles.bodyLarge : AppDarkTextStyles.bodyLarge,
                   decoration: InputDecoration(
                     hintText: '--',
                     hintStyle: TextStyle(color: ColorsManager.grayMedium),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                     border: inputBorder,
                     enabledBorder: inputBorder,
                     focusedBorder: inputBorder.copyWith(borderSide: BorderSide(color: cyan)),
@@ -108,22 +107,22 @@ class ActiveGradingCard extends StatelessWidget {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               Text(
                 '/ 100',
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: ColorsManager.grayMedium),
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: ColorsManager.grayMedium),
               ),
             ],
           ),
 
-          SizedBox(height: 20.h),
+          SizedBox(height: 20.0),
 
           // Feedback Input
           Text(
             'FEEDBACK COMMENT',
-            style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold, color: ColorsManager.grayMedium),
+            style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold, color: ColorsManager.grayMedium),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8.0),
           TextField(
             maxLines: 3,
             style: isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium,
@@ -138,7 +137,7 @@ class ActiveGradingCard extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 24.0),
 
           // Save Button
           CustomElevatedButton(
@@ -146,7 +145,7 @@ class ActiveGradingCard extends StatelessWidget {
             onTap: () {},
             backgroundColor: cyan,
             prefixIcon: const Icon(Icons.save_outlined, color: Colors.white, size: 20),
-            radius: 12.r,
+            radius: 12.0,
           ),
         ],
       ),

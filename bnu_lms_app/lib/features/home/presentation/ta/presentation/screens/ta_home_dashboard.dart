@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/providers/theme_provider.dart';
@@ -28,7 +27,7 @@ class TaHomeDashboard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 16.h),
+              SizedBox(height: 16.0),
 
               // 2. Stats Grid (Labs, Grading, Forums)
               const TaStatsGrid(),
@@ -43,7 +42,7 @@ class TaHomeDashboard extends StatelessWidget {
               // 4. Timeline Schedule
               const TodaysScheduleSection(),
 
-              SizedBox(height: 40.h), // Bottom padding
+              SizedBox(height: 40.0), // Bottom padding
             ],
           ),
         ],
@@ -63,24 +62,24 @@ class _TaHeaderWrapper extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      height: 170.h,
+      height: 170.0,
       width: double.infinity,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
-        left: 24.w,
-        right: 24.w,
+        left: 24.0,
+        right: 24.0,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24.r),
-          bottomRight: Radius.circular(24.r),
+          bottomLeft: Radius.circular(24.0),
+          bottomRight: Radius.circular(24.0),
         ),
         boxShadow: isLight
             ? [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
             spreadRadius: 0,
-            blurRadius: 12.r,
+            blurRadius: 12.0,
             offset: const Offset(0, 4),
           ),
         ]
@@ -95,30 +94,30 @@ class _TaHeaderWrapper extends StatelessWidget {
           // If not, creates a TaDashboardHeader similar to DoctorDashboardHeader.
           const DoctorDashboardHeader(),
 
-          SizedBox(height: 14.h),
+          SizedBox(height: 14.0),
 
           // Date Pill (Cyan for TA)
           Container(
-            padding: REdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: isLight ? const Color(0xFFE0F7FA) : ColorsManager.darkBlue, // Cyan tint
-              borderRadius: BorderRadius.circular(25.r),
+              borderRadius: BorderRadius.circular(25.0),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   Icons.calendar_month,
-                  size: 16.sp,
+                  size: 16.0,
                   color: const Color(0xFF2FBAD7), // TA Cyan
                 ),
-                SizedBox(width: 6.w),
+                SizedBox(width: 6.0),
                 // We can fetch dynamic date here later
                 Text(
                   'Tuesday, 24 Oct 2023',
                   style: isLight
-                      ? TextStyle(fontSize: 12.sp, color: Colors.black87, fontWeight: FontWeight.w500)
-                      : TextStyle(fontSize: 12.sp, color: Colors.white70, fontWeight: FontWeight.w500),
+                      ? TextStyle(fontSize: 12.0, color: Colors.black87, fontWeight: FontWeight.w500)
+                      : TextStyle(fontSize: 12.0, color: Colors.white70, fontWeight: FontWeight.w500),
                 ),
               ],
             ),

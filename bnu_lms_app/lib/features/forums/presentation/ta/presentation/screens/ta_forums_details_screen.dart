@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -27,7 +26,7 @@ class TaForumsDetailsScreen extends StatelessWidget {
           backgroundColor: isLight ? ColorsManager.white : ColorsManager.darkSurface,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp, color: isLight ? ColorsManager.black : ColorsManager.white),
+            icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.0, color: isLight ? ColorsManager.black : ColorsManager.white),
             onPressed: () => Navigator.pop(context),
           ),
           title: Column(
@@ -40,7 +39,7 @@ class TaForumsDetailsScreen extends StatelessWidget {
               ),
               Text(
                 'COMPUTER SCIENCE 101',
-                style: TextStyle(fontSize: 10.sp, color: cyan, fontWeight: FontWeight.bold, letterSpacing: 1.0),
+                style: TextStyle(fontSize: 10.0, color: cyan, fontWeight: FontWeight.bold, letterSpacing: 1.0),
               ),
             ],
           ),
@@ -53,7 +52,7 @@ class TaForumsDetailsScreen extends StatelessWidget {
             indicatorColor: cyan,
             labelColor: cyan,
             unselectedLabelColor: ColorsManager.grayMedium,
-            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0),
             indicatorWeight: 3,
             tabs: const [
               Tab(text: 'All Threads'),
@@ -66,16 +65,16 @@ class TaForumsDetailsScreen extends StatelessWidget {
           children: [
             // Filter Chips
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               color: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     _buildFilterChip('Open', true, isLight, cyan),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: 8.0),
                     _buildFilterChip('No Accepted Answer', false, isLight, cyan),
-                    SizedBox(width: 8.w),
+                    SizedBox(width: 8.0),
                     _buildFilterChip('Urgent', false, isLight, cyan),
                   ],
                 ),
@@ -85,7 +84,7 @@ class TaForumsDetailsScreen extends StatelessWidget {
             // Thread List
             Expanded(
               child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
                 children: [
                   TaForumCard(
                     status: 'OPEN',
@@ -98,7 +97,7 @@ class TaForumsDetailsScreen extends StatelessWidget {
                     isLight: isLight,
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TaQuestionDetailsScreen())),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 16.0),
                   TaForumCard(
                     status: 'SUGGESTED ANSWER PENDING',
                     statusColor: Colors.orange,
@@ -110,7 +109,7 @@ class TaForumsDetailsScreen extends StatelessWidget {
                     isLight: isLight,
                     onTap: () {},
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 16.0),
                   TaForumCard(
                     status: 'OFFICIAL ANSWER MARKED',
                     statusColor: cyan,
@@ -122,7 +121,7 @@ class TaForumsDetailsScreen extends StatelessWidget {
                     isLight: isLight,
                     onTap: () {},
                   ),
-                  SizedBox(height: 40.h),
+                  SizedBox(height: 40.0),
                 ],
               ),
             ),
@@ -134,10 +133,10 @@ class TaForumsDetailsScreen extends StatelessWidget {
 
   Widget _buildFilterChip(String label, bool isSelected, bool isLight, Color cyan) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: BoxDecoration(
         color: isSelected ? cyan : (isLight ? ColorsManager.white : ColorsManager.darkSurface),
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20.0),
         border: isSelected ? null : Border.all(color: ColorsManager.grayMedium.withValues(alpha: 0.2)),
       ),
       child: Row(
@@ -146,13 +145,13 @@ class TaForumsDetailsScreen extends StatelessWidget {
             label,
             style: TextStyle(
               color: isSelected ? Colors.white : (isLight ? ColorsManager.black : ColorsManager.white),
-              fontSize: 12.sp,
+              fontSize: 12.0,
               fontWeight: FontWeight.bold,
             ),
           ),
           if (isSelected) ...[
-            SizedBox(width: 6.w),
-            Icon(Icons.close, size: 14.sp, color: Colors.white),
+            SizedBox(width: 6.0),
+            Icon(Icons.close, size: 14.0, color: Colors.white),
           ]
         ],
       ),

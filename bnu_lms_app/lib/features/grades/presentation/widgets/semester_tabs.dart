@@ -2,7 +2,6 @@ import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SemesterTabs extends StatelessWidget {
   final bool isLight;
@@ -15,15 +14,15 @@ class SemesterTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45.h,
+      height: 45.0,
       decoration: BoxDecoration(
         color: isLight ? Colors.grey[100] : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(25.r),
+        borderRadius: BorderRadius.circular(25.0),
       ),
       child: TabBar(
         indicator: BoxDecoration(
           color: isLight ? ColorsManager.blue : ColorsManager.blue,
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(20.0),
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,

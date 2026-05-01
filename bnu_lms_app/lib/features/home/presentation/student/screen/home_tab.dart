@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 
@@ -14,6 +13,9 @@ import '../widgets/home_header.dart';
 import '../widgets/quck_access_list.dart';
 import '../widgets/upcoming_items_list.dart';
 
+import '../../../../../shared/network/repositories/student_repository.dart';
+import '../data/models/student_dashboard_model.dart';
+
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
 
@@ -22,7 +24,16 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  // Sample data for upcoming items
+  final StudentRepository _studentRepository = StudentRepository();
+  late Future<StudentDashboard> _dashboardFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _dashboardFuture = _studentRepository.getDashboard();
+  }
+
+  // Sample data for upcoming items (could be mapped from dashboard data later)
   final List<Map<String, dynamic>> upcomingItems = [
     {
       'icon': Icons.assignment,
@@ -48,11 +59,6 @@ class _HomeTabState extends State<HomeTab> {
 
   List<Map<String, dynamic>> getCategoryItems(AppLocalizations localizations) {
     return [
-      // {
-      //   'icon': IconsManager.courses,
-      //   'title': localizations.courses,
-      //   'route': Routes.courses,
-      // },
       {
         'icon': IconsManager.calendar,
         'title': localizations.calendar,
@@ -73,67 +79,69 @@ class _HomeTabState extends State<HomeTab> {
         'title': localizations.attendance,
         'route': Routes.attendance,
       },
-      // {
-      //   'icon': IconsManager.gate,
-      //   'title': localizations.entrance,
-      //   'route': Routes.entrance,
-      // },
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get theme and language state inside build method
     var themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
-
-    // var languageCubit = context.watch<LanguageCubit>();
-    // final currentLang = languageCubit.state;
-
-    // Get localization
     final localizations = AppLocalizations.of(context)!;
-
-    // Get category items with localized titles
     final categoryItems = getCategoryItems(localizations);
 
-    return SafeArea(
-      child: Padding(
-        padding: REdgeInsets.symmetric(
-          horizontal: AppSizes.horizontalPadding,
-          vertical: AppSizes.verticalSectionSpacing,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const HomeHeader(),
-              SizedBox(height: AppSizes.largeSpacing),
-              Text(
-                localizations.upcoming,
-                style: isLight
-                    ? AppLightTextStyles.headlineMedium
-                    : AppDarkTextStyles.headlineMedium,
+    return FutureBuilder<StudentDashboard>(
+      future: _dashboardFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final dashboard = snapshot.data!;
+
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSizes.horizontalPadding,
+              vertical: AppSizes.verticalSectionSpacing,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HomeHeader(name: dashboard.firstName),
+                  SizedBox(height: AppSizes.largeSpacing),
+                  Text(
+                    localizations.upcoming,
+                    style: isLight
+                        ? AppLightTextStyles.headlineMedium
+                        : AppDarkTextStyles.headlineMedium,
+                  ),
+                  SizedBox(height: AppSizes.smallSpacing),
+                  UpcomingItemsList(upcomingItems: upcomingItems),
+                  SizedBox(height: AppSizes.largeSpacing),
+                  Text(
+                    localizations.quickAccess,
+                    style: isLight
+                        ? AppLightTextStyles.headlineMedium
+                        : AppDarkTextStyles.headlineMedium,
+                  ),
+                  SizedBox(height: AppSizes.smallSpacing),
+                  QuickAccessList(
+                    categoryItem: categoryItems,
+                    onItemTap: (route) {
+                      Navigator.pushNamed(context, route);
+                    },
+                  ),
+                ],
               ),
-              SizedBox(height: AppSizes.smallSpacing),
-              UpcomingItemsList(upcomingItems: upcomingItems),
-              SizedBox(height: AppSizes.largeSpacing),
-              Text(
-                localizations.quickAccess,
-                style: isLight
-                    ? AppLightTextStyles.headlineMedium
-                    : AppDarkTextStyles.headlineMedium,
-              ),
-              SizedBox(height: AppSizes.smallSpacing),
-              QuickAccessList(
-                categoryItem: categoryItems,
-                onItemTap: (route) {
-                  Navigator.pushNamed(context, route);
-                },
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -22,35 +21,35 @@ class TaTasksTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(
           children: [
             const TaTasksHeader(),
-            SizedBox(height: 24.h),
+            SizedBox(height: 24.0),
 
             // 1. Submissions to Grade
             _buildSectionHeader(context, 'Submissions to Grade', badgeCount: '8 Pending'),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16.0),
             const GradingCard(),
-            SizedBox(height: 24.h),
+            SizedBox(height: 24.0),
 
             // 2. Labs Today
             _buildSectionHeader(context, 'Labs Today', badgeCount: null),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16.0),
             const LabSessionCard(),
-            SizedBox(height: 24.h),
+            SizedBox(height: 24.0),
 
             // 3. Forum Unanswered
             _buildSectionHeader(context, 'Forum Unanswered', badgeCount: null),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16.0),
             const ForumTaskCard(),
-            SizedBox(height: 24.h),
+            SizedBox(height: 24.0),
 
             // 4. Resources
             _buildSectionHeader(context, 'Resources', badgeCount: null),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16.0),
             const ResourcesSection(),
-            SizedBox(height: 40.h),
+            SizedBox(height: 40.0),
           ],
         ),
       ),
@@ -68,18 +67,18 @@ class TaTasksTab extends StatelessWidget {
         Text(
           title,
           style: (isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall)
-              .copyWith(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              .copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         if (badgeCount != null)
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
             decoration: BoxDecoration(
               color: cyan.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             child: Text(
               badgeCount,
-              style: TextStyle(color: cyan, fontSize: 12.sp, fontWeight: FontWeight.bold),
+              style: TextStyle(color: cyan, fontSize: 12.0, fontWeight: FontWeight.bold),
             ),
           ),
       ],

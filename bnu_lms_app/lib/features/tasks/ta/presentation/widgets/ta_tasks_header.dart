@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -26,36 +25,36 @@ class TaTasksHeader extends StatelessWidget {
             letterSpacing: 1.2,
           ),
         ),
-        SizedBox(height: 4.h),
+        SizedBox(height: 4.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               'TA Tasks',
               style: (isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge)
-                  .copyWith(fontWeight: FontWeight.w800, fontSize: 28.sp),
+                  .copyWith(fontWeight: FontWeight.w800, fontSize: 28.0),
             ),
             Row(
               children: [
                 _buildIconButton(context, Icons.search, isLight),
-                SizedBox(width: 12.w),
+                SizedBox(width: 12.0),
                 _buildIconButton(context, Icons.notifications_none_rounded, isLight),
               ],
             ),
           ],
         ),
-        SizedBox(height: 24.h),
+        SizedBox(height: 24.0),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           clipBehavior: Clip.none,
           child: Row(
             children: [
               _buildFilterChip(context, 'All Tasks', isSelected: true),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               _buildFilterChip(context, 'Grading', isSelected: false),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               _buildFilterChip(context, 'Forum', isSelected: false),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               _buildFilterChip(context, 'Attendance', isSelected: false),
             ],
           ),
@@ -66,12 +65,12 @@ class TaTasksHeader extends StatelessWidget {
 
   Widget _buildIconButton(BuildContext context, IconData icon, bool isLight) {
     return Container(
-      padding: EdgeInsets.all(10.w),
+      padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: isLight ? Colors.grey.shade100 : ColorsManager.darkSurface,
         shape: BoxShape.circle,
       ),
-      child: Icon(icon, size: 24.sp, color: isLight ? ColorsManager.black : ColorsManager.white),
+      child: Icon(icon, size: 24.0, color: isLight ? ColorsManager.black : ColorsManager.white),
     );
   }
 
@@ -80,10 +79,10 @@ class TaTasksHeader extends StatelessWidget {
     const cyan = Color(0xFF2FBAD7);
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       decoration: BoxDecoration(
         color: isSelected ? cyan : (isLight ? ColorsManager.white : ColorsManager.darkSurface),
-        borderRadius: BorderRadius.circular(30.r),
+        borderRadius: BorderRadius.circular(30.0),
         boxShadow: isLight && !isSelected
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))]
             : [],
@@ -93,7 +92,7 @@ class TaTasksHeader extends StatelessWidget {
         style: TextStyle(
           color: isSelected ? Colors.white : (isLight ? ColorsManager.black : ColorsManager.grayMedium),
           fontWeight: FontWeight.w600,
-          fontSize: 14.sp,
+          fontSize: 14.0,
         ),
       ),
     );

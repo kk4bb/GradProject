@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -30,12 +29,12 @@ class NotificationCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      constraints: BoxConstraints(minHeight: 110.h),
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      padding: EdgeInsets.all(16.w),
+      constraints: BoxConstraints(minHeight: 110.0),
+      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: isLight
             ? [
                 BoxShadow(
@@ -51,9 +50,9 @@ class NotificationCard extends StatelessWidget {
         children: [
           // Status Dot
           Container(
-            width: 10.w,
-            height: 10.w,
-            margin: EdgeInsets.only(top: 6.h, right: 12.w),
+            width: 10.0,
+            height: 10.0,
+            margin: EdgeInsets.only(top: 6.0, right: 12.0),
             decoration: BoxDecoration(
               color: indicatorColor,
               shape: BoxShape.circle,
@@ -70,14 +69,14 @@ class NotificationCard extends StatelessWidget {
                       ? AppLightTextStyles.bodyMedium
                       : AppDarkTextStyles.bodyMedium.copyWith(color: ColorsManager.darkTextPrimary),
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: 4.0),
                 Text(
                   description,
                   style: isLight
                       ? AppLightTextStyles.bodySmall
                       : AppDarkTextStyles.bodySmall,
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 8.0),
                 Text(
                   time,
                   style: isLight
@@ -94,7 +93,7 @@ class NotificationCard extends StatelessWidget {
             color: isLight
                 ? ColorsManager.grayDark
                 : ColorsManager.darkTextSecondary,
-            size: 20.sp,
+            size: 20.0,
           )
         ],
       ),

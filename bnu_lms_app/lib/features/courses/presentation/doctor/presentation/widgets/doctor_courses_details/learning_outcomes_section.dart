@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -16,10 +15,10 @@ class LearningOutcomesSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +27,7 @@ class LearningOutcomesSection extends StatelessWidget {
             'Learning Outcomes',
             style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
           _buildOutcomeRow(context, 'Master dynamic programming concepts', true),
           _buildOutcomeRow(context, 'Analyze time & space complexity', true),
           _buildOutcomeRow(context, 'Apply Graph Theory to solve problems', true),
@@ -41,16 +40,16 @@ class LearningOutcomesSection extends StatelessWidget {
   Widget _buildOutcomeRow(BuildContext context, String text, bool isCompleted) {
     var isLight = Provider.of<ThemeProvider>(context).isLightTheme();
     return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.only(bottom: 12.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             isCompleted ? Icons.check_circle : Icons.remove_circle_outline,
             color: isCompleted ? ColorsManager.green : ColorsManager.grayMedium, // Replaced hardcoded green
-            size: 20.sp,
+            size: 20.0,
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 12.0),
           Expanded(
             child: Text(
               text,

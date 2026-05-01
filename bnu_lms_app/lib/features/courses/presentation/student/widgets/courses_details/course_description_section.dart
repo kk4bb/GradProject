@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -21,7 +20,7 @@ class CourseDescriptionSection extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Padding(
-      padding: REdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,7 +34,7 @@ class CourseDescriptionSection extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
           Text(
             description,
             style: isLight

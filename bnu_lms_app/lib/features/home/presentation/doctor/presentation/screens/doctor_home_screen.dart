@@ -1,12 +1,11 @@
 import 'package:bnu_lms_app/features/courses/presentation/doctor/presentation/screens/doctor_courses_tab.dart';
+import 'package:bnu_lms_app/features/home/presentation/doctor/presentation/screens/doctor_home_dashboard.dart';
 import 'package:bnu_lms_app/features/profile/doctor/presentation/screens/doctor_profile_tab.dart';
+import 'package:bnu_lms_app/features/forums/doctor/presentation/screens/doctor_forums_tab.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../shared/resources/assets_manager.dart';
-import '../../../../../forums/presentation/student/presentation/screens/forums_tab.dart';
-import 'doctor_home_dashboard.dart';
-
 
 class DoctorHomeScreen extends StatefulWidget {
   const DoctorHomeScreen({super.key});
@@ -20,11 +19,11 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
   int selectedIndex = 0;
 
 
-  final List<Widget> tabs = [
-    const DoctorHomeDashboard(),
-    const DoctorCoursesTab(),
-    ForumsTab(),
-    const DoctorProfileTab(),
+  final List<Widget> tabs = const [
+    DoctorHomeDashboard(),
+    DoctorCoursesTab(),
+    DoctorForumsTab(),
+    DoctorProfileTab(),
   ];
 
   @override

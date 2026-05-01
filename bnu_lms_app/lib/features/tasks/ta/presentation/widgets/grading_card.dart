@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -16,10 +15,10 @@ class GradingCard extends StatelessWidget {
     const cyan = Color(0xFF2FBAD7);
 
     return Container(
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(24.0),
         boxShadow: isLight
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, 4))]
             : [],
@@ -31,45 +30,45 @@ class GradingCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.all(10.w),
+                padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   color: cyan.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: Icon(Icons.code_rounded, color: cyan, size: 24.sp),
+                child: Icon(Icons.code_rounded, color: cyan, size: 24.0),
               ),
-              SizedBox(width: 16.w),
+              SizedBox(width: 16.0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                         'Due in 2 days',
-                        style: TextStyle(fontSize: 12.sp, color: ColorsManager.grayMedium, fontWeight: FontWeight.w500)
+                        style: TextStyle(fontSize: 12.0, color: ColorsManager.grayMedium, fontWeight: FontWeight.w500)
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 4.0),
                     Text(
                       'Data Structures - HW3',
                       style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
-                          .copyWith(fontWeight: FontWeight.bold, fontSize: 16.sp),
+                          .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0),
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(height: 4.0),
                     Text(
                       '45/60 submissions pending',
-                      style: TextStyle(fontSize: 13.sp, color: ColorsManager.grayMedium),
+                      style: TextStyle(fontSize: 13.0, color: ColorsManager.grayMedium),
                     ),
                   ],
                 ),
               )
             ],
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: 20.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: 80.w,
-                height: 32.h,
+                width: 80.0,
+                height: 32.0,
                 child: Stack(
                   children: [
                     _buildAvatar(0, Colors.black),
@@ -84,17 +83,17 @@ class GradingCard extends StatelessWidget {
                   backgroundColor: cyan,
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                 ),
                 child: Row(
                   children: [
                     Text(
                       'Go to Task',
-                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(width: 6.w),
-                    Icon(Icons.arrow_forward_rounded, size: 16.sp),
+                    SizedBox(width: 6.0),
+                    Icon(Icons.arrow_forward_rounded, size: 16.0),
                   ],
                 ),
               ),
@@ -113,7 +112,7 @@ class GradingCard extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 2),
         ),
-        child: CircleAvatar(radius: 14.r, backgroundColor: color),
+        child: CircleAvatar(radius: 14.0, backgroundColor: color),
       ),
     );
   }

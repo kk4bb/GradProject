@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/providers/theme_provider.dart';
@@ -21,7 +20,7 @@ class TaStatsGrid extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(), // Adds a nice bounce effect on iOS/Android 12+
-      padding: REdgeInsets.symmetric(horizontal: 24), // Padding is now inside the scroll
+      padding: EdgeInsets.symmetric(horizontal: 24), // Padding is now inside the scroll
       child: Row(
         children: [
           DashboardStatCard(
@@ -31,7 +30,7 @@ class TaStatsGrid extends StatelessWidget {
             value: '4',
             title: 'Labs This Week',
           ),
-          SizedBox(width: 16.w),
+          SizedBox(width: 16.0),
           DashboardStatCard(
             icon: Icons.star_border_rounded,
             iconColor: orange,
@@ -39,7 +38,7 @@ class TaStatsGrid extends StatelessWidget {
             value: '12',
             title: 'Pending Grading',
           ),
-          SizedBox(width: 16.w),
+          SizedBox(width: 16.0),
           DashboardStatCard(
             icon: Icons.forum_outlined,
             iconColor: purple,

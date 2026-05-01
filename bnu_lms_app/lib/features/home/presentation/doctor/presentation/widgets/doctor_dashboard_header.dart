@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
@@ -22,21 +21,21 @@ class DoctorDashboardHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CircleAvatar(
-          radius: 24.r,
+          radius: 24.0,
           backgroundColor: ColorsManager.blue,
           child: ClipOval(
             child: Image.asset(
               ImagesManager.profileImage,
               fit: BoxFit.cover,
-              width: 48.w,
-              height: 48.h,
+              width: 48.0,
+              height: 48.0,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.person);
               },
             ),
           ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: 12.0),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +74,7 @@ class DoctorDashboardHeader extends StatelessWidget {
         //       },
         //       child: const ImageIcon(AssetImage(IconsManager.notification)),
         //     ),
-        //     SizedBox(width: 20.w),
+        //     SizedBox(width: 20.0),
         //     GestureDetector(
         //       onTap: () {
         //         Navigator.pushNamed(context, Routes.settings);

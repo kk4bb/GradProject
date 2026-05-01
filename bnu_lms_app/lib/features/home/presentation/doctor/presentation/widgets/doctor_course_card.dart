@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -33,15 +32,15 @@ class DoctorCourseCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(24.0),
         boxShadow: isLight
             ? [
           BoxShadow(
             color: ColorsManager.black.withValues(alpha: 0.04),
-            blurRadius: 10.r,
+            blurRadius: 10.0,
             offset: const Offset(0, 4),
           ),
         ]
@@ -56,10 +55,10 @@ class DoctorCourseCard extends StatelessWidget {
             children: [
               // Academic Year Tag
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
                 decoration: BoxDecoration(
                   color: isLight ? ColorsManager.lightBlueAccent : ColorsManager.darkBackground,
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Text(
                   academicYear.toUpperCase(),
@@ -76,7 +75,7 @@ class DoctorCourseCard extends StatelessWidget {
               ),
               // Course Icon
               Container(
-                padding: EdgeInsets.all(8.w),
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: isLight ? ColorsManager.lightBlueAccent : ColorsManager.darkBackground,
                   shape: BoxShape.circle,
@@ -84,13 +83,13 @@ class DoctorCourseCard extends StatelessWidget {
                 child: Icon(
                   courseIcon,
                   color: ColorsManager.blue,
-                  size: 20.sp,
+                  size: 20.0,
                 ),
               ),
             ],
           ),
 
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
 
           // Course Title
           Text(
@@ -100,20 +99,20 @@ class DoctorCourseCard extends StatelessWidget {
                 : AppDarkTextStyles.headlineSmall.copyWith(fontWeight: FontWeight.w700),
           ),
 
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
 
           // Details Row (Students & Time)
           Row(
             children: [
-              Icon(Icons.people_outline, size: 16.sp, color: ColorsManager.grayMedium),
-              SizedBox(width: 4.w),
+              Icon(Icons.people_outline, size: 16.0, color: ColorsManager.grayMedium),
+              SizedBox(width: 4.0),
               Text(
                 studentsCount,
                 style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium,
               ),
-              SizedBox(width: 16.w),
-              Icon(Icons.access_time, size: 16.sp, color: ColorsManager.grayMedium),
-              SizedBox(width: 4.w),
+              SizedBox(width: 16.0),
+              Icon(Icons.access_time, size: 16.0, color: ColorsManager.grayMedium),
+              SizedBox(width: 4.0),
               Text(
                 timeString,
                 style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium,
@@ -121,15 +120,15 @@ class DoctorCourseCard extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
 
           // Replaced with CustomElevatedButton
           CustomElevatedButton(
             label: 'Manage Course',
             onTap: onManageTap,
             backgroundColor: ColorsManager.blue,
-            radius: 12.r, // Matches previous styling
-            verticalPadding: 14.h, // Matches previous styling
+            radius: 12.0, // Matches previous styling
+            verticalPadding: 14.0, // Matches previous styling
           ),
         ],
       ),

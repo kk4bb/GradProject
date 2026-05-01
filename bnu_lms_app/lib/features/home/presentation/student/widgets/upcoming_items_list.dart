@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +25,7 @@ class UpcomingItemsList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: upcomingItems.length,
-      separatorBuilder: (context, index) => SizedBox(height: 12.h),
+      separatorBuilder: (context, index) => SizedBox(height: 12.0),
       itemBuilder: (context, index) {
         final item = upcomingItems[index];
         return Slidable(
@@ -49,7 +48,7 @@ class UpcomingItemsList extends StatelessWidget {
                 foregroundColor: Colors.white,
                 icon: Icons.delete,
                 label: 'Delete',
-                borderRadius: BorderRadius.circular(18.r),
+                borderRadius: BorderRadius.circular(18.0),
               ),
             ],
           ),

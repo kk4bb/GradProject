@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -15,7 +14,7 @@ class ResourcesSection extends StatelessWidget {
     return Row(
       children: [
         Expanded(child: _buildResourceCard(context, Icons.menu_book_rounded, 'Syllabus')),
-        SizedBox(width: 16.w),
+        SizedBox(width: 16.0),
         Expanded(child: _buildResourceCard(context, Icons.people_alt_rounded, 'Student List')),
       ],
     );
@@ -26,22 +25,22 @@ class ResourcesSection extends StatelessWidget {
     const cyan = Color(0xFF2FBAD7);
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 24.h),
+      padding: EdgeInsets.symmetric(vertical: 24.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(24.0),
         boxShadow: isLight
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))]
             : [],
       ),
       child: Column(
         children: [
-          Icon(icon, color: cyan, size: 32.sp),
-          SizedBox(height: 12.h),
+          Icon(icon, color: cyan, size: 32.0),
+          SizedBox(height: 12.0),
           Text(
             label,
             style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
-                .copyWith(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0),
           ),
         ],
       ),

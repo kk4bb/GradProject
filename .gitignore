@@ -1,16 +1,76 @@
-# Compiled source #
-###################
+# ============================================
+# Compiled source & Binaries
+# ============================================
 *.com
 *.class
 *.dll
 *.exe
 *.o
 *.so
+*.a
+*.lib
+.\$*
 
-# Packages #
-############
-# it's better to unpack these files and commit the raw source
-# git has its own built in compression methods
+# ============================================
+# .NET / C# specific
+# ============================================
+bin/
+obj/
+.vs/
+.vscode/settings.json
+*.user
+*.suo
+*.sln.docstates
+*.userprefs
+.gradle/
+packages/
+.packages
+*.csproj.user
+Properties/launchSettings.json
+appsettings.Development.json
+
+# ============================================
+# Flutter specific
+# ============================================
+/bnu_lms_app/.dart_tool/
+/bnu_lms_app/.flutter-plugins
+bnu_lms_app/.flutter-plugins-dependencies
+bnu_lms_app/.pub-cache/
+bnu_lms_app/.pub/
+bnu_lms_app/pubspec.lock
+doc/api/
+bnu_lms_app/build/
+bnu_lms_app/coverage/
+bnu_lms_app/.last_build_id
+
+# ============================================
+# IDE & Editor files
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.atom/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+
+# ============================================
+# OS generated files
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================
+# Archives
+# ============================================
 *.7z
 *.dmg
 *.gz
@@ -20,29 +80,26 @@
 *.tar
 *.zip
 
-# Logs and databases #
-######################
+# ============================================
+# Logs & Databases
+# ============================================
 *.log
 *.sql
 *.sqlite
+*.db
 
-# OS generated files #
-######################
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# ============================================
+# Temporary & Generated files
+# ============================================
+migrate_working_dir/
+*.tmp
+*.bak
+*.swp
 
-# some more
-$*
-./bnu_lms_app/windows
-./bnu_lms_app/test/
-./bnu_lms_app/android
-./bnu_lms_app/ios
-./bnu_lms_app/build
-./bnu_lms_app/macos
-./bnu_lms_app/web
-./bnu_lms_app/.dart_tool/
+# ============================================
+# Environment & Secrets (use carefully!)
+# ============================================
+.env
+.env.local
+*.pem
+*.key

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -17,23 +16,23 @@ class DoctorDashboardTopHeader extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      height: 170.h,
+      height: 170.0,
       width: double.infinity,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
-        left: 24.w,
-        right: 24.w,
+        left: 24.0,
+        right: 24.0,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24.r),
-          bottomRight: Radius.circular(24.r),
+          bottomLeft: Radius.circular(24.0),
+          bottomRight: Radius.circular(24.0),
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
             spreadRadius: 0,
-            blurRadius: 12.r,
+            blurRadius: 12.0,
             offset: const Offset(0, 4),
           ),
         ],
@@ -43,22 +42,22 @@ class DoctorDashboardTopHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const DoctorDashboardHeader(),
-          SizedBox(height: 14.h),
+          SizedBox(height: 14.0),
           Container(
-            padding: REdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: isLight ? ColorsManager.lightBlueAccent : ColorsManager.darkSurface,
-              borderRadius: BorderRadius.circular(25.r),
+              borderRadius: BorderRadius.circular(25.0),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   Icons.calendar_month,
-                  size: 16.sp,
+                  size: 16.0,
                   color: isLight ? ColorsManager.blue : Colors.amber,
                 ),
-                SizedBox(width: 6.w),
+                SizedBox(width: 6.0),
                 Text(
                   'Monday, 24 Oct 2023',
                   style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium,

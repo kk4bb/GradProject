@@ -66,10 +66,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quizzes => 'الاختبارات';
 
   @override
-  String get grades => 'الدرجات';
+  String get tasks => 'المهام';
 
   @override
-  String get tasks => 'المهام';
+  String get grades => 'الدرجات';
 
   @override
   String get attendance => 'الحضور';

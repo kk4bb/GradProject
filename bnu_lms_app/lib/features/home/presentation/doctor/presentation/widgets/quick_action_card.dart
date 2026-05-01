@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -27,11 +26,11 @@ class QuickActionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 171.w,
-        height: 100.h,
+        width: 171.0,
+        height: 100.0,
         decoration: BoxDecoration(
           color: isLight ? ColorsManager.lightBlue : ColorsManager.darkSurface,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -39,9 +38,9 @@ class QuickActionCard extends StatelessWidget {
             Icon(
               icon,
               color: ColorsManager.blue,
-              size: 24.sp,
+              size: 24.0,
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 8.0),
             Text(
               label,
               style: isLight

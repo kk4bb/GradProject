@@ -105,5 +105,48 @@ namespace CampusConnect.Tests.App
             // Act & Assert
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.CreateModuleAsync(1, "New Module", "other-inst"));
         }
+
+        [Fact]
+        public async Task GetEnrolledStudentsAsync_Instructor_ReturnsStudents()
+        {
+            // Arrange
+            var context = GetDbContext();
+            var instructorId = "inst-1";
+            var studentId = "student-1";
+
+            var instructor = new ApplicationUser { Id = instructorId, FirstName = "Dr.", LastName = "Smith", Faculty = "Engineering" };
+            var student = new ApplicationUser { Id = studentId, FirstName = "John", LastName = "Doe", Email = "john@example.com", Faculty = "Engineering" };
+            context.Users.AddRange(instructor, student);
+
+            var course = new Course { Id = 1, Title = "CS101", InstructorId = instructorId, Description = "Test" };
+            context.Courses.Add(course);
+            context.Enrollments.Add(new Enrollment { StudentId = studentId, CourseId = 1 });
+            await context.SaveChangesAsync();
+
+            var service = new CourseService(context);
+
+            // Act
+            var result = await service.GetEnrolledStudentsAsync(1, instructorId);
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(studentId, result.First().Id);
+            Assert.Equal("John", result.First().FirstName);
+        }
+
+        [Fact]
+        public async Task GetEnrolledStudentsAsync_NotInstructor_ThrowsUnauthorized()
+        {
+            // Arrange
+            var context = GetDbContext();
+            var course = new Course { Id = 1, Title = "CS101", InstructorId = "inst-1", Description = "Test" };
+            context.Courses.Add(course);
+            await context.SaveChangesAsync();
+
+            var service = new CourseService(context);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.GetEnrolledStudentsAsync(1, "other-inst"));
+        }
     }
 }

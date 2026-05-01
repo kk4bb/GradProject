@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -16,7 +15,7 @@ class TodaysScheduleSection extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Padding(
-      padding: REdgeInsets.all(22),
+      padding: EdgeInsets.all(22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -33,7 +32,7 @@ class TodaysScheduleSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
 
           _buildTimelineItem(
             context, isLight,
@@ -79,7 +78,7 @@ class TodaysScheduleSection extends StatelessWidget {
         children: [
           // Time Column
           SizedBox(
-            width: 50.w,
+            width: 50.0,
             child: Text(
               time,
               style: (isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium)
@@ -89,22 +88,22 @@ class TodaysScheduleSection extends StatelessWidget {
 
           // Timeline Line
           Container(
-            width: 2.w,
+            width: 2.0,
             color: ColorsManager.grayMedium.withValues(alpha: 0.3),
-            margin: EdgeInsets.only(right: 16.w),
+            margin: EdgeInsets.only(right: 16.0),
           ),
 
           // Card Content
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(bottom: 16.h),
-              padding: EdgeInsets.all(16.w),
+              margin: EdgeInsets.only(bottom: 16.0),
+              padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: isLight ? const Color(0xFFF8F9FA) : ColorsManager.darkSurface, // Slightly darker for card
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(12.0),
                 // Custom left border for the accent color
                 border: Border(
-                  left: BorderSide(color: accentColor, width: 4.w),
+                  left: BorderSide(color: accentColor, width: 4.0),
                 ),
               ),
               child: Column(
@@ -118,17 +117,17 @@ class TodaysScheduleSection extends StatelessWidget {
                       letterSpacing: 1.1,
                     ),
                   ),
-                  SizedBox(height: 4.h),
+                  SizedBox(height: 4.0),
                   Text(
                     title,
                     style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 6.h),
+                  SizedBox(height: 6.0),
                   Row(
                     children: [
-                      Icon(Icons.location_on_outlined, size: 14.sp, color: ColorsManager.grayMedium),
-                      SizedBox(width: 4.w),
+                      Icon(Icons.location_on_outlined, size: 14.0, color: ColorsManager.grayMedium),
+                      SizedBox(width: 4.0),
                       Text(
                         location,
                         style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall,

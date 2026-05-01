@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 // Update these imports to match your actual file paths
@@ -31,19 +30,19 @@ class DashboardStatCard extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      width: 180.w,
-      height: 171.h,
-      padding: EdgeInsets.all(16.w),
+      width: 180.0,
+      height: 171.0,
+      padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         // Use your ColorsManager for the card background based on theme
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(24.0),
         // Shadows usually look best only in light mode, so we remove it in dark mode
         boxShadow: isLight
             ? [
           BoxShadow(
             color: ColorsManager.black.withValues(alpha: 0.04),
-            blurRadius: 10.r,
+            blurRadius: 10.0,
             offset: const Offset(0, 4),
           ),
         ]
@@ -54,7 +53,7 @@ class DashboardStatCard extends StatelessWidget {
         children: [
           // Icon Container
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: iconBackgroundColor,
               shape: BoxShape.circle,
@@ -62,12 +61,12 @@ class DashboardStatCard extends StatelessWidget {
             child: Icon(
               icon,
               color: iconColor,
-              size: 24.sp,
+              size: 24.0,
             ),
           ),
           const Spacer(),
 
-          // Number Value (Using your headlineLarge which is 24.sp w600)
+          // Number Value (Using your headlineLarge which is 24.0 w600)
           Text(
             value,
             style: isLight
@@ -75,9 +74,9 @@ class DashboardStatCard extends StatelessWidget {
                 : AppDarkTextStyles.headlineLarge,
           ),
 
-          SizedBox(height: 4.h),
+          SizedBox(height: 4.0),
 
-          // Subtitle (Using your labelMedium which is 14.sp w500)
+          // Subtitle (Using your labelMedium which is 14.0 w500)
           Text(
             title,
             style: isLight

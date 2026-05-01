@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../shared/resources/colors_manager.dart';
 
@@ -26,7 +25,7 @@ class CategoryBox extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-          borderRadius: BorderRadius.circular(18.r),
+          borderRadius: BorderRadius.circular(18.0),
           boxShadow: isLight
               ? [
             BoxShadow(
@@ -47,32 +46,32 @@ class CategoryBox extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: REdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: isLight
                     ? ColorsManager.blue.withValues(alpha: 0.1)
                     : ColorsManager.blue.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: BorderRadius.circular(16.0),
               ),
               child: Image.asset(
                 imagePath,
-                width: 32.w,
-                height: 32.h,
+                width: 32.0,
+                height: 32.0,
                 color: isLight ? ColorsManager.blue : ColorsManager.lightBlue,
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(
                     Icons.category,
-                    size: 32.sp,
+                    size: 32.0,
                     color: isLight ? ColorsManager.blue : ColorsManager.lightBlue,
                   );
                 },
               ),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12.0),
             Text(
               title,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 14.0,
                 fontWeight: FontWeight.w600,
                 color: isLight ? ColorsManager.black : ColorsManager.white,
               ),

@@ -1,70 +1,106 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../../shared/resources/colors_manager.dart';
+import '../../../../../../../shared/network/repositories/course_repository.dart';
+import '../../../../../../profile/student/data/models/student_profile_model.dart';
 
-class CourseStudentsTab extends StatelessWidget {
-  const CourseStudentsTab({super.key});
+class CourseStudentsTab extends StatefulWidget {
+  final int courseId;
+  const CourseStudentsTab({required this.courseId, super.key});
+
+  @override
+  State<CourseStudentsTab> createState() => _CourseStudentsTabState();
+}
+
+class _CourseStudentsTabState extends State<CourseStudentsTab> {
+  final CourseRepository _courseRepository = CourseRepository();
+  late Future<List<StudentProfile>> _studentsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _studentsFuture = _courseRepository.getEnrolledStudents(widget.courseId);
+  }
 
   @override
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeProvider>(context).isLightTheme();
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(20.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return FutureBuilder<List<StudentProfile>>(
+      future: _studentsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final students = snapshot.data ?? [];
+
+        return SingleChildScrollView(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              // Header Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Class Roster',
-                    style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Class Roster',
+                        style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
+                      ),
+                      SizedBox(height: 2.0),
+                      Text(
+                        '${students.length} Students Enrolled',
+                        style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall,
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    '42 Students Enrolled',
-                    style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall,
-                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                    decoration: BoxDecoration(
+                      color: isLight ? ColorsManager.lightBlueAccent : ColorsManager.darkBlue,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.sort, size: 16.0, color: ColorsManager.blue),
+                        SizedBox(width: 4.0),
+                        Text(
+                          'Sort',
+                          style: AppLightTextStyles.labelMedium.copyWith(color: ColorsManager.blue, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: isLight ? ColorsManager.lightBlueAccent : ColorsManager.darkBlue ,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.sort, size: 16.sp, color: ColorsManager.blue),
-                    SizedBox(width: 4.w),
-                    Text(
-                      'Sort',
-                      style: AppLightTextStyles.labelMedium.copyWith(color: ColorsManager.blue, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              )
+              SizedBox(height: 20.0),
+
+              if (students.isEmpty)
+                const Center(child: Text('No students enrolled in this course.'))
+              else
+                ...students.map((student) => _buildStudentItem(
+                  context,
+                  '${student.firstName} ${student.lastName}',
+                  'ID: ${student.id.substring(0, 8)}',
+                  'A-', // Placeholder for actual grade if available
+                  0.85, // Placeholder for actual attendance if available
+                  ColorsManager.blue,
+                )),
             ],
           ),
-          SizedBox(height: 20.h),
-
-          // Student List
-          _buildStudentItem(context, 'Alex Thompson', 'ID: 202300145', 'A-', 0.88, ColorsManager.blue),
-          _buildStudentItem(context, 'Sarah Jenkins', 'ID: 202300089', 'A+', 0.98, ColorsManager.green),
-          _buildStudentItem(context, 'Michael Chen', 'ID: 202300210', 'B', 0.72, ColorsManager.yellow),
-          _buildStudentItem(context, 'David Miller', 'ID: 202300102', 'B+', 0.81, ColorsManager.blue),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -72,13 +108,13 @@ class CourseStudentsTab extends StatelessWidget {
     var isLight = Provider.of<ThemeProvider>(context).isLightTheme();
 
     return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.only(bottom: 16.0),
+      padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: isLight
-            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8.r, offset: const Offset(0, 2))]
+            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8.0, offset: const Offset(0, 2))]
             : [],
       ),
       child: Column(
@@ -86,11 +122,11 @@ class CourseStudentsTab extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                radius: 20.r,
+                radius: 20.0,
                 backgroundColor: ColorsManager.grayMedium.withValues(alpha: 0.2),
                 child: Icon(Icons.person, color: ColorsManager.grayMedium),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +138,7 @@ class CourseStudentsTab extends StatelessWidget {
               ),
               // Grade Badge
               Container(
-                padding: EdgeInsets.all(8.w),
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: gradeColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
@@ -114,24 +150,24 @@ class CourseStudentsTab extends StatelessWidget {
               )
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
           // Attendance Bar
           Row(
             children: [
-              Text('ATTENDANCE', style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(fontSize: 10.sp)),
-              SizedBox(width: 12.w),
+              Text('ATTENDANCE', style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(fontSize: 10.0)),
+              SizedBox(width: 12.0),
               Expanded(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4.r),
+                  borderRadius: BorderRadius.circular(4.0),
                   child: LinearProgressIndicator(
                     value: attendance,
                     backgroundColor: ColorsManager.grayMedium.withValues(alpha: 0.2),
                     valueColor: AlwaysStoppedAnimation<Color>(ColorsManager.blue),
-                    minHeight: 6.h,
+                    minHeight: 6.0,
                   ),
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               Text('${(attendance * 100).toInt()}%', style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall),
             ],
           )

@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../shared/resources/assets_manager.dart';
-
-
 import '../../../../courses/presentation/student/screens/courses_tab.dart';
-import '../../../../forums/presentation/student/presentation/screens/forums_tab.dart';
+import '../../../../forums/student/presentation/screens/forums_tab.dart';
 import '../../../../profile/student/presentation/screens/profile_tab.dart';
 import 'home_tab.dart';
 

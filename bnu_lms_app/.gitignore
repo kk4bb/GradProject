@@ -1,9 +1,0 @@
-./android
-./build
-./.dart_tool
-./ios
-./linux
-./macos
-./test
-./web
-./windows

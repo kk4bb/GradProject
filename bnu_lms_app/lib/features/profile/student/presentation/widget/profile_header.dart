@@ -1,6 +1,5 @@
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -30,10 +29,10 @@ class ProfileHeaderCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: REdgeInsets.all(24),
+      padding: EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20.0),
       ),
       child: Column(
         children: [
@@ -46,11 +45,11 @@ class ProfileHeaderCard extends StatelessWidget {
               ),
             ),
             child: CircleAvatar(
-              radius: 50.r,
+              radius: 50.0,
               backgroundImage: AssetImage(profileImage),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
           Text(
             name,
             style: isLight
@@ -61,7 +60,7 @@ class ProfileHeaderCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8.0),
           Text(
             department,
             style: isLight
@@ -73,12 +72,12 @@ class ProfileHeaderCard extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildInfoChip('ID: $studentId', isLight),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               _buildInfoChip('Year: $year', isLight),
             ],
           ),
@@ -89,17 +88,17 @@ class ProfileHeaderCard extends StatelessWidget {
 
   Widget _buildInfoChip(String text, bool isLight) {
     return Container(
-      padding: REdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: isLight
             ? ColorsManager.lightBlueAccent
             : ColorsManager.darkBackground,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12.0),
       ),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 13.sp,
+          fontSize: 13.0,
           fontWeight: FontWeight.w600,
           color: ColorsManager.blue,
         ),

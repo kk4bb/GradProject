@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -24,7 +23,7 @@ class TaQuestionDetailsScreen extends StatelessWidget {
         backgroundColor: isLight ? ColorsManager.white : ColorsManager.darkSurface,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp, color: isLight ? ColorsManager.black : ColorsManager.white),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.0, color: isLight ? ColorsManager.black : ColorsManager.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -42,12 +41,12 @@ class TaQuestionDetailsScreen extends StatelessWidget {
         children: [
           Expanded(
             child: ListView(
-              padding: EdgeInsets.all(20.w),
+              padding: EdgeInsets.all(20.0),
               children: [
                 // Original Question
                 _buildOriginalQuestion(isLight, cyan),
 
-                SizedBox(height: 24.h),
+                SizedBox(height: 24.0),
 
                 // Replies Header
                 Text(
@@ -55,7 +54,7 @@ class TaQuestionDetailsScreen extends StatelessWidget {
                   style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(height: 16.0),
 
                 // Doctor Reply
                 const TaForumReplyCard(
@@ -100,10 +99,10 @@ class TaQuestionDetailsScreen extends StatelessWidget {
 
   Widget _buildOriginalQuestion(bool isLight, Color cyan) {
     return Container(
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20.0),
         boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)] : [],
       ),
       child: Column(
@@ -111,32 +110,32 @@ class TaQuestionDetailsScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(radius: 18.r, backgroundColor: cyan.withValues(alpha: 0.2), child: Text('AS', style: TextStyle(color: cyan, fontWeight: FontWeight.bold, fontSize: 12.sp))),
-              SizedBox(width: 12.w),
+              CircleAvatar(radius: 18.0, backgroundColor: cyan.withValues(alpha: 0.2), child: Text('AS', style: TextStyle(color: cyan, fontWeight: FontWeight.bold, fontSize: 12.0))),
+              SizedBox(width: 12.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Alex Smith', style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(fontWeight: FontWeight.bold)),
-                  Text('Student • CS101 • 4h ago', style: TextStyle(fontSize: 10.sp, color: ColorsManager.grayMedium)),
+                  Text('Student • CS101 • 4h ago', style: TextStyle(fontSize: 10.0, color: ColorsManager.grayMedium)),
                 ],
               )
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
           Text(
             'How do I implement Dijkstra\'s algorithm in Python efficiently for a large graph?',
-            style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(fontWeight: FontWeight.bold, fontSize: 18.sp),
+            style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(fontWeight: FontWeight.bold, fontSize: 18.0),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
           Text(
             'I\'m working on the pathfinding assignment and my current implementation is too slow. I\'m using a simple list for the priority queue. Should I be using heapq or something else to speed it up?',
-            style: TextStyle(fontSize: 13.sp, color: isLight ? Colors.grey.shade700 : Colors.grey.shade300, height: 1.5),
+            style: TextStyle(fontSize: 13.0, color: isLight ? Colors.grey.shade700 : Colors.grey.shade300, height: 1.5),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
           Row(
             children: [
               _buildTag('ALGORITHMS', cyan),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8.0),
               _buildTag('PYTHON', cyan),
             ],
           )
@@ -147,40 +146,40 @@ class TaQuestionDetailsScreen extends StatelessWidget {
 
   Widget _buildTag(String text, Color cyan) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-      decoration: BoxDecoration(color: cyan.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6.r)),
-      child: Text(text, style: TextStyle(color: cyan, fontSize: 10.sp, fontWeight: FontWeight.bold)),
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+      decoration: BoxDecoration(color: cyan.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6.0)),
+      child: Text(text, style: TextStyle(color: cyan, fontSize: 10.0, fontWeight: FontWeight.bold)),
     );
   }
 
   Widget _buildBottomInput(bool isLight, Color cyan) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -4))],
       ),
       child: Row(
         children: [
-          Icon(Icons.add_circle_outline, color: cyan, size: 28.sp),
-          SizedBox(width: 12.w),
+          Icon(Icons.add_circle_outline, color: cyan, size: 28.0),
+          SizedBox(width: 12.0),
           Expanded(
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Write a reply as TA...',
-                hintStyle: TextStyle(color: ColorsManager.grayMedium, fontSize: 14.sp),
+                hintStyle: TextStyle(color: ColorsManager.grayMedium, fontSize: 14.0),
                 border: InputBorder.none,
                 filled: true,
                 fillColor: isLight ? Colors.grey.shade100 : ColorsManager.darkBackground,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               ),
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 12.0),
           Container(
-            padding: EdgeInsets.all(10.w),
+            padding: EdgeInsets.all(10.0),
             decoration: BoxDecoration(color: cyan, shape: BoxShape.circle),
-            child: Icon(Icons.send, color: Colors.white, size: 18.sp),
+            child: Icon(Icons.send, color: Colors.white, size: 18.0),
           )
         ],
       ),

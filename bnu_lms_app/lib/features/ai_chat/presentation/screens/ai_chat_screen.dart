@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../shared/providers/theme_provider.dart';
+import '../../../../shared/network/repositories/ai_chat_repository.dart';
 import '../widgets/message_buble.dart';
 import '../widgets/typing_indicator.dart';
 import '../widgets/message_input.dart';
@@ -16,7 +17,7 @@ class AiChatScreen extends StatefulWidget {
 }
 
 class _AiChatScreenState extends State<AiChatScreen> {
-
+  final AIChatRepository _aiChatRepository = AIChatRepository();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
@@ -65,30 +66,36 @@ class _AiChatScreenState extends State<AiChatScreen> {
     _messageController.clear();
     _scrollToBottom();
 
-    // Simulate AI response (replace with actual API call)
-    await Future.delayed(const Duration(milliseconds: 1500));
-
-    if (mounted) {
-      setState(() {
-        _messages.add(
-          ChatMessage(
-            text: _generateResponse(messageText),
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-        _isTyping = false;
-      });
-      _scrollToBottom();
+    try {
+      final response = await _aiChatRepository.sendChatMessage(messageText);
+      if (mounted) {
+        setState(() {
+          _messages.add(
+            ChatMessage(
+              text: response,
+              isUser: false,
+              timestamp: DateTime.now(),
+            ),
+          );
+          _isTyping = false;
+        });
+        _scrollToBottom();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _messages.add(
+            ChatMessage(
+              text: 'Sorry, I encountered an error: $e',
+              isUser: false,
+              timestamp: DateTime.now(),
+            ),
+          );
+          _isTyping = false;
+        });
+        _scrollToBottom();
+      }
     }
-  }
-
-  String _generateResponse(String query) {
-    // Replace this with your actual AI API integration
-    if (query.toLowerCase().contains('quantum')) {
-      return 'Quantum entanglement is a phenomenon where two or more particles become linked in such a way that they share the same fate, no matter how far apart they are. If you measure a property of one particle, you instantly know the corresponding property of the other, even if they\'re light-years away. It\'s like having two coins that are magically linked: if one lands on heads, the other instantly lands on tails, and vice versa.';
-    }
-    return 'I understand your question. Let me help you with that. This is a demonstration response. Please integrate your AI API here for actual intelligent responses.';
   }
 
   void _scrollToBottom() {

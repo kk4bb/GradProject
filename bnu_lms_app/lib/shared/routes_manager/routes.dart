@@ -29,10 +29,5 @@ class Routes {
   static const String doctorDashboard = '/doctorDashboard';
   static const String doctorCoursesDetails = '/doctorCoursesDetails';
   static const String doctorQuestionDetails = '/doctorQuestionDetails';
-
-
-// -- TA Features --
-  static const String taDashboard = '/taDashboard';
-  static const String taCoursesDetails = '/taCoursesDetails';
   static const String taAssignmentGrades = '/taAssignmentGrades';
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -29,10 +28,10 @@ class StudentSubmissionTile extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: isLight
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 6, offset: const Offset(0, 2))]
             : [],
@@ -40,10 +39,10 @@ class StudentSubmissionTile extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 18.r,
+            radius: 18.0,
             backgroundColor: isLight ? Colors.grey.shade300 : Colors.grey.shade700,
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 12.0),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,11 +52,11 @@ class StudentSubmissionTile extends StatelessWidget {
                   style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: 4.0),
                 Text(
                   status,
                   style: TextStyle(
-                      fontSize: 10.sp,
+                      fontSize: 10.0,
                       fontWeight: FontWeight.bold,
                       color: statusColor ?? ColorsManager.grayMedium
                   ),
@@ -66,14 +65,14 @@ class StudentSubmissionTile extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: isLight ? Colors.grey.shade100 : ColorsManager.darkBackground,
               shape: BoxShape.circle,
             ),
             child: Icon(
               isGraded ? Icons.edit_outlined : Icons.keyboard_arrow_down_rounded,
-              size: 20.sp,
+              size: 20.0,
               color: isGraded ? const Color(0xFF2FBAD7) : ColorsManager.grayMedium,
             ),
           ),

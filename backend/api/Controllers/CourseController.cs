@@ -36,6 +36,22 @@ namespace CampusConnect.API.Controllers
             return Ok(courses);
         }
 
+        [HttpGet("{id}/students")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> GetEnrolledStudents(int id)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var students = await _courseService.GetEnrolledStudentsAsync(id, userId);
+                return Ok(students);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCourseDetails(int id)
         {

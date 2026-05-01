@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -22,7 +21,7 @@ class LearningOutcomesSection extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Padding(
-      padding: REdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -36,7 +35,7 @@ class LearningOutcomesSection extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
           ...outcomes.map((outcome) => _buildOutcomeItem(outcome, isLight)),
         ],
       ),
@@ -45,14 +44,14 @@ class LearningOutcomesSection extends StatelessWidget {
 
   Widget _buildOutcomeItem(String outcome, bool isLight) {
     return Padding(
-      padding: REdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: REdgeInsets.only(top: 4),
-            width: 24.w,
-            height: 24.w,
+            margin: EdgeInsets.only(top: 4),
+            width: 24.0,
+            height: 24.0,
             decoration: BoxDecoration(
               color: ColorsManager.blue,
               shape: BoxShape.circle,
@@ -60,10 +59,10 @@ class LearningOutcomesSection extends StatelessWidget {
             child: Icon(
               Icons.check,
               color: Colors.white,
-              size: 16.sp,
+              size: 16.0,
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 12.0),
           Expanded(
             child: Text(
               outcome,

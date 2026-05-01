@@ -1,6 +1,5 @@
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -16,10 +15,10 @@ class TaCourseAssignmentsTab extends StatelessWidget {
     final isLight = Provider.of<ThemeProvider>(context).isLightTheme();
 
     return ListView(
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all(20.0),
       children: [
         _buildSectionHeader(isLight, 'Active Tasks'),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16.0),
 
         // Card 1: Needs Grading
         _TaAssignmentCard(
@@ -31,7 +30,7 @@ class TaCourseAssignmentsTab extends StatelessWidget {
           status: _AssignmentStatus.needsGrading,
         ),
 
-        SizedBox(height: 16.h),
+        SizedBox(height: 16.0),
 
         // Card 2: In Progress
         _TaAssignmentCard(
@@ -43,9 +42,9 @@ class TaCourseAssignmentsTab extends StatelessWidget {
           status: _AssignmentStatus.inProgress,
         ),
 
-        SizedBox(height: 32.h),
+        SizedBox(height: 32.0),
         _buildSectionHeader(isLight, 'Past Assignments'),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16.0),
 
         // Card 3: Completed
         _TaAssignmentCard(
@@ -57,7 +56,7 @@ class TaCourseAssignmentsTab extends StatelessWidget {
           status: _AssignmentStatus.completed,
         ),
 
-        SizedBox(height: 80.h),
+        SizedBox(height: 80.0),
       ],
     );
   }
@@ -71,7 +70,7 @@ class TaCourseAssignmentsTab extends StatelessWidget {
           style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
               .copyWith(fontWeight: FontWeight.bold),
         ),
-        Icon(Icons.filter_list, size: 20.sp, color: ColorsManager.grayMedium),
+        Icon(Icons.filter_list, size: 20.0, color: ColorsManager.grayMedium),
       ],
     );
   }
@@ -122,10 +121,10 @@ class _TaAssignmentCard extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: isLight
             ? [BoxShadow(color: shadowColor, blurRadius: 10, offset: const Offset(0, 4))]
             : [],
@@ -138,24 +137,24 @@ class _TaAssignmentCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6.r),
+                  borderRadius: BorderRadius.circular(6.0),
                 ),
                 child: Text(
                   statusText,
                   style: TextStyle(
                     color: statusColor,
-                    fontSize: 10.sp,
+                    fontSize: 10.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              Icon(Icons.more_horiz, color: ColorsManager.grayMedium, size: 20.sp),
+              Icon(Icons.more_horiz, color: ColorsManager.grayMedium, size: 20.0),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
 
           // Title
           Text(
@@ -163,30 +162,30 @@ class _TaAssignmentCard extends StatelessWidget {
             style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
                 .copyWith(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
 
           // Details Row
           Row(
             children: [
-              Icon(Icons.calendar_today_outlined, size: 14.sp, color: ColorsManager.grayMedium),
-              SizedBox(width: 6.w),
+              Icon(Icons.calendar_today_outlined, size: 14.0, color: ColorsManager.grayMedium),
+              SizedBox(width: 6.0),
               Text(
                 dueDate,
-                style: TextStyle(fontSize: 12.sp, color: ColorsManager.grayMedium),
+                style: TextStyle(fontSize: 12.0, color: ColorsManager.grayMedium),
               ),
-              SizedBox(width: 16.w),
-              Icon(Icons.people_outline, size: 14.sp, color: ColorsManager.grayMedium),
-              SizedBox(width: 6.w),
+              SizedBox(width: 16.0),
+              Icon(Icons.people_outline, size: 14.0, color: ColorsManager.grayMedium),
+              SizedBox(width: 6.0),
               Text(
                 submissionCount,
-                style: TextStyle(fontSize: 12.sp, color: ColorsManager.grayMedium),
+                style: TextStyle(fontSize: 12.0, color: ColorsManager.grayMedium),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
 
           Divider(color: ColorsManager.grayMedium.withValues(alpha: 0.1)),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
 
           // Action Row
           Row(
@@ -195,7 +194,7 @@ class _TaAssignmentCard extends StatelessWidget {
               Text(
                 pendingGrading,
                 style: TextStyle(
-                  fontSize: 12.sp,
+                  fontSize: 12.0,
                   color: ColorsManager.grayMedium,
                   fontWeight: FontWeight.w500,
                 ),
@@ -211,12 +210,12 @@ class _TaAssignmentCard extends StatelessWidget {
                     backgroundColor: cyan, // TA Cyan
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+                    padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                   ),
                   child: Text(
                     'Grade Now',
-                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                   ),
                 )
               else
@@ -225,12 +224,12 @@ class _TaAssignmentCard extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ColorsManager.grayMedium,
                     side: BorderSide(color: ColorsManager.grayMedium.withValues(alpha: 0.3)),
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                   ),
                   child: Text(
                     'View Details',
-                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                   ),
                 ),
             ],

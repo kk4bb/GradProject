@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -16,7 +15,7 @@ class UrgentActionsSection extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Padding(
-      padding: REdgeInsets.symmetric(horizontal: 22),
+      padding: EdgeInsets.symmetric(horizontal: 22),
       child: Column(
         children: [
           // Section Header
@@ -36,7 +35,7 @@ class UrgentActionsSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16.0),
 
           // Card 1: Urgent Review (Red)
           _buildUrgentCard(
@@ -49,7 +48,7 @@ class UrgentActionsSection extends StatelessWidget {
             baseColor: ColorsManager.red,
             isUrgent: true,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12.0),
 
           // Card 2: Meeting (Blue)
           _buildUrgentCard(
@@ -83,10 +82,10 @@ class UrgentActionsSection extends StatelessWidget {
         : baseColor.withValues(alpha: 0.15);
 
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(color: bgColor, width: 1),
         boxShadow: isLight
             ? [
@@ -102,14 +101,14 @@ class UrgentActionsSection extends StatelessWidget {
         children: [
           // Circular Icon
           Container(
-            padding: EdgeInsets.all(10.w),
+            padding: EdgeInsets.all(10.0),
             decoration: BoxDecoration(
               color: baseColor, // Solid color for icon bg
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: Colors.white, size: 20.sp),
+            child: Icon(icon, color: Colors.white, size: 20.0),
           ),
-          SizedBox(width: 14.w),
+          SizedBox(width: 14.0),
 
           // Texts
           Expanded(
@@ -119,11 +118,11 @@ class UrgentActionsSection extends StatelessWidget {
                 Text(
                   title,
                   style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: 4.0),
                 Text(
                   subtitle,
                   style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall)
@@ -138,10 +137,10 @@ class UrgentActionsSection extends StatelessWidget {
 
           // Action Button (Small pill)
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             decoration: BoxDecoration(
               color: isLight ? ColorsManager.white : ColorsManager.darkBackground,
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(20.0),
               border: Border.all(color: baseColor.withValues(alpha: 0.3)),
             ),
             child: Text(
