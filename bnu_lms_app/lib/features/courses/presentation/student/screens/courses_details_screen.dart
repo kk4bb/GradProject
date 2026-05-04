@@ -241,7 +241,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
                       ),
                     ),
                     subtitle: Text(
-                      'Date: ${record.date.day}/${record.date.month}/${record.date.year}',
+                      'Date: ${record.scannedAt.day}/${record.scannedAt.month}/${record.scannedAt.year}',
                       style: TextStyle(
                         color: isLight ? ColorsManager.grayMedium : ColorsManager.darkTextSecondary,
                       ),

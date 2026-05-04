@@ -123,14 +123,14 @@ class CourseAttendanceReport {
 }
 
 class AttendanceRecord {
-  final DateTime date;
+  final DateTime scannedAt;
   final bool isPresent;
 
-  AttendanceRecord({required this.date, required this.isPresent});
+  AttendanceRecord({required this.scannedAt, required this.isPresent});
 
   factory AttendanceRecord.fromJson(Map<String, dynamic> json) {
     return AttendanceRecord(
-      date: DateTime.parse(json['date']),
+      scannedAt: DateTime.parse(json['scannedAt']),
       isPresent: json['isPresent'] ?? false,
     );
   }

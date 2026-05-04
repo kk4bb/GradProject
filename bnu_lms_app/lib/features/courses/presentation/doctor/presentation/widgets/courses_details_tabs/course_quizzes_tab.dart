@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../../shared/resources/colors_manager.dart';
 import '../../../../../../../shared/network/repositories/quiz_repository.dart';
+import '../../../../../../../shared/network/api_service.dart';
 import '../../../../../../quizzes/data/models/quiz_model.dart';
 
 class CourseQuizzesTab extends StatefulWidget {
@@ -26,6 +28,87 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
     _quizzesFuture = _quizRepository.getQuizzes(widget.courseId);
   }
 
+  Future<void> _createNewQuiz() async {
+    final titleController = TextEditingController();
+    final descController = TextEditingController();
+    DateTime selectedDate = DateTime.now().add(const Duration(days: 7));
+
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Create New Quiz'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Quiz Title'),
+              ),
+              TextField(
+                controller: descController,
+                decoration: const InputDecoration(labelText: 'Description'),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('Due Date'),
+                subtitle: Text(DateFormat('MMM dd, yyyy').format(selectedDate)),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: () async {
+                  final DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                  );
+                  if (picked != null) {
+                    setDialogState(() => selectedDate = picked);
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Create'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (confirmed == true && titleController.text.isNotEmpty) {
+      try {
+        await apiService.dio.post(
+          'quiz/course/${widget.courseId}',
+          data: {
+            'title': titleController.text,
+            'description': descController.text,
+            'dueDate': selectedDate.toIso8601String(),
+          },
+        );
+        
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Quiz created successfully!')),
+        );
+        setState(() {
+          _quizzesFuture = _quizRepository.getQuizzes(widget.courseId);
+        });
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeProvider>(context).isLightTheme();
@@ -43,7 +126,7 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
         final quizzes = snapshot.data ?? [];
 
         return SingleChildScrollView(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -55,19 +138,17 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
                     style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
                   ),
                   GestureDetector(
-                    onTap: () {
-                      // TODO: Implement Create Quiz flow
-                    },
+                    onTap: _createNewQuiz,
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
                       decoration: BoxDecoration(
                         color: ColorsManager.blue,
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.add, color: ColorsManager.white, size: 16.0),
-                          SizedBox(width: 4.0),
+                          const Icon(Icons.add, color: ColorsManager.white, size: 16.0),
+                          const SizedBox(width: 4.0),
                           Text(
                             'Create',
                             style: AppDarkTextStyles.labelMedium.copyWith(color: ColorsManager.white, fontWeight: FontWeight.bold),
@@ -78,7 +159,7 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
                   ),
                 ],
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
 
               if (quizzes.isEmpty)
                 const Center(child: Text('No quizzes created yet.'))
@@ -89,7 +170,7 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
                   'ID: ${quiz.id}',
                   'ACTIVE',
                   ColorsManager.blue,
-                  '--- Mins', // Backend Quiz model doesn't have duration
+                  '--- Mins', 
                   '${quiz.questionCount} Questions',
                   'View Results >'
                 )),
@@ -104,8 +185,8 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
     var isLight = Provider.of<ThemeProvider>(context).isLightTheme();
 
     return Container(
-      margin: EdgeInsets.only(bottom: 16.0),
-      padding: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
         borderRadius: BorderRadius.circular(16.0),
@@ -121,7 +202,7 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
             children: [
               Text(title, style: isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4.0),
@@ -133,21 +214,21 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
               ),
             ],
           ),
-          SizedBox(height: 4.0),
+          const SizedBox(height: 4.0),
           Text(subtitle, style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Row(
             children: [
-              Icon(Icons.timer_outlined, size: 16.0, color: ColorsManager.blue),
-              SizedBox(width: 4.0),
+              const Icon(Icons.timer_outlined, size: 16.0, color: ColorsManager.blue),
+              const SizedBox(width: 4.0),
               Text(duration, style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium),
-              SizedBox(width: 16.0),
-              Icon(Icons.quiz_outlined, size: 16.0, color: ColorsManager.blue),
-              SizedBox(width: 4.0),
+              const SizedBox(width: 16.0),
+              const Icon(Icons.quiz_outlined, size: 16.0, color: ColorsManager.blue),
+              const SizedBox(width: 4.0),
               Text(questions, style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium),
             ],
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Align(
             alignment: Alignment.centerRight,
             child: Row(
@@ -155,7 +236,7 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
               children: [
                 if (icon != null) ...[
                   Icon(icon, size: 14.0, color: ColorsManager.grayMedium),
-                  SizedBox(width: 4.0),
+                  const SizedBox(width: 4.0),
                 ],
                 Text(
                   actionText,

@@ -86,23 +86,20 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: GestureDetector(
+                child: QuizItem(
+                  title: quiz.title,
+                  status: QuizStatus.active,
+                  subtitle: courseTitle,
+                  date: "Available Now",
+                  duration: "--",
+                  questionsCount: "${quiz.questionCount} Questions",
                   onTap: () {
-                    // Navigate to quiz details (can pass quizId here)
                     Navigator.pushNamed(
                       context,
                       Routes.quizDetails,
                       arguments: {'quizId': quiz.id},
                     );
                   },
-                  child: QuizItem(
-                    title: quiz.title,
-                    status: QuizStatus.active,
-                    subtitle: courseTitle,
-                    date: "Available Now",
-                    duration: "--",
-                    questionsCount: "${quiz.questionCount} Questions",
-                  ),
                 ),
               );
             },

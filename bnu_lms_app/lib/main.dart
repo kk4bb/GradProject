@@ -29,7 +29,7 @@ class BNU extends StatelessWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   // Set to true to always show the Login screen for testing
-  static const bool bypassAutoLogin = false;
+  static const bool bypassAutoLogin = true;
 
   @override
   Widget build(BuildContext context) {

@@ -90,7 +90,6 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPost("course/{courseId}/discussion")]
-        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> CreateDiscussion(int courseId, [FromBody] string title)
         {
             try

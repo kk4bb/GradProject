@@ -7,8 +7,8 @@ import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
 import '../../../../../shared/network/repositories/forum_repository.dart';
 import '../../../data/models/forum_model.dart';
+import '../../../student/presentation/screens/question_details_screen.dart';
 import '../widgets/doctor_forum_question_card.dart';
-import 'doctor_question_details_screen.dart';
 
 class DoctorForumsDetailsScreen extends StatefulWidget {
   final int courseId;
@@ -186,7 +186,15 @@ class _DoctorForumsDetailsScreenState extends State<DoctorForumsDetailsScreen> {
                         final discussion = discussions[index];
                         return GestureDetector(
                           onTap: () {
-                            // TODO: Implement navigation to discussion posts
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => QuestionDetailsScreen(
+                                  discussionId: discussion.id,
+                                  discussionTitle: discussion.title,
+                                ),
+                              ),
+                            );
                           },
                           child: DoctorForumQuestionCard(
                             authorName: 'Course Discussion',

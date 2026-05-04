@@ -5,6 +5,8 @@ import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
+import '../../../../../../shared/resources/app_sizes.dart';
+import '../../../../../../shared/routes_manager/routes.dart';
 import 'doctor_course_card.dart';
 
 import '../../../../../courses/data/models/course_model.dart';
@@ -19,7 +21,7 @@ class DoctorMyCoursesSection extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Padding(
-      padding: const EdgeInsets.all(22),
+      padding: EdgeInsets.all(AppSizes.horizontalPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -51,11 +53,18 @@ class DoctorMyCoursesSection extends StatelessWidget {
               child: DoctorCourseCard(
                 academicYear: 'Academic Year 2023/24',
                 courseName: course.title,
-                studentsCount: '--- Students',
+                studentsCount: 'Manage this course',
                 timeString: 'Assigned',
                 courseIcon: _getIconForCourse(course.title),
                 onManageTap: () {
-                  // Navigate to course management
+                  Navigator.pushNamed(
+                    context,
+                    Routes.doctorCoursesDetails,
+                    arguments: {
+                      'courseId': course.id,
+                      'courseTitle': course.title,
+                    },
+                  );
                 },
               ),
             )),

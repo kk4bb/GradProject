@@ -57,6 +57,37 @@ namespace CampusConnect.Infrastructure.Services
                     Grade = s.Grade
                 }).ToListAsync();
 
+            // Get Upcoming Items
+            var courseIds = courses.Select(c => c.Id).ToList();
+
+            var pendingAssignments = await _context.Assignments
+                .Where(a => courseIds.Contains(a.CourseId))
+                .Where(a => !_context.Submissions.Any(s => s.AssignmentId == a.Id && s.StudentId == studentId))
+                .Select(a => new UpcomingItemDto
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Type = "Assignment",
+                    CourseTitle = a.Course.Title,
+                    DueDate = a.DueDate
+                }).ToListAsync();
+
+            var pendingQuizzes = await _context.Quizzes
+                .Where(q => courseIds.Contains(q.CourseId))
+                .Where(q => !_context.QuizAttempts.Any(qa => qa.QuizId == q.Id && qa.StudentId == studentId))
+                .Select(q => new UpcomingItemDto
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    Type = "Quiz",
+                    CourseTitle = q.Course.Title,
+                    DueDate = q.DueDate
+                }).ToListAsync();
+
+            var upcomingItems = pendingAssignments.Concat(pendingQuizzes)
+                .OrderBy(i => i.DueDate)
+                .ToList();
+
             return new StudentDashboardDto
             {
                 FirstName = user.FirstName,
@@ -64,7 +95,8 @@ namespace CampusConnect.Infrastructure.Services
                 Email = user.Email,
                 EnrolledCourses = courses,
                 QuizAttempts = quizAttempts,
-                Submissions = submissions
+                Submissions = submissions,
+                UpcomingItems = upcomingItems
             };
         }
 

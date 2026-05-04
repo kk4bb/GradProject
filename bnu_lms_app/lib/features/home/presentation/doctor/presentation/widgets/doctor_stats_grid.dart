@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../../../../../../shared/resources/app_sizes.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import 'dashboard_stat_card.dart';
 
@@ -21,7 +21,10 @@ class DoctorStatsGrid extends StatelessWidget {
     const purple = Color(0xFF8B5CF6);
 
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSizes.horizontalPadding,
+        vertical: 16.0,
+      ),
       child: Column(
         children: [
           Row(

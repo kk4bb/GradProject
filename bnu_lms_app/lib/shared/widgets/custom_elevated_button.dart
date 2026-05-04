@@ -11,7 +11,7 @@ class CustomElevatedButton extends StatelessWidget {
   final double? radius;
   final double? verticalPadding;
   final double? horizontalPadding;
-  final void Function() onTap;
+  final void Function()? onTap;
   final TextStyle? textStyle;
   final bool fullWidth;
 
@@ -26,7 +26,7 @@ class CustomElevatedButton extends StatelessWidget {
     this.horizontalPadding,
     this.fullWidth = true,
     required this.label,
-    required this.onTap,
+    this.onTap,
   });
 
   @override

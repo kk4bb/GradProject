@@ -18,6 +18,7 @@ class QuizItem extends StatelessWidget {
     required this.duration,
     required this.questionsCount,
     required this.status,
+    this.onTap,
   });
 
   final String title;
@@ -26,6 +27,7 @@ class QuizItem extends StatelessWidget {
   final String duration;
   final String questionsCount;
   final QuizStatus status;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -142,9 +144,7 @@ class QuizItem extends StatelessWidget {
                   if (buttonLabel != null)
                     CustomElevatedButton(
                       label: buttonLabel,
-                      onTap: () {
-                        // TODO: Add navigation logic per status
-                      },
+                      onTap: onTap ?? () {},
                     ),
                 ],
               ),

@@ -122,9 +122,11 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<int> CreateDiscussionAsync(int courseId, string title, string userId)
         {
+            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
             var isInstructor = await _context.Courses.AnyAsync(c => c.Id == courseId && c.InstructorId == userId);
-            if (!isInstructor)
-                throw new UnauthorizedAccessException("Only the instructor can create new discussion topics.");
+
+            if (!isEnrolled && !isInstructor)
+                throw new UnauthorizedAccessException("Only the instructor or enrolled students can create new discussion topics.");
 
             var discussion = new Discussion
             {

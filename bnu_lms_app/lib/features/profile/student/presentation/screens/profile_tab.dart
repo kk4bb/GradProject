@@ -1,3 +1,5 @@
+import '../../../../../shared/network/token_storage.dart';
+import '../../../../../shared/routes_manager/routes.dart';
 import 'package:bnu_lms_app/shared/resources/assets_manager.dart';
 import 'package:flutter/material.dart';
 import '../../../../../l10n/app_localizations.dart';
@@ -97,6 +99,26 @@ class _ProfileTabState extends State<ProfileTab> {
                   ],
                 ),
                 const SizedBox(height: 24.0),
+                ProfileMenuSection(
+                  title: 'App',
+                  items: [
+                    ProfileMenuItem(
+                      iconData: Icons.logout,
+                      label: 'Log Out',
+                      onTap: () async {
+                        await tokenStorage.clearAll();
+                        if (context.mounted) {
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            Routes.login,
+                            (route) => false,
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40.0),
               ],
             ),
           ),

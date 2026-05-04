@@ -23,19 +23,22 @@ class _ForumsTabState extends State<ForumsTab> {
 
   List<ForumsData> coursesForums = [
     ForumsData(
-      title: 'Introduction to Engineering',
+      title: 'Web API Development 101',
       description: '12 posts, 5 participants',
       image: 'assets/images/programming.png',
+      courseId: 1,
     ),
     ForumsData(
       title: 'Calculus I',
       description: '8 posts, 3 participants',
       image: 'assets/images/calculus.png',
+      courseId: 2,
     ),
     ForumsData(
       title: 'Physics for Engineers',
       description: '15 posts, 7 participants',
       image: 'assets/images/linear_algebra.png',
+      courseId: 3,
     ),
   ];
 

@@ -19,7 +19,7 @@ class QuizRepository {
 
   Future<QuizTake> takeQuiz(int quizId) async {
     try {
-      final response = await _dio.get('${ApiEndpoints.takeQuiz}$quizId');
+      final response = await _dio.get('${ApiEndpoints.takeQuiz}$quizId/take');
       return QuizTake.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to start quiz: $e');
@@ -29,7 +29,7 @@ class QuizRepository {
   Future<QuizResult> submitQuiz(int quizId, List<Map<String, int>> answers) async {
     try {
       final response = await _dio.post(
-        '${ApiEndpoints.submitQuiz}$quizId',
+        '${ApiEndpoints.submitQuiz}$quizId/submit',
         data: {'answers': answers},
       );
       return QuizResult.fromJson(response.data);

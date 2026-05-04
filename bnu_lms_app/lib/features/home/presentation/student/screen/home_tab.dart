@@ -33,30 +33,6 @@ class _HomeTabState extends State<HomeTab> {
     _dashboardFuture = _studentRepository.getDashboard();
   }
 
-  // Sample data for upcoming items (could be mapped from dashboard data later)
-  final List<Map<String, dynamic>> upcomingItems = [
-    {
-      'icon': Icons.assignment,
-      'title': 'Assignment Due',
-      'subtitle': 'Mathematics - Chapter 5',
-    },
-    {
-      'icon': Icons.video_library,
-      'title': 'Live Class',
-      'subtitle': 'Physics - Thermodynamics',
-    },
-    {
-      'icon': Icons.quiz,
-      'title': 'Quiz Tomorrow',
-      'subtitle': 'English Literature',
-    },
-    {
-      'icon': Icons.book,
-      'title': 'Reading Material',
-      'subtitle': 'History - World War II',
-    },
-  ];
-
   List<Map<String, dynamic>> getCategoryItems(AppLocalizations localizations) {
     return [
       {
@@ -102,6 +78,14 @@ class _HomeTabState extends State<HomeTab> {
 
         final dashboard = snapshot.data!;
 
+        final List<Map<String, dynamic>> mappedUpcomingItems = dashboard.upcomingItems.map((item) {
+          return {
+            'icon': item.type == 'Assignment' ? Icons.assignment : Icons.quiz,
+            'title': item.title,
+            'subtitle': '${item.courseTitle} - Due: ${item.dueDate.day}/${item.dueDate.month}',
+          };
+        }).toList();
+
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -112,7 +96,7 @@ class _HomeTabState extends State<HomeTab> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HomeHeader(name: dashboard.firstName),
+                  HomeHeader(name: dashboard.fullName),
                   SizedBox(height: AppSizes.largeSpacing),
                   Text(
                     localizations.upcoming,
@@ -121,7 +105,12 @@ class _HomeTabState extends State<HomeTab> {
                         : AppDarkTextStyles.headlineMedium,
                   ),
                   SizedBox(height: AppSizes.smallSpacing),
-                  UpcomingItemsList(upcomingItems: upcomingItems),
+                  mappedUpcomingItems.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Center(child: Text('No upcoming items')),
+                        )
+                      : UpcomingItemsList(upcomingItems: mappedUpcomingItems),
                   SizedBox(height: AppSizes.largeSpacing),
                   Text(
                     localizations.quickAccess,

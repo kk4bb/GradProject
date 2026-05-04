@@ -5,6 +5,7 @@ class StudentDashboard {
   final List<EnrolledCourse> enrolledCourses;
   final List<QuizAttempt> quizAttempts;
   final List<Submission> submissions;
+  final List<UpcomingItem> upcomingItems;
 
   StudentDashboard({
     required this.firstName,
@@ -13,6 +14,7 @@ class StudentDashboard {
     required this.enrolledCourses,
     required this.quizAttempts,
     required this.submissions,
+    required this.upcomingItems,
   });
 
   String get fullName => '$firstName $lastName';
@@ -34,6 +36,36 @@ class StudentDashboard {
               ?.map((e) => Submission.fromJson(e))
               .toList() ??
           [],
+      upcomingItems: (json['upcomingItems'] as List?)
+              ?.map((e) => UpcomingItem.fromJson(e))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+class UpcomingItem {
+  final int id;
+  final String title;
+  final String type;
+  final String courseTitle;
+  final DateTime dueDate;
+
+  UpcomingItem({
+    required this.id,
+    required this.title,
+    required this.type,
+    required this.courseTitle,
+    required this.dueDate,
+  });
+
+  factory UpcomingItem.fromJson(Map<String, dynamic> json) {
+    return UpcomingItem(
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      type: json['type'] ?? '',
+      courseTitle: json['courseTitle'] ?? '',
+      dueDate: DateTime.parse(json['dueDate']),
     );
   }
 }

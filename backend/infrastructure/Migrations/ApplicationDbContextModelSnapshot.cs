@@ -50,6 +50,89 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.ToTable("Assignments");
                 });
 
+            modelBuilder.Entity("CampusConnect.Domain.Entities.AttendanceRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AttendanceSessionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DeviceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double?>("LatitudeAtScan")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("LongitudeAtScan")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("ScannedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("AttendanceSessionId", "DeviceId")
+                        .IsUnique();
+
+                    b.HasIndex("AttendanceSessionId", "StudentId")
+                        .IsUnique();
+
+                    b.ToTable("AttendanceRecords");
+                });
+
+            modelBuilder.Entity("CampusConnect.Domain.Entities.AttendanceSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InstructorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("QRCodeToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("AttendanceSessions");
+                });
+
             modelBuilder.Entity("CampusConnect.Domain.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -229,12 +312,21 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsAnnouncement")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -325,6 +417,13 @@ namespace CampusConnect.Infrastructure.Migrations
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -618,6 +717,34 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("CampusConnect.Domain.Entities.AttendanceRecord", b =>
+                {
+                    b.HasOne("CampusConnect.Domain.Entities.AttendanceSession", "Session")
+                        .WithMany("Records")
+                        .HasForeignKey("AttendanceSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CampusConnect.Infrastructure.Context.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Session");
+                });
+
+            modelBuilder.Entity("CampusConnect.Domain.Entities.AttendanceSession", b =>
+                {
+                    b.HasOne("CampusConnect.Domain.Entities.Course", "Course")
+                        .WithMany("AttendanceSessions")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("CampusConnect.Domain.Entities.Comment", b =>
                 {
                     b.HasOne("CampusConnect.Domain.Entities.Post", null)
@@ -682,11 +809,13 @@ namespace CampusConnect.Infrastructure.Migrations
 
             modelBuilder.Entity("CampusConnect.Domain.Entities.Post", b =>
                 {
-                    b.HasOne("CampusConnect.Domain.Entities.Discussion", null)
+                    b.HasOne("CampusConnect.Domain.Entities.Discussion", "Discussion")
                         .WithMany("Posts")
                         .HasForeignKey("DiscussionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Discussion");
                 });
 
             modelBuilder.Entity("CampusConnect.Domain.Entities.Question", b =>
@@ -798,9 +927,16 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.Navigation("Submissions");
                 });
 
+            modelBuilder.Entity("CampusConnect.Domain.Entities.AttendanceSession", b =>
+                {
+                    b.Navigation("Records");
+                });
+
             modelBuilder.Entity("CampusConnect.Domain.Entities.Course", b =>
                 {
                     b.Navigation("Assignments");
+
+                    b.Navigation("AttendanceSessions");
 
                     b.Navigation("Enrollments");
 

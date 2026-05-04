@@ -1,3 +1,4 @@
+import '../../../../../../shared/network/token_storage.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,22 @@ class SettingsSection extends StatelessWidget {
               _buildDivider(),
               _buildSettingsItem(context, Icons.help_outline, 'Help Center'),
               _buildDivider(),
-              _buildSettingsItem(context, Icons.logout, 'Log Out', isLogout: true),
+              _buildSettingsItem(
+                context,
+                Icons.logout,
+                'Log Out',
+                isLogout: true,
+                onTap: () async {
+                  await tokenStorage.clearAll();
+                  if (context.mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      Routes.login,
+                      (route) => false,
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

@@ -1,9 +1,11 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
+import '../../../../../../shared/resources/app_sizes.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
 import 'doctor_dashboard_header.dart';
 
@@ -14,14 +16,15 @@ class DoctorDashboardTopHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
+    final String formattedDate = DateFormat('EEEE, d MMM yyyy').format(DateTime.now());
 
     return Container(
       height: 170.0,
       width: double.infinity,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
-        left: 24.0,
-        right: 24.0,
+        left: AppSizes.horizontalPadding,
+        right: AppSizes.horizontalPadding,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -59,7 +62,7 @@ class DoctorDashboardTopHeader extends StatelessWidget {
                 ),
                 SizedBox(width: 6.0),
                 Text(
-                  'Monday, 24 Oct 2023',
+                  formattedDate,
                   style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium,
                 ),
               ],

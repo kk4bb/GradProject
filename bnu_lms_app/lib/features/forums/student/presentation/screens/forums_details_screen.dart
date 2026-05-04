@@ -34,6 +34,49 @@ class _ForumsDetailsScreenState extends State<ForumsDetailsScreen> {
     _discussionsFuture = _forumRepository.getDiscussions(widget.courseId);
   }
 
+  void _showCreateDiscussionDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Start New Discussion'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: 'Discussion Title'),
+          maxLines: null,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (controller.text.isNotEmpty) {
+                try {
+                  await _forumRepository.createDiscussion(widget.courseId, controller.text);
+                  if (mounted) {
+                    Navigator.pop(context);
+                    setState(() {
+                      _discussionsFuture = _forumRepository.getDiscussions(widget.courseId);
+                    });
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: $e')),
+                    );
+                  }
+                }
+              }
+            },
+            child: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -138,9 +181,7 @@ class _ForumsDetailsScreenState extends State<ForumsDetailsScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Add new discussion (usually instructor only but endpoint exists for posts)
-        },
+        onPressed: _showCreateDiscussionDialog,
         backgroundColor: ColorsManager.blue,
         foregroundColor: ColorsManager.white,
         child: const Icon(Icons.add),

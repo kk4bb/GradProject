@@ -228,17 +228,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 40.0),
 
-                    /// Contact Support
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Need help? Contact Support",
-                        style: isLight
-                            ? AppLightTextStyles.bodySmall
-                            : AppDarkTextStyles.bodySmall,
-                      ),
-                    ),
-
                     const SizedBox(height: 20.0),
                   ],
                 ),

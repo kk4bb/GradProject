@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
-import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
 
@@ -26,32 +24,47 @@ class QuickActionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 171.0,
-        height: 100.0,
         decoration: BoxDecoration(
-          color: isLight ? ColorsManager.lightBlue : ColorsManager.darkSurface,
-          borderRadius: BorderRadius.circular(16.0),
+          color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
+          borderRadius: BorderRadius.circular(18.0),
+          boxShadow: isLight
+              ? [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ]
+              : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: ColorsManager.blue,
-              size: 24.0,
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: isLight
+                    ? ColorsManager.blue.withValues(alpha: 0.1)
+                    : ColorsManager.blue.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Icon(
+                icon,
+                color: isLight ? ColorsManager.blue : ColorsManager.lightBlue,
+                size: 32.0,
+              ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 12.0),
             Text(
               label,
-              style: isLight
-                  ? AppLightTextStyles.labelMedium.copyWith(
-                color: ColorsManager.blue,
-                fontWeight: FontWeight.w600, // Made slightly bolder for a button
-              )
-                  : AppDarkTextStyles.labelMedium.copyWith(
-                color: ColorsManager.blue,
+              style: TextStyle(
+                fontSize: 14.0,
                 fontWeight: FontWeight.w600,
+                color: isLight ? ColorsManager.black : ColorsManager.white,
               ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

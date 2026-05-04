@@ -96,7 +96,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         // Post ↔ Discussion
         modelBuilder.Entity<Post>()
-            .HasOne<Discussion>()
+            .HasOne(p => p.Discussion)
             .WithMany(d => d.Posts)
             .HasForeignKey(p => p.DiscussionId);
 

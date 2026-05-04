@@ -8,12 +8,14 @@ import '../../../../../shared/providers/theme_provider.dart';
 
 
 class ProfileMenuItem {
-  final String icon;
+  final String? icon;
+  final IconData? iconData;
   final String label;
   final VoidCallback onTap;
 
   ProfileMenuItem({
-    required this.icon,
+    this.icon,
+    this.iconData,
     required this.label,
     required this.onTap,
   });
@@ -38,7 +40,7 @@ class ProfileMenuSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 4, bottom: 12),
+          padding: const EdgeInsets.only(left: 4, bottom: 12),
           child: Text(
             title,
             style: isLight
@@ -94,7 +96,7 @@ class MenuItemRow extends StatelessWidget {
       onTap: item.onTap,
       borderRadius: BorderRadius.circular(16.0),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
             Container(
@@ -107,15 +109,23 @@ class MenuItemRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Center(
-                child: Image.asset(
-                  item.icon,
-                  width: 22.0,
-                  height: 22.0,
-                  color: ColorsManager.blue,
-                ),
+                child: item.iconData != null
+                    ? Icon(
+                        item.iconData,
+                        color: ColorsManager.blue,
+                        size: 22.0,
+                      )
+                    : item.icon != null
+                        ? Image.asset(
+                            item.icon!,
+                            width: 22.0,
+                            height: 22.0,
+                            color: ColorsManager.blue,
+                          )
+                        : const SizedBox(),
               ),
             ),
-            SizedBox(width: 14.0),
+            const SizedBox(width: 14.0),
             Expanded(
               child: Text(
                 item.label,
@@ -130,7 +140,7 @@ class MenuItemRow extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios,
               size: 16.0,
               color: ColorsManager.grayMedium,

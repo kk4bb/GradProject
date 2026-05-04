@@ -100,10 +100,10 @@ class RoutesGenerator {
     // DOCTOR VIEW ROUTES
     // -------------------------
       case Routes.doctorDashboard:
-        return MaterialPageRoute(builder: (_) => const DoctorHomeScreen());
+        return MaterialPageRoute(builder: (_) => const DoctorHomeScreen(), settings: settings);
 
       case Routes.doctorCoursesDetails:
-        return MaterialPageRoute(builder: (_) => const DoctorCourseDetailsScreen());
+        return MaterialPageRoute(builder: (_) => const DoctorCourseDetailsScreen(), settings: settings);
 
       case Routes.doctorQuestionDetails: // Fixed duplicate case name
         if (args == null || !args.containsKey('questionData')) return _unDefinedRoute();

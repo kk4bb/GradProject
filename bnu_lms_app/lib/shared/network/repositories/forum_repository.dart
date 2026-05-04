@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import '../api_endpoints.dart';
-import '../api_service.dart';
 import '../../../../features/forums/data/models/forum_model.dart';
+import '../api_service.dart';
 
 class ForumRepository {
   final Dio _dio = apiService.dio;
@@ -28,36 +28,28 @@ class ForumRepository {
     }
   }
 
-  Future<void> createPost(int discussionId, String content) async {
+  Future<int> createDiscussion(int courseId, String title) async {
     try {
-      await _dio.post(
-        '${ApiEndpoints.createPost}$discussionId',
-        data: {'content': content},
+      final response = await _dio.post(
+        '${ApiEndpoints.createDiscussion}$courseId/discussion',
+        data: '"$title"', // Backend expects a plain string as JSON body
+        options: Options(contentType: 'application/json'),
       );
-    } catch (e) {
-      throw Exception('Failed to create post: $e');
-    }
-  }
-
-  Future<void> createComment(int postId, String content) async {
-    try {
-      await _dio.post(
-        '${ApiEndpoints.createComment}$postId',
-        data: {'content': content},
-      );
-    } catch (e) {
-      throw Exception('Failed to create comment: $e');
-    }
-  }
-
-  Future<void> createDiscussion(int courseId, String title) async {
-    try {
-      await _dio.post(
-        '${ApiEndpoints.createDiscussion}$courseId',
-        data: '"$title"', // Backend expects a plain string in body
-      );
+      return response.data['id'];
     } catch (e) {
       throw Exception('Failed to create discussion: $e');
+    }
+  }
+
+  Future<int> createPost(int discussionId, String content) async {
+    try {
+      final response = await _dio.post(
+        '${ApiEndpoints.createPost}$discussionId/post',
+        data: {'content': content},
+      );
+      return response.data['id'];
+    } catch (e) {
+      throw Exception('Failed to create post: $e');
     }
   }
 }

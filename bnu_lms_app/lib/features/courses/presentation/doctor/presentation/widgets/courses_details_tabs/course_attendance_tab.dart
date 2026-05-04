@@ -6,6 +6,8 @@ import '../../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../../shared/resources/colors_manager.dart';
 import '../../../../../../../shared/network/repositories/attendance_repository.dart';
+import 'package:geolocator/geolocator.dart';
+import '../../../../../../attendance/presentation/screens/attendance_qr_screen.dart';
 
 
 class CourseAttendanceTab extends StatefulWidget {
@@ -24,6 +26,108 @@ class _CourseAttendanceTabState extends State<CourseAttendanceTab> {
   void initState() {
     super.initState();
     _reportsFuture = _attendanceRepository.getCourseAttendanceReport(widget.courseId);
+  }
+
+  Future<void> _takeAttendance() async {
+    final titleController = TextEditingController(text: 'Lecture - ${DateTime.now().day}/${DateTime.now().month}');
+    int duration = 15;
+
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('New Attendance Session'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Session Title'),
+              ),
+              const SizedBox(height: 16),
+              const Text('Duration (minutes)'),
+              Slider(
+                value: duration.toDouble(),
+                min: 5,
+                max: 60,
+                divisions: 11,
+                label: duration.toString(),
+                onChanged: (value) {
+                  setDialogState(() => duration = value.toInt());
+                },
+              ),
+              Text('$duration minutes'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Create'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        // Show loading
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Capturing location and creating session...')),
+        );
+
+        // Get location
+        Position? position;
+        try {
+          LocationPermission permission = await Geolocator.checkPermission();
+          if (permission == LocationPermission.denied) {
+            permission = await Geolocator.requestPermission();
+          }
+          if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+            position = await Geolocator.getCurrentPosition();
+          }
+        } catch (e) {
+          debugPrint('Location error: $e');
+        }
+
+        final response = await _attendanceRepository.createSession(
+          CreateAttendanceSessionRequest(
+            courseId: widget.courseId,
+            sessionTitle: titleController.text,
+            durationMinutes: duration,
+            latitude: position?.latitude,
+            longitude: position?.longitude,
+          ),
+        );
+
+        if (!mounted) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AttendanceQRScreen(
+              sessionTitle: response.sessionTitle,
+              qrCodeToken: response.qrCodeToken,
+              expiresAt: response.expiresAt,
+            ),
+          ),
+        ).then((_) {
+          // Refresh history when returning
+          setState(() {
+            _reportsFuture = _attendanceRepository.getCourseAttendanceReport(widget.courseId);
+          });
+        });
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    }
   }
 
   @override
@@ -49,9 +153,7 @@ class _CourseAttendanceTabState extends State<CourseAttendanceTab> {
             children: [
               // Take Attendance Button
               GestureDetector(
-                onTap: () {
-                  // TODO: Implement Take Attendance flow (create session)
-                },
+                onTap: _takeAttendance,
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(vertical: 16.0),

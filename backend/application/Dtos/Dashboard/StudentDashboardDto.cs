@@ -10,6 +10,16 @@ namespace CampusConnect.Application.Dtos.Dashboard
         public List<EnrolledCourseDto> EnrolledCourses { get; set; }
         public List<QuizAttemptDto> QuizAttempts { get; set; }
         public List<SubmissionDto> Submissions { get; set; }
+        public List<UpcomingItemDto> UpcomingItems { get; set; }
+    }
+
+    public class UpcomingItemDto
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Type { get; set; } // "Assignment" or "Quiz"
+        public string CourseTitle { get; set; }
+        public System.DateTime DueDate { get; set; }
     }
 
     public class EnrolledCourseDto

@@ -13,10 +13,12 @@ namespace CampusConnect.Infrastructure.Services
     public class AssignmentService : IAssignmentService
     {
         private readonly ApplicationDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public AssignmentService(ApplicationDbContext context)
+        public AssignmentService(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task<List<AssignmentDto>> GetAssignmentsByCourseAsync(int courseId, string userId)
@@ -117,6 +119,14 @@ namespace CampusConnect.Infrastructure.Services
 
             _context.Assignments.Add(assignment);
             await _context.SaveChangesAsync();
+
+            // Notify students
+            await _notificationService.NotifyStudentsInCourseAsync(
+                courseId,
+                "New Assignment",
+                $"A new assignment '{dto.Title}' has been posted for {course.Title}."
+            );
+
             return assignment.Id;
         }
 

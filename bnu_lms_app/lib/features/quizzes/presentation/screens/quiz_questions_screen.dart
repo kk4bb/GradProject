@@ -42,17 +42,26 @@ class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
   }
 
   Future<void> _submitQuiz() async {
+    if (_isSubmitting) return;
+
     setState(() {
       _isSubmitting = true;
     });
 
     try {
       final List<Map<String, int>> formattedAnswers = _selectedAnswers.entries
-          .map((e) => {'questionId': e.key, 'optionId': e.value})
+          .map((e) => {
+                'questionId': e.key,
+                'selectedOptionId': e.value,
+              })
           .toList();
+
+      debugPrint('Submitting quiz ${widget.quiz.id} with answers: $formattedAnswers');
 
       final result = await _quizRepository.submitQuiz(widget.quiz.id, formattedAnswers);
       
+      debugPrint('Quiz submitted successfully. Result: ${result.score}%');
+
       if (mounted) {
         Navigator.pushReplacementNamed(
           context,
@@ -64,9 +73,13 @@ class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
         );
       }
     } catch (e) {
+      debugPrint('Quiz submission failed: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Submission failed: $e')),
+          SnackBar(
+            content: Text('Submission failed: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -123,7 +136,7 @@ class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: InkWell(
-                      onTap: () {
+                      onTap: _isSubmitting ? null : () {
                         setState(() {
                           _selectedAnswers[question.id] = option.id;
                         });
@@ -189,7 +202,7 @@ class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: OutlinedButton(
-                          onPressed: _previousQuestion,
+                          onPressed: _isSubmitting ? null : _previousQuestion,
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             side: const BorderSide(color: ColorsManager.blue),
@@ -204,9 +217,11 @@ class _QuizQuestionsScreenState extends State<QuizQuestionsScreen> {
                       label: _currentQuestionIndex == widget.quiz.questions.length - 1
                           ? 'Submit Quiz'
                           : 'Next Question',
-                      onTap: _currentQuestionIndex == widget.quiz.questions.length - 1
-                          ? _submitQuiz
-                          : _nextQuestion,
+                      onTap: _isSubmitting 
+                          ? null 
+                          : (_currentQuestionIndex == widget.quiz.questions.length - 1
+                              ? _submitQuiz
+                              : _nextQuestion),
                     ),
                   ),
                 ],

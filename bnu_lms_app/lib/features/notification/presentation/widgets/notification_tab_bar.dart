@@ -1,10 +1,43 @@
 import 'package:bnu_lms_app/features/notification/presentation/widgets/tab_item.dart';
 import 'package:flutter/material.dart';
 import '../../../../shared/resources/colors_manager.dart';
+import '../../../../shared/network/repositories/notification_repository.dart';
 import 'notification_card.dart';
 
-class NotificationTabBar extends StatelessWidget {
+class NotificationTabBar extends StatefulWidget {
   const NotificationTabBar({super.key});
+
+  @override
+  State<NotificationTabBar> createState() => _NotificationTabBarState();
+}
+
+class _NotificationTabBarState extends State<NotificationTabBar> {
+  final NotificationRepository _notificationRepository = NotificationRepository();
+  late Future<List<NotificationModel>> _notificationsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationsFuture = _notificationRepository.getNotifications();
+  }
+
+  void _refresh() {
+    setState(() {
+      _notificationsFuture = _notificationRepository.getNotifications();
+    });
+  }
+
+  Future<void> _markAsRead(int id) async {
+    try {
+      await _notificationRepository.markAsRead(id);
+      _refresh();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +47,14 @@ class NotificationTabBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: TabBar(
               isScrollable: true,
               dividerColor: Colors.transparent,
               indicatorColor: Colors.transparent,
               tabAlignment: TabAlignment.start,
               padding: EdgeInsets.zero,
-              labelPadding: EdgeInsets.only(right: 12),
+              labelPadding: const EdgeInsets.only(right: 12),
               indicator: BoxDecoration(
                 color: ColorsManager.blue,
                 borderRadius: BorderRadius.circular(24.0),
@@ -36,12 +69,26 @@ class NotificationTabBar extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: TabBarView(
-              children: [
-                _buildNotificationList(),
-                _buildNotificationList(unreadOnly: true),
-                _buildNotificationList(announcementsOnly: true),
-              ],
+            child: FutureBuilder<List<NotificationModel>>(
+              future: _notificationsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+
+                final allNotifications = snapshot.data ?? [];
+
+                return TabBarView(
+                  children: [
+                    _buildNotificationList(allNotifications),
+                    _buildNotificationList(allNotifications.where((n) => !n.isRead).toList()),
+                    _buildNotificationList(allNotifications.where((n) => n.isAnnouncement).toList()),
+                  ],
+                );
+              },
             ),
           ),
         ],
@@ -49,102 +96,33 @@ class NotificationTabBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNotificationList({
-    bool unreadOnly = false,
-    bool announcementsOnly = false,
-  }) {
-    final notifications = _getNotifications(
-      unreadOnly: unreadOnly,
-      announcementsOnly: announcementsOnly,
-    );
-
+  Widget _buildNotificationList(List<NotificationModel> notifications) {
     if (notifications.isEmpty) {
       return const Center(
-        child: Text(
-          'No notifications',
-
-        ),
+        child: Text('No notifications'),
       );
     }
 
     return ListView.separated(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: notifications.length,
-      separatorBuilder: (context, index) => SizedBox(height: 16.0),
+      separatorBuilder: (context, index) => const SizedBox(height: 8.0),
       itemBuilder: (context, index) {
         final notification = notifications[index];
+        
+        // Helper to format time (simplified)
+        final timeStr = '${notification.createdAt.hour}:${notification.createdAt.minute.toString().padLeft(2, '0')}';
+
         return NotificationCard(
-          title: notification['title']!,
-          description: notification['description']!,
-          time: notification['time']!,
-          icon: notification['icon'] as IconData,
-          indicatorColor: notification['indicatorColor'] as Color,
+          title: notification.title,
+          description: notification.message,
+          time: timeStr,
+          icon: notification.isAnnouncement ? Icons.campaign_outlined : Icons.notifications_outlined,
+          indicatorColor: notification.isAnnouncement ? ColorsManager.blue : Colors.orange,
+          isRead: notification.isRead,
+          onMarkAsRead: () => _markAsRead(notification.id),
         );
       },
     );
   }
-
-  List<Map<String, dynamic>> _getNotifications({
-    bool unreadOnly = false,
-    bool announcementsOnly = false,
-  }) {
-    final allNotifications = [
-      {
-        'title': 'Final Project Deadline',
-        'description': "Your 'Advanced Algorithms' final project is due tomorrow.",
-        'time': '15m ago',
-        'icon': Icons.warning_rounded,
-        'indicatorColor': Colors.red,
-        'isRead': false,
-        'isAnnouncement': false,
-      },
-      {
-        'title': 'Grade Update',
-        'description': "Your midterm grade for 'Physics II' has been posted.",
-        'time': '2h ago',
-        'icon': Icons.star_outline_rounded,
-        'indicatorColor': Colors.orange,
-        'isRead': false,
-        'isAnnouncement': false,
-      },
-      {
-        'title': 'New Announcement',
-        'description': "Check the new announcement in 'Introduction to AI'.",
-        'time': '1d ago',
-        'icon': Icons.campaign_outlined,
-        'indicatorColor': ColorsManager.blue,
-        'isRead': false,
-        'isAnnouncement': true,
-      },
-      {
-        'title': 'Campus Event',
-        'description': 'Tech symposium this Friday at the main auditorium.',
-        'time': '3d ago',
-        'icon': Icons.calendar_today_outlined,
-        'indicatorColor': ColorsManager.blue.withValues(alpha: 0.7),
-        'isRead': true,
-        'isAnnouncement': true,
-      },
-      {
-        'title': 'Assignment Reminder',
-        'description': "'Data Structures' assignment 3 is due next week.",
-        'time': '4d ago',
-        'icon': Icons.assignment_outlined,
-        'indicatorColor': Colors.orange.withValues(alpha: 0.7),
-        'isRead': true,
-        'isAnnouncement': false,
-      },
-    ];
-
-    if (unreadOnly) {
-      return allNotifications.where((n) => n['isRead'] == false).toList();
-    }
-
-    if (announcementsOnly) {
-      return allNotifications.where((n) => n['isAnnouncement'] == true).toList();
-    }
-
-    return allNotifications;
-  }
 }
-

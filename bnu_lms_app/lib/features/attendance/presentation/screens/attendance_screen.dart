@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 
 import '../../../../shared/network/repositories/attendance_repository.dart';
@@ -46,9 +47,26 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
     try {
       final deviceId = await _getDeviceId();
+      
+      // Get location
+      Position? position;
+      try {
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+        }
+        if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+          position = await Geolocator.getCurrentPosition();
+        }
+      } catch (e) {
+        debugPrint('Location error: $e');
+      }
+
       await _attendanceRepository.markAttendance(MarkAttendanceRequest(
         qrCodeToken: code,
         deviceId: deviceId,
+        latitude: position?.latitude,
+        longitude: position?.longitude,
       ));
 
       setState(() {

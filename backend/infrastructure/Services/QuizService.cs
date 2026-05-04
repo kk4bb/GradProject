@@ -135,5 +135,26 @@ namespace CampusConnect.Infrastructure.Services
                 Breakdown = requestBreakdown ? breakdown : null
             };
         }
+
+        public async Task<int> CreateQuizAsync(int courseId, QuizCreateDto dto, string userId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) throw new Exception("Course not found.");
+
+            if (course.InstructorId != userId)
+                throw new UnauthorizedAccessException("Only the instructor can create quizzes.");
+
+            var quiz = new Quiz
+            {
+                CourseId = courseId,
+                Title = dto.Title,
+                Description = dto.Description,
+                DueDate = dto.DueDate
+            };
+
+            _context.Quizzes.Add(quiz);
+            await _context.SaveChangesAsync();
+            return quiz.Id;
+        }
     }
 }
