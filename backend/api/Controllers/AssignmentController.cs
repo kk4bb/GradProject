@@ -71,7 +71,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPost("course/{courseId}/create")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> CreateAssignment(int courseId, [FromBody] AssignmentCreateDto dto)
         {
             try
@@ -91,7 +91,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpGet("{id}/submissions")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> GetSubmissions(int id)
         {
             try
@@ -111,7 +111,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPatch("submission/{id}/grade")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> GradeSubmission(int id, [FromBody] SubmissionGradeDto gradeDto)
         {
             try

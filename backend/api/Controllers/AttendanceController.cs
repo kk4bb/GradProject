@@ -21,7 +21,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPost("session")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> CreateSession([FromBody] CreateAttendanceSessionRequest request)
         {
             try
@@ -60,7 +60,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpGet("course/{courseId}")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> GetCourseAttendance(int courseId)
         {
             try

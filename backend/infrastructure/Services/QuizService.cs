@@ -13,10 +13,12 @@ namespace CampusConnect.Infrastructure.Services
     public class QuizService : IQuizService
     {
         private readonly ApplicationDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public QuizService(ApplicationDbContext context)
+        public QuizService(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task<List<QuizDto>> GetQuizzesByCourseAsync(int courseId, string userId)
@@ -25,8 +27,7 @@ namespace CampusConnect.Infrastructure.Services
             var isEnrolled = await _context.Enrollments
                 .AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
 
-            var isInstructor = await _context.Courses
-                .AnyAsync(c => c.Id == courseId && c.InstructorId == userId);
+            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, courseId);
 
             if (!isEnrolled && !isInstructor)
                 throw new UnauthorizedAccessException("You are not authorized to view quizzes for this course.");
@@ -141,8 +142,8 @@ namespace CampusConnect.Infrastructure.Services
             var course = await _context.Courses.FindAsync(courseId);
             if (course == null) throw new Exception("Course not found.");
 
-            if (course.InstructorId != userId)
-                throw new UnauthorizedAccessException("Only the instructor can create quizzes.");
+            if (!await IsAuthorizedToManageCourseAsync(userId, courseId))
+                throw new UnauthorizedAccessException("Only the instructor or assigned TA can create quizzes.");
 
             var quiz = new Quiz
             {
@@ -154,7 +155,32 @@ namespace CampusConnect.Infrastructure.Services
 
             _context.Quizzes.Add(quiz);
             await _context.SaveChangesAsync();
+
+            // Notify students
+            await _notificationService.NotifyStudentsInCourseAsync(
+                courseId,
+                "New Quiz",
+                $"A new quiz '{dto.Title}' has been posted for {course.Title}."
+            );
+
             return quiz.Id;
+        }
+
+        private async Task<bool> IsAuthorizedToManageCourseAsync(string userId, int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return false;
+
+            if (course.InstructorId == userId) return true;
+
+            // Check if user has TA role and is enrolled in the course
+            var isTA = await _context.UserRoles
+                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
+                .AnyAsync(x => x.UserId == userId && x.Name == "TA");
+
+            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
+
+            return isTA && isEnrolled;
         }
     }
 }

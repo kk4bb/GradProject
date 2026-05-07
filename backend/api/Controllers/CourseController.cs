@@ -28,7 +28,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpGet("assigned")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> GetAssignedCourses()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -37,7 +37,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpGet("{id}/students")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> GetEnrolledStudents(int id)
         {
             try
@@ -69,7 +69,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPost("{id}/module")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> CreateModule(int id, [FromBody] string title)
         {
             try
@@ -85,7 +85,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPost("module/{id}/lesson")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> AddLesson(int id, [FromBody] string title)
         {
             try
@@ -101,7 +101,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPost("lesson/{id}/content")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> AddContent(int id, [FromQuery] string type, [FromBody] string url)
         {
             try

@@ -22,7 +22,7 @@ namespace CampusConnect.API.Controllers
         public async Task<IActionResult> GetDashboard(string studentId)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var isInstructor = User.IsInRole("Instructor");
+            var isInstructor = User.IsInRole("Instructor") || User.IsInRole("TA");
 
             // Security Check
             if (currentUserId != studentId)
@@ -51,7 +51,7 @@ namespace CampusConnect.API.Controllers
         public async Task<IActionResult> GetProfile(string studentId)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var isInstructor = User.IsInRole("Instructor");
+            var isInstructor = User.IsInRole("Instructor") || User.IsInRole("TA");
 
             // Security Check
             if (currentUserId != studentId)

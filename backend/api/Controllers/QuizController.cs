@@ -71,6 +71,7 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPost("course/{courseId}")]
+        [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> CreateQuiz(int courseId, [FromBody] QuizCreateDto dto)
         {
             try

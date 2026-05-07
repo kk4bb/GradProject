@@ -92,7 +92,7 @@ namespace CampusConnect.Tests.App
             context.Courses.Add(course);
             context.Enrollments.Add(new Enrollment { StudentId = studentId, CourseId = 1 });
             
-            context.Quizzes.Add(new Quiz { Id = 1, Title = "Quiz 1", CourseId = 1 });
+            context.Quizzes.Add(new Quiz { Id = 1, Title = "Quiz 1", CourseId = 1, Description = "Test Description" });
             context.QuizAttempts.Add(new QuizAttempt { StudentId = studentId, QuizId = 1, Score = 85 });
 
             await context.SaveChangesAsync();

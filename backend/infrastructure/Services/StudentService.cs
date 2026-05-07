@@ -125,8 +125,36 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<bool> IsInstructorForStudentAsync(string instructorId, string studentId)
         {
-            return await _context.Enrollments
-                .AnyAsync(e => e.StudentId == studentId && e.Course.InstructorId == instructorId);
+            // Get all courses student is in
+            var studentCourses = await _context.Enrollments
+                .Where(e => e.StudentId == studentId)
+                .Select(e => e.CourseId)
+                .ToListAsync();
+
+            foreach (var courseId in studentCourses)
+            {
+                if (await IsAuthorizedToManageCourseAsync(instructorId, courseId))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> IsAuthorizedToManageCourseAsync(string userId, int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return false;
+
+            if (course.InstructorId == userId) return true;
+
+            // Check if user has TA role and is enrolled in the course
+            var isTA = await _context.UserRoles
+                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
+                .AnyAsync(x => x.UserId == userId && x.Name == "TA");
+
+            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
+
+            return isTA && isEnrolled;
         }
     }
 }

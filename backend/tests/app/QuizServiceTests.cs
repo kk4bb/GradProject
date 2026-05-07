@@ -1,18 +1,28 @@
 using CampusConnect.Application.Dtos.Quiz;
+using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
 using CampusConnect.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Moq;
 
 namespace CampusConnect.Tests.App
 {
     public class QuizServiceTests
     {
+        private readonly Mock<INotificationService> _mockNotificationService;
+
+        public QuizServiceTests()
+        {
+            _mockNotificationService = new Mock<INotificationService>();
+        }
+
         private ApplicationDbContext GetDbContext()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -22,11 +32,41 @@ namespace CampusConnect.Tests.App
         }
 
         [Fact]
+        public async Task CreateQuizAsync_TA_Enrolled_Succeeds()
+        {
+            // Arrange
+            var context = GetDbContext();
+            var taId = "ta-1";
+            var courseId = 1;
+
+            var course = new Course { Id = courseId, InstructorId = "instructor-1", Title = "CS101", Description = "Test" };
+            context.Courses.Add(course);
+
+            // Add TA role
+            var taRole = new IdentityRole { Id = "role-ta", Name = "TA", NormalizedName = "TA" };
+            context.Roles.Add(taRole);
+            context.UserRoles.Add(new IdentityUserRole<string> { UserId = taId, RoleId = "role-ta" });
+
+            // Enroll TA
+            context.Enrollments.Add(new Enrollment { StudentId = taId, CourseId = courseId });
+            await context.SaveChangesAsync();
+
+            var service = new QuizService(context, _mockNotificationService.Object);
+
+            // Act
+            var result = await service.CreateQuizAsync(courseId, new QuizCreateDto { Title = "TA Quiz", Description = "Test", DueDate = DateTime.UtcNow.AddDays(7) }, taId);
+
+            // Assert
+            Assert.True(result > 0);
+            Assert.True(context.Quizzes.Any(q => q.Title == "TA Quiz"));
+        }
+
+        [Fact]
         public async Task GetQuizForTakingAsync_HidesIsCorrect()
         {
             // Arrange
             var context = GetDbContext();
-            var quiz = new Quiz { Id = 1, Title = "Unit Test Quiz", CourseId = 1 };
+            var quiz = new Quiz { Id = 1, Title = "Unit Test Quiz", CourseId = 1, Description = "Test Description" };
             context.Quizzes.Add(quiz);
             
             var question = new Question { Id = 1, QuizId = 1, Text = "What is 1+1?" };
@@ -38,7 +78,7 @@ namespace CampusConnect.Tests.App
             context.Enrollments.Add(new Enrollment { StudentId = "student-1", CourseId = 1 });
             await context.SaveChangesAsync();
 
-            var service = new QuizService(context);
+            var service = new QuizService(context, _mockNotificationService.Object);
 
             // Act
             var result = await service.GetQuizForTakingAsync(1, "student-1");
@@ -54,7 +94,7 @@ namespace CampusConnect.Tests.App
         {
             // Arrange
             var context = GetDbContext();
-            var quiz = new Quiz { Id = 1, Title = "Scoring Test", CourseId = 1 };
+            var quiz = new Quiz { Id = 1, Title = "Scoring Test", CourseId = 1, Description = "Test Description" };
             context.Quizzes.Add(quiz);
 
             // Q1: Correct is 1
@@ -70,7 +110,7 @@ namespace CampusConnect.Tests.App
             context.Enrollments.Add(new Enrollment { StudentId = "student-1", CourseId = 1 });
             await context.SaveChangesAsync();
 
-            var service = new QuizService(context);
+            var service = new QuizService(context, _mockNotificationService.Object);
 
             // Act: 1 correct, 1 wrong
             var submission = new QuizSubmissionDto

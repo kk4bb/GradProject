@@ -91,6 +91,29 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<List<CourseSummaryDto>> GetAssignedCoursesAsync(string instructorId)
         {
+            // Check if user is TA
+            var isTA = await _context.UserRoles
+                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
+                .AnyAsync(x => x.UserId == instructorId && x.Name == "TA");
+
+            if (isTA)
+            {
+                // For TAs, assigned courses are those they are enrolled in
+                return await _context.Enrollments
+                    .Where(e => e.StudentId == instructorId)
+                    .Select(e => new CourseSummaryDto
+                    {
+                        Id = e.Course.Id,
+                        Title = e.Course.Title,
+                        Description = e.Course.Description,
+                        InstructorName = _context.Users
+                            .Where(u => u.Id == e.Course.InstructorId)
+                            .Select(u => $"{u.FirstName} {u.LastName}")
+                            .FirstOrDefault() ?? "Unknown"
+                    })
+                    .ToListAsync();
+            }
+
             return await _context.Courses
                 .Where(c => c.InstructorId == instructorId)
                 .Select(c => new CourseSummaryDto
@@ -108,8 +131,7 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<List<StudentProfileDto>> GetEnrolledStudentsAsync(int courseId, string instructorId)
         {
-            var course = await _context.Courses.FindAsync(courseId);
-            if (course == null || course.InstructorId != instructorId)
+            if (!await IsAuthorizedToManageCourseAsync(instructorId, courseId))
                 throw new UnauthorizedAccessException("Not authorized to view this course's students.");
 
             return await _context.Enrollments
@@ -132,8 +154,7 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<int> CreateModuleAsync(int courseId, string title, string userId)
         {
-            var course = await _context.Courses.FindAsync(courseId);
-            if (course == null || course.InstructorId != userId)
+            if (!await IsAuthorizedToManageCourseAsync(userId, courseId))
                 throw new UnauthorizedAccessException("Not authorized to modify this course.");
 
             var module = new Module { CourseId = courseId, Title = title };
@@ -148,7 +169,7 @@ namespace CampusConnect.Infrastructure.Services
                 .Include(m => m.Course)
                 .FirstOrDefaultAsync(m => m.Id == moduleId);
 
-            if (module == null || module.Course.InstructorId != userId)
+            if (module == null || !await IsAuthorizedToManageCourseAsync(userId, module.CourseId))
                 throw new UnauthorizedAccessException("Not authorized to modify this course.");
 
             var lesson = new Lesson { ModuleId = moduleId, Title = title };
@@ -164,7 +185,7 @@ namespace CampusConnect.Infrastructure.Services
                 .ThenInclude(m => m.Course)
                 .FirstOrDefaultAsync(l => l.Id == lessonId);
 
-            if (lesson == null || lesson.Module.Course.InstructorId != userId)
+            if (lesson == null || !await IsAuthorizedToManageCourseAsync(userId, lesson.Module.CourseId))
                 throw new UnauthorizedAccessException("Not authorized to modify this course.");
 
             var content = new EducationalContent 
@@ -176,6 +197,23 @@ namespace CampusConnect.Infrastructure.Services
             _context.EducationalContents.Add(content);
             await _context.SaveChangesAsync();
             return content.Id;
+        }
+
+        private async Task<bool> IsAuthorizedToManageCourseAsync(string userId, int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return false;
+
+            if (course.InstructorId == userId) return true;
+
+            // Check if user has TA role and is enrolled in the course
+            var isTA = await _context.UserRoles
+                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
+                .AnyAsync(x => x.UserId == userId && x.Name == "TA");
+
+            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
+
+            return isTA && isEnrolled;
         }
     }
 }

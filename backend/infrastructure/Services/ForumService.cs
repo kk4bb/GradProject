@@ -22,7 +22,7 @@ namespace CampusConnect.Infrastructure.Services
         public async Task<List<DiscussionDto>> GetDiscussionsByCourseAsync(int courseId, string userId)
         {
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
-            var isInstructor = await _context.Courses.AnyAsync(c => c.Id == courseId && c.InstructorId == userId);
+            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, courseId);
 
             if (!isEnrolled && !isInstructor)
                 throw new UnauthorizedAccessException("Not authorized to view forum for this course.");
@@ -43,7 +43,7 @@ namespace CampusConnect.Infrastructure.Services
             if (discussion == null) return null;
 
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == discussion.CourseId && e.StudentId == userId);
-            var isInstructor = await _context.Courses.AnyAsync(c => c.Id == discussion.CourseId && c.InstructorId == userId);
+            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, discussion.CourseId);
 
             if (!isEnrolled && !isInstructor)
                 throw new UnauthorizedAccessException("Not authorized to view this discussion.");
@@ -77,7 +77,7 @@ namespace CampusConnect.Infrastructure.Services
             if (discussion == null) throw new Exception("Discussion not found.");
 
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == discussion.CourseId && e.StudentId == userId);
-            var isInstructor = await _context.Courses.AnyAsync(c => c.Id == discussion.CourseId && c.InstructorId == userId);
+            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, discussion.CourseId);
 
             if (!isEnrolled && !isInstructor)
                 throw new UnauthorizedAccessException("Not authorized to post in this forum.");
@@ -103,7 +103,7 @@ namespace CampusConnect.Infrastructure.Services
             if (post == null) throw new Exception("Post not found.");
 
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == post.Discussion.CourseId && e.StudentId == userId);
-            var isInstructor = await _context.Courses.AnyAsync(c => c.Id == post.Discussion.CourseId && c.InstructorId == userId);
+            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, post.Discussion.CourseId);
 
             if (!isEnrolled && !isInstructor)
                 throw new UnauthorizedAccessException("Not authorized to comment in this forum.");
@@ -123,7 +123,7 @@ namespace CampusConnect.Infrastructure.Services
         public async Task<int> CreateDiscussionAsync(int courseId, string title, string userId)
         {
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
-            var isInstructor = await _context.Courses.AnyAsync(c => c.Id == courseId && c.InstructorId == userId);
+            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, courseId);
 
             if (!isEnrolled && !isInstructor)
                 throw new UnauthorizedAccessException("Only the instructor or enrolled students can create new discussion topics.");
@@ -137,6 +137,23 @@ namespace CampusConnect.Infrastructure.Services
             _context.Discussions.Add(discussion);
             await _context.SaveChangesAsync();
             return discussion.Id;
+        }
+
+        private async Task<bool> IsAuthorizedToManageCourseAsync(string userId, int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return false;
+
+            if (course.InstructorId == userId) return true;
+
+            // Check if user has TA role and is enrolled in the course
+            var isTA = await _context.UserRoles
+                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
+                .AnyAsync(x => x.UserId == userId && x.Name == "TA");
+
+            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
+
+            return isTA && isEnrolled;
         }
     }
 }

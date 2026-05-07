@@ -22,8 +22,7 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<AttendanceSessionResponse> CreateSessionAsync(CreateAttendanceSessionRequest request, string instructorId)
         {
-            var course = await _context.Courses.FindAsync(request.CourseId);
-            if (course == null || course.InstructorId != instructorId)
+            if (!await IsAuthorizedToManageCourseAsync(instructorId, request.CourseId))
             {
                 throw new UnauthorizedAccessException("Not authorized to manage this course.");
             }
@@ -130,8 +129,7 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<IEnumerable<CourseAttendanceReportDto>> GetCourseAttendanceAsync(int courseId, string instructorId)
         {
-            var course = await _context.Courses.FindAsync(courseId);
-            if (course == null || course.InstructorId != instructorId)
+            if (!await IsAuthorizedToManageCourseAsync(instructorId, courseId))
             {
                 throw new UnauthorizedAccessException("Not authorized to view this course's attendance.");
             }
@@ -204,7 +202,24 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<bool> IsInstructorForCourseAsync(string instructorId, int courseId)
         {
-            return await _context.Courses.AnyAsync(c => c.Id == courseId && c.InstructorId == instructorId);
+            return await IsAuthorizedToManageCourseAsync(instructorId, courseId);
+        }
+
+        private async Task<bool> IsAuthorizedToManageCourseAsync(string userId, int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return false;
+
+            if (course.InstructorId == userId) return true;
+
+            // Check if user has TA role and is enrolled in the course
+            var isTA = await _context.UserRoles
+                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
+                .AnyAsync(x => x.UserId == userId && x.Name == "TA");
+
+            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
+
+            return isTA && isEnrolled;
         }
 
         private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)

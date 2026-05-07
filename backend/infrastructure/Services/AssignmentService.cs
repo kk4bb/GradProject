@@ -25,7 +25,7 @@ namespace CampusConnect.Infrastructure.Services
         {
             // Permission check: Must be enrolled or instructor
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
-            var isInstructor = await _context.Courses.AnyAsync(c => c.Id == courseId && c.InstructorId == userId);
+            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, courseId);
 
             if (!isEnrolled && !isInstructor)
                 throw new UnauthorizedAccessException("Not authorized to view assignments for this course.");
@@ -51,7 +51,7 @@ namespace CampusConnect.Infrastructure.Services
             if (assignment == null) return null;
 
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == assignment.CourseId && e.StudentId == userId);
-            var isInstructor = assignment.Course.InstructorId == userId;
+            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, assignment.CourseId);
 
             if (!isEnrolled && !isInstructor)
                 throw new UnauthorizedAccessException("Not authorized to view this assignment.");
@@ -106,8 +106,8 @@ namespace CampusConnect.Infrastructure.Services
             var course = await _context.Courses.FindAsync(courseId);
             if (course == null) throw new Exception("Course not found.");
 
-            if (course.InstructorId != userId)
-                throw new UnauthorizedAccessException("Only the instructor can create assignments.");
+            if (!await IsAuthorizedToManageCourseAsync(userId, courseId))
+                throw new UnauthorizedAccessException("Only the instructor or assigned TA can create assignments.");
 
             var assignment = new Assignment
             {
@@ -138,8 +138,8 @@ namespace CampusConnect.Infrastructure.Services
 
             if (assignment == null) throw new Exception("Assignment not found.");
 
-            if (assignment.Course.InstructorId != userId)
-                throw new UnauthorizedAccessException("Only the instructor can view all submissions.");
+            if (!await IsAuthorizedToManageCourseAsync(userId, assignment.CourseId))
+                throw new UnauthorizedAccessException("Only the instructor or assigned TA can view all submissions.");
 
             return await _context.Submissions
                 .Where(s => s.AssignmentId == assignmentId)
@@ -162,12 +162,29 @@ namespace CampusConnect.Infrastructure.Services
 
             if (submission == null) throw new Exception("Submission not found.");
 
-            if (submission.Assignment.Course.InstructorId != userId)
-                throw new UnauthorizedAccessException("Only the instructor can grade submissions.");
+            if (!await IsAuthorizedToManageCourseAsync(userId, submission.Assignment.CourseId))
+                throw new UnauthorizedAccessException("Only the instructor or assigned TA can grade submissions.");
 
             submission.Grade = gradeDto.Grade;
             _context.Submissions.Update(submission);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        private async Task<bool> IsAuthorizedToManageCourseAsync(string userId, int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return false;
+
+            if (course.InstructorId == userId) return true;
+
+            // Check if user has TA role and is enrolled in the course
+            var isTA = await _context.UserRoles
+                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
+                .AnyAsync(x => x.UserId == userId && x.Name == "TA");
+
+            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
+
+            return isTA && isEnrolled;
         }
     }
 }
