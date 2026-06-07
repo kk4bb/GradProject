@@ -1,4 +1,5 @@
 using CampusConnect.Application.Interfaces;
+using CampusConnect.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,10 +14,12 @@ namespace CampusConnect.API.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourseService _courseService;
+        private readonly IFileStorageService _fileStorageService;
 
-        public CourseController(ICourseService courseService)
+        public CourseController(ICourseService courseService, IFileStorageService fileStorageService)
         {
             _courseService = courseService;
+            _fileStorageService = fileStorageService;
         }
 
         [HttpGet("enrolled")]
@@ -90,19 +93,24 @@ namespace CampusConnect.API.Controllers
 
         [HttpPost("lesson/{id}/content")]
         [Authorize(Roles = "Instructor,TA")]
-        public async Task<IActionResult> AddContent(int id, [FromQuery] string type, [FromBody] string url)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddContent(int id, [FromForm] IFormFile file, [FromForm] string contentType)
         {
+            if (!FileUploadHelper.IsValidFile(file, out var errorMessage))
+                return BadRequest(errorMessage);
+
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
-                var contentId = await _courseService.AddContentToLessonAsync(id, type, url, userId, isTA);
-                return Ok(new { Id = contentId });
+
+                var fileUrl = await _fileStorageService.SaveFileAsync(file);
+                var contentId = await _courseService.AddContentToLessonAsync(id, contentType, fileUrl, userId, isTA);
+                
+                return Ok(new { ContentId = contentId, Url = fileUrl });
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Forbid(ex.Message);
-            }
+            catch (UnauthorizedAccessException ex) { return Forbid(ex.Message); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
     }
 }

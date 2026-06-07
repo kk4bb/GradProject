@@ -15,5 +15,9 @@ namespace CampusConnect.Domain.Entities
         public string StudentId { get; set; }
 
         public double Score { get; set; }
+
+        public string? EssayAnswer { get; set; }
+
+        public string Status { get; set; } = "Completed";
     }
 }

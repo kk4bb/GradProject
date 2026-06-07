@@ -7,6 +7,7 @@ namespace CampusConnect.Application.Dtos.Quiz
         public double Score { get; set; }
         public int TotalQuestions { get; set; }
         public int CorrectAnswersCount { get; set; }
+        public string Status { get; set; }
         public List<QuestionResultDto>? Breakdown { get; set; }
     }
 

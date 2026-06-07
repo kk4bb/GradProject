@@ -1,6 +1,8 @@
 using CampusConnect.Application.Dtos.Quiz;
 using CampusConnect.Application.Interfaces;
+using CampusConnect.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -14,12 +16,34 @@ namespace CampusConnect.API.Controllers
     public class QuizController : ControllerBase
     {
         private readonly IQuizService _quizService;
+        private readonly IFileStorageService _fileStorageService;
 
-        public QuizController(IQuizService quizService)
+        public QuizController(IQuizService quizService, IFileStorageService fileStorageService)
         {
             _quizService = quizService;
+            _fileStorageService = fileStorageService;
         }
+        // ... (existing endpoints)
 
+        [HttpPost("question/{questionId}/image")]
+        [Authorize(Roles = "Instructor")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadQuestionImage(int questionId, IFormFile file)
+        {
+            if (!FileUploadHelper.IsValidFile(file, out var errorMessage))
+                return BadRequest(errorMessage);
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var fileUrl = await _fileStorageService.SaveFileAsync(file);
+                await _quizService.UpdateQuestionImageAsync(questionId, fileUrl, userId);
+
+                return Ok(new { Url = fileUrl });
+            }
+            catch (UnauthorizedAccessException ex) { return Forbid(ex.Message); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
         [HttpGet("course/{courseId}")]
         public async Task<IActionResult> GetQuizzes(int courseId)
         {

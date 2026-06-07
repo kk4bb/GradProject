@@ -108,11 +108,12 @@ builder.Services.AddScoped<IForumService, ForumService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<IBackgroundWorker, HangfireBackgroundWorker>();
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddHttpClient<IAIService, AIService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseStaticFiles(); // Required to serve files from wwwroot
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

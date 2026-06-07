@@ -66,6 +66,8 @@ namespace CampusConnect.Infrastructure.Services
                 {
                     Id = q.Id,
                     Text = q.Text,
+                    ImageUrl = q.ImageUrl,
+                    IsEssay = q.IsEssay,
                     Options = q.Options.Select(o => new OptionDto
                     {
                         Id = o.Id,
@@ -91,11 +93,21 @@ namespace CampusConnect.Infrastructure.Services
                 throw new UnauthorizedAccessException("You are not enrolled in this course.");
 
             int correctCount = 0;
+            int essayCount = 0;
             var breakdown = new List<QuestionResultDto>();
+            bool pendingReview = false;
 
             foreach (var question in quiz.Questions)
             {
                 var studentAnswer = submission.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
+                
+                if (question.IsEssay)
+                {
+                    pendingReview = true;
+                    essayCount++;
+                    continue; // Skip grading for essays
+                }
+
                 var correctOption = question.Options.FirstOrDefault(o => o.IsCorrect);
                 var selectedOption = question.Options.FirstOrDefault(o => o.Id == studentAnswer?.SelectedOptionId);
 
@@ -115,14 +127,16 @@ namespace CampusConnect.Infrastructure.Services
                 }
             }
 
-            double score = (double)correctCount / quiz.Questions.Count * 100;
+            double score = pendingReview ? 0 : (double)correctCount / (quiz.Questions.Count - essayCount) * 100;
 
             // Save the attempt
             var attempt = new QuizAttempt
             {
                 QuizId = quizId,
                 StudentId = userId,
-                Score = score
+                Score = score,
+                Status = pendingReview ? "Pending Review" : "Completed",
+                EssayAnswer = submission.Answers.FirstOrDefault(a => quiz.Questions.Any(q => q.Id == a.QuestionId && q.IsEssay))?.EssayAnswer
             };
             _context.QuizAttempts.Add(attempt);
             await _context.SaveChangesAsync();
@@ -132,8 +146,25 @@ namespace CampusConnect.Infrastructure.Services
                 Score = score,
                 TotalQuestions = quiz.Questions.Count,
                 CorrectAnswersCount = correctCount,
+                Status = attempt.Status,
                 Breakdown = requestBreakdown ? breakdown : null
             };
+        }
+        public async Task UpdateQuestionImageAsync(int questionId, string imageUrl, string userId)
+        {
+            var question = await _context.Questions
+                .Include(q => q.Quiz)
+                .ThenInclude(q => q.Course)
+                .FirstOrDefaultAsync(q => q.Id == questionId);
+
+            if (question == null) throw new Exception("Question not found.");
+            
+            // Check if the user is the instructor of the course
+            if (question.Quiz.Course.InstructorId != userId)
+                throw new UnauthorizedAccessException("Not authorized to modify this quiz.");
+
+            question.ImageUrl = imageUrl;
+            await _context.SaveChangesAsync();
         }
     }
 }

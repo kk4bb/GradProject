@@ -50,48 +50,71 @@ namespace CampusConnect.Tests.App
         }
 
         [Fact]
-        public async Task SubmitQuizAsync_CalculatesCorrectScore()
+        public async Task SubmitQuizAsync_EssayQuestion_SetsPendingReviewStatus()
         {
             // Arrange
             var context = GetDbContext();
-            var quiz = new Quiz { Id = 1, Title = "Scoring Test", CourseId = 1 };
+            var quiz = new Quiz { Id = 1, Title = "Essay Test", CourseId = 1 };
             context.Quizzes.Add(quiz);
 
-            // Q1: Correct is 1
-            context.Questions.Add(new Question { Id = 1, QuizId = 1, Text = "Q1" });
-            context.QuestionOptions.Add(new QuestionOption { Id = 1, QuestionId = 1, Text = "A", IsCorrect = true });
-            context.QuestionOptions.Add(new QuestionOption { Id = 2, QuestionId = 1, Text = "B", IsCorrect = false });
-
-            // Q2: Correct is 3
-            context.Questions.Add(new Question { Id = 2, QuizId = 1, Text = "Q2" });
-            context.QuestionOptions.Add(new QuestionOption { Id = 3, QuestionId = 2, Text = "C", IsCorrect = true });
-            context.QuestionOptions.Add(new QuestionOption { Id = 4, QuestionId = 2, Text = "D", IsCorrect = false });
+            // Q1: Essay Question
+            context.Questions.Add(new Question { Id = 1, QuizId = 1, Text = "Explain AI", IsEssay = true });
 
             context.Enrollments.Add(new Enrollment { StudentId = "student-1", CourseId = 1 });
             await context.SaveChangesAsync();
 
             var service = new QuizService(context);
-
-            // Act: 1 correct, 1 wrong
             var submission = new QuizSubmissionDto
             {
                 Answers = new List<AnswerSubmissionDto>
                 {
-                    new AnswerSubmissionDto { QuestionId = 1, SelectedOptionId = 1 }, // Correct
-                    new AnswerSubmissionDto { QuestionId = 2, SelectedOptionId = 4 }  // Wrong
+                    new AnswerSubmissionDto { QuestionId = 1, EssayAnswer = "AI is cool." }
                 }
             };
 
-            var result = await service.SubmitQuizAsync(1, submission, "student-1", true);
+            // Act
+            var result = await service.SubmitQuizAsync(1, submission, "student-1", false);
 
             // Assert
-            Assert.Equal(50, result.Score);
-            Assert.Equal(2, result.TotalQuestions);
-            Assert.Equal(1, result.CorrectAnswersCount);
-            Assert.NotNull(result.Breakdown);
-            Assert.Equal(2, result.Breakdown.Count);
-            Assert.True(result.Breakdown[0].IsCorrect);
-            Assert.False(result.Breakdown[1].IsCorrect);
+            Assert.Equal("Pending Review", result.Status);
+            Assert.Equal(0, result.Score);
+        }
+
+        [Fact]
+        public async Task SubmitQuizAsync_MixedMCQAndEssay_CalculatesPartialScoreAndSetsPendingReview()
+        {
+            // Arrange
+            var context = GetDbContext();
+            var quiz = new Quiz { Id = 1, Title = "Mixed Test", CourseId = 1 };
+            context.Quizzes.Add(quiz);
+
+            // Q1: MCQ (Correct)
+            context.Questions.Add(new Question { Id = 1, QuizId = 1, Text = "Q1" });
+            context.QuestionOptions.Add(new QuestionOption { Id = 1, QuestionId = 1, Text = "A", IsCorrect = true });
+            
+            // Q2: Essay
+            context.Questions.Add(new Question { Id = 2, QuizId = 1, Text = "Q2", IsEssay = true });
+
+            context.Enrollments.Add(new Enrollment { StudentId = "student-1", CourseId = 1 });
+            await context.SaveChangesAsync();
+
+            var service = new QuizService(context);
+            var submission = new QuizSubmissionDto
+            {
+                Answers = new List<AnswerSubmissionDto>
+                {
+                    new AnswerSubmissionDto { QuestionId = 1, SelectedOptionId = 1 },
+                    new AnswerSubmissionDto { QuestionId = 2, EssayAnswer = "Essay response" }
+                }
+            };
+
+            // Act
+            var result = await service.SubmitQuizAsync(1, submission, "student-1", false);
+
+            // Assert
+            Assert.Equal("Pending Review", result.Status);
+            // Score should be 0 because of pending review
+            Assert.Equal(0, result.Score); 
         }
     }
 }
