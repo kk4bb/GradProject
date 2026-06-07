@@ -41,12 +41,14 @@ bnu_lms_app/.flutter-plugins-dependencies
 bnu_lms_app/.pub-cache/
 bnu_lms_app/.pub/
 bnu_lms_app/pubspec.lock
-doc/api/
 bnu_lms_app/build/
 bnu_lms_app/coverage/
 bnu_lms_app/.last_build_id
 bnu_lms_app/macos
 bnu_lms_app/windows
+bnu_lms_app/android
+bnu_lms_app/linux
+bnu_lms_app/web
 
 # ============================================
 # IDE & Editor files
@@ -113,3 +115,4 @@ migrate_working_dir/
 # ============================================
 # Me doing some funny funnies
 # ============================================
+PLAN.md
