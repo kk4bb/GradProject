@@ -6,10 +6,13 @@ namespace CampusConnect.Application.Interfaces
 {
     public interface IForumService
     {
-        Task<List<DiscussionDto>> GetDiscussionsByCourseAsync(int courseId, string userId);
-        Task<List<PostDto>> GetPostsByDiscussionAsync(int discussionId, string userId);
-        Task<int> CreatePostAsync(int discussionId, PostCreateDto post, string userId);
-        Task<int> CreateCommentAsync(int postId, CommentCreateDto comment, string userId);
-        Task<int> CreateDiscussionAsync(int courseId, string title, string userId);
+        Task<List<DiscussionDto>> GetDiscussionsByCourseAsync(int courseId, string userId, string role);
+        Task<List<PostDto>> GetPostsByDiscussionAsync(int discussionId, string userId, string role);
+        Task<int> CreatePostAsync(int discussionId, PostCreateDto post, string userId, string role, string authorName);
+        Task<int> CreateCommentAsync(int postId, CommentCreateDto comment, string userId, string role);
+        Task<int> CreateDiscussionAsync(int courseId, CreateDiscussionDto dto, string userId, string authorName);
+        Task MarkPostAsCorrectAsync(int postId, string userId, string role);
+        Task VotePostAsync(int postId, bool isUpvote, string userId);
+        Task UpdateDiscussionStatusAsync(int discussionId, string status, string userId);
     }
 }

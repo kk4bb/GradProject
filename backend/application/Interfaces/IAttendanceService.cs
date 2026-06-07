@@ -15,5 +15,7 @@ namespace CampusConnect.Application.Interfaces
         Task<IEnumerable<AttendanceRecordDto>> GetStudentAttendanceAsync(int courseId, string studentId);
 
         Task<bool> IsInstructorForCourseAsync(string instructorId, int courseId);
+
+        Task<bool> RemoveAttendanceRecordAsync(int courseId, string studentId, string instructorId);
     }
 }

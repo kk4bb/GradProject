@@ -9,6 +9,5 @@ namespace CampusConnect.Application.Interfaces
         Task<List<QuizDto>> GetQuizzesByCourseAsync(int courseId, string userId);
         Task<QuizTakeDto> GetQuizForTakingAsync(int quizId, string userId);
         Task<QuizResultDto> SubmitQuizAsync(int quizId, QuizSubmissionDto submission, string userId, bool requestBreakdown);
-        Task<int> CreateQuizAsync(int courseId, QuizCreateDto dto, string userId);
     }
 }

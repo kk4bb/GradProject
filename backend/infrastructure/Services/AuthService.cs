@@ -121,7 +121,9 @@ namespace CampusConnect.Infrastructure.Services
                     .WriteToken(token),
                 Expiration = expires,
                 Email = user.Email,
-                Role = roles.FirstOrDefault()
+                Role = roles.FirstOrDefault(),
+                FirstName = user.FirstName,
+                LastName = user.LastName
             };
         }
     }

@@ -22,7 +22,8 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<AttendanceSessionResponse> CreateSessionAsync(CreateAttendanceSessionRequest request, string instructorId)
         {
-            if (!await IsAuthorizedToManageCourseAsync(instructorId, request.CourseId))
+            var course = await _context.Courses.FindAsync(request.CourseId);
+            if (course == null || course.InstructorId != instructorId)
             {
                 throw new UnauthorizedAccessException("Not authorized to manage this course.");
             }
@@ -31,7 +32,7 @@ namespace CampusConnect.Infrastructure.Services
             {
                 CourseId = request.CourseId,
                 SessionTitle = request.SessionTitle,
-                QRCodeToken = Guid.NewGuid().ToString("N"),
+                QRCodeToken = Guid.NewGuid().ToString("N").Trim(), // Clean token, no whitespace
                 CreatedAt = DateTime.UtcNow,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(request.DurationMinutes),
                 Latitude = request.Latitude,
@@ -53,17 +54,21 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<bool> MarkAttendanceAsync(MarkAttendanceRequest request, string studentId)
         {
+            // Trim + case-insensitive lookup to prevent any whitespace/case mismatch
+            var incomingToken = (request.QRCodeToken ?? string.Empty).Trim();
+
             var session = await _context.AttendanceSessions
-                .FirstOrDefaultAsync(s => s.QRCodeToken == request.QRCodeToken);
+                .FirstOrDefaultAsync(s => s.QRCodeToken.Trim() == incomingToken);
 
             if (session == null)
             {
-                throw new Exception("Invalid QR code.");
+                throw new Exception($"Invalid QR code. No session found for token: '{incomingToken}'.");
             }
 
-            if (DateTime.UtcNow > session.ExpiresAt)
+            // Use UTC for both sides; add a 10-second grace period to avoid clock-skew 404s
+            if (DateTime.UtcNow > session.ExpiresAt.ToUniversalTime().AddSeconds(10))
             {
-                throw new Exception("Attendance session has expired.");
+                throw new Exception("Attendance session has expired. Please ask your instructor to refresh the QR code.");
             }
 
             // Check if student is enrolled in the course
@@ -129,7 +134,8 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<IEnumerable<CourseAttendanceReportDto>> GetCourseAttendanceAsync(int courseId, string instructorId)
         {
-            if (!await IsAuthorizedToManageCourseAsync(instructorId, courseId))
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null || course.InstructorId != instructorId)
             {
                 throw new UnauthorizedAccessException("Not authorized to view this course's attendance.");
             }
@@ -202,24 +208,40 @@ namespace CampusConnect.Infrastructure.Services
 
         public async Task<bool> IsInstructorForCourseAsync(string instructorId, int courseId)
         {
-            return await IsAuthorizedToManageCourseAsync(instructorId, courseId);
+            return await _context.Courses.AnyAsync(c => c.Id == courseId && c.InstructorId == instructorId);
         }
 
-        private async Task<bool> IsAuthorizedToManageCourseAsync(string userId, int courseId)
+        public async Task<bool> RemoveAttendanceRecordAsync(int courseId, string studentId, string instructorId)
         {
-            var course = await _context.Courses.FindAsync(courseId);
-            if (course == null) return false;
+            var isInstructor = await IsInstructorForCourseAsync(instructorId, courseId);
+            if (!isInstructor)
+            {
+                throw new UnauthorizedAccessException("Not authorized to manage this course's attendance.");
+            }
 
-            if (course.InstructorId == userId) return true;
+            // Find the most recent session for this course
+            var latestSession = await _context.AttendanceSessions
+                .Where(s => s.CourseId == courseId)
+                .OrderByDescending(s => s.CreatedAt)
+                .FirstOrDefaultAsync();
 
-            // Check if user has TA role and is enrolled in the course
-            var isTA = await _context.UserRoles
-                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
-                .AnyAsync(x => x.UserId == userId && x.Name == "TA");
+            if (latestSession == null)
+            {
+                throw new Exception("No attendance session found for this course.");
+            }
 
-            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
+            // Find the attendance record for the student in this session
+            var record = await _context.AttendanceRecords
+                .FirstOrDefaultAsync(r => r.AttendanceSessionId == latestSession.Id && r.StudentId == studentId);
 
-            return isTA && isEnrolled;
+            if (record != null)
+            {
+                _context.AttendanceRecords.Remove(record);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
         }
 
         private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)

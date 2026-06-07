@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CampusConnect.Domain.Entities
 {
@@ -17,6 +14,16 @@ namespace CampusConnect.Domain.Entities
         public string UserId { get; set; }
 
         public string Content { get; set; }
+
+        /// <summary>Set by Doctor/TA to mark this post as the accepted answer.</summary>
+        public bool IsCorrect { get; set; } = false;
+
+        /// <summary>Net upvotes on this post.</summary>
+        public int Votes { get; set; } = 0;
+
+        public string ApprovedByRole { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Comment> Comments { get; set; }
     }

@@ -4,7 +4,6 @@ using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,42 +68,6 @@ namespace CampusConnect.Tests.App
             // Act & Assert
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => 
                 service.CreateSessionAsync(request, "wrong-instructor"));
-        }
-
-        [Fact]
-        public async Task CreateSessionAsync_TA_Enrolled_Succeeds()
-        {
-            // Arrange
-            var context = GetDbContext();
-            var taId = "ta-1";
-            var courseId = 1;
-            
-            var course = new Course { Id = courseId, InstructorId = "instructor-1", Title = "CS101", Description = "Test" };
-            context.Courses.Add(course);
-            
-            // Add TA role
-            var taRole = new IdentityRole { Id = "role-ta", Name = "TA", NormalizedName = "TA" };
-            context.Roles.Add(taRole);
-            context.UserRoles.Add(new IdentityUserRole<string> { UserId = taId, RoleId = "role-ta" });
-            
-            // Enroll TA
-            context.Enrollments.Add(new Enrollment { StudentId = taId, CourseId = courseId });
-            await context.SaveChangesAsync();
-
-            var service = new AttendanceService(context);
-            var request = new CreateAttendanceSessionRequest
-            {
-                CourseId = courseId,
-                SessionTitle = "TA Session",
-                DurationMinutes = 30
-            };
-
-            // Act
-            var response = await service.CreateSessionAsync(request, taId);
-
-            // Assert
-            response.Should().NotBeNull();
-            response.SessionTitle.Should().Be("TA Session");
         }
 
         [Fact]
@@ -341,7 +304,6 @@ namespace CampusConnect.Tests.App
             var ex = await Assert.ThrowsAsync<Exception>(() => service.MarkAttendanceAsync(request, studentId));
             ex.Message.Should().Be("This device has already been used to mark attendance for another student.");
         }
-
         [Fact]
         public async Task GetCourseAttendanceAsync_ValidRequest_ReturnsReport()
         {

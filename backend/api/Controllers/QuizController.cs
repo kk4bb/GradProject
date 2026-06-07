@@ -69,25 +69,5 @@ namespace CampusConnect.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPost("course/{courseId}")]
-        [Authorize(Roles = "Instructor,TA")]
-        public async Task<IActionResult> CreateQuiz(int courseId, [FromBody] QuizCreateDto dto)
-        {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var quizId = await _quizService.CreateQuizAsync(courseId, dto, userId);
-                return Ok(new { Id = quizId });
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Forbid(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 }

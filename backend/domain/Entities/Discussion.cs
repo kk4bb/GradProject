@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CampusConnect.Domain.Entities
 {
@@ -13,6 +10,13 @@ namespace CampusConnect.Domain.Entities
         public int CourseId { get; set; }
 
         public string Title { get; set; }
+        
+        public string Content { get; set; }
+
+        /// <summary>OPEN | CLOSED | RESOLVED</summary>
+        public string Status { get; set; } = "OPEN";
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Post> Posts { get; set; }
     }

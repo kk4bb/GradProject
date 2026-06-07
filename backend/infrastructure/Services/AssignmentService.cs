@@ -2,6 +2,7 @@ using CampusConnect.Application.Dtos.Assignment;
 using CampusConnect.Application.Interfaces;
 using CampusConnect.Domain.Entities;
 using CampusConnect.Infrastructure.Context;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,24 +14,34 @@ namespace CampusConnect.Infrastructure.Services
     public class AssignmentService : IAssignmentService
     {
         private readonly ApplicationDbContext _context;
-        private readonly INotificationService _notificationService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AssignmentService(ApplicationDbContext context, INotificationService notificationService)
+        public AssignmentService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _notificationService = notificationService;
+            _userManager = userManager;
         }
 
-        public async Task<List<AssignmentDto>> GetAssignmentsByCourseAsync(int courseId, string userId)
+        public async Task<List<AssignmentDto>> GetAssignmentsByCourseAsync(int courseId, string userId, bool isTA = false)
         {
-            // Permission check: Must be enrolled or instructor
+            // Permission check: Must be enrolled, instructor, or TA
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
-            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, courseId);
+            var isInstructor = await _context.Courses.AnyAsync(c => c.Id == courseId && c.InstructorId == userId);
 
-            if (!isEnrolled && !isInstructor)
+            if (!isEnrolled && !isInstructor && !isTA)
                 throw new UnauthorizedAccessException("Not authorized to view assignments for this course.");
 
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+            string instructorName = "Instructor";
+            if (course != null)
+            {
+                var instructor = await _userManager.FindByIdAsync(course.InstructorId);
+                if (instructor != null)
+                    instructorName = $"{instructor.FirstName} {instructor.LastName}";
+            }
+
             return await _context.Assignments
+                .Include(a => a.Course)
                 .Where(a => a.CourseId == courseId)
                 .Select(a => new AssignmentDto
                 {
@@ -38,11 +49,15 @@ namespace CampusConnect.Infrastructure.Services
                     Title = a.Title,
                     Description = a.Description,
                     DueDate = a.DueDate,
-                    IsSubmitted = a.Submissions.Any(s => s.StudentId == userId)
+                    Points = a.Points,
+                    IsSubmitted = a.Submissions.Any(s => s.StudentId == userId),
+                    Grade = a.Submissions.Where(s => s.StudentId == userId).Select(s => (double?)s.Grade).FirstOrDefault(),
+                    Feedback = a.Submissions.Where(s => s.StudentId == userId).Select(s => s.Feedback).FirstOrDefault(),
+                    InstructorName = instructorName
                 }).ToListAsync();
         }
 
-        public async Task<AssignmentDto> GetAssignmentDetailAsync(int assignmentId, string userId)
+        public async Task<AssignmentDto> GetAssignmentDetailAsync(int assignmentId, string userId, bool isTA = false)
         {
             var assignment = await _context.Assignments
                 .Include(a => a.Course)
@@ -51,10 +66,18 @@ namespace CampusConnect.Infrastructure.Services
             if (assignment == null) return null;
 
             var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == assignment.CourseId && e.StudentId == userId);
-            var isInstructor = await IsAuthorizedToManageCourseAsync(userId, assignment.CourseId);
+            var isInstructor = assignment.Course.InstructorId == userId;
 
-            if (!isEnrolled && !isInstructor)
+            if (!isEnrolled && !isInstructor && !isTA)
                 throw new UnauthorizedAccessException("Not authorized to view this assignment.");
+
+            var submission = await _context.Submissions
+                .FirstOrDefaultAsync(s => s.AssignmentId == assignmentId && s.StudentId == userId);
+
+            string instructorName = "Instructor";
+            var instructor = await _userManager.FindByIdAsync(assignment.Course.InstructorId);
+            if (instructor != null)
+                instructorName = $"{instructor.FirstName} {instructor.LastName}";
 
             return new AssignmentDto
             {
@@ -62,7 +85,11 @@ namespace CampusConnect.Infrastructure.Services
                 Title = assignment.Title,
                 Description = assignment.Description,
                 DueDate = assignment.DueDate,
-                IsSubmitted = await _context.Submissions.AnyAsync(s => s.AssignmentId == assignmentId && s.StudentId == userId)
+                Points = assignment.Points,
+                IsSubmitted = submission != null,
+                Grade = submission?.Grade,
+                Feedback = submission?.Feedback,
+                InstructorName = instructorName
             };
         }
 
@@ -83,6 +110,8 @@ namespace CampusConnect.Infrastructure.Services
             if (existingSubmission != null)
             {
                 existingSubmission.FileUrl = submissionDto.FileUrl;
+                existingSubmission.Url = submissionDto.Url;
+                existingSubmission.Comment = submissionDto.Comment;
                 _context.Submissions.Update(existingSubmission);
             }
             else
@@ -92,7 +121,9 @@ namespace CampusConnect.Infrastructure.Services
                     AssignmentId = assignmentId,
                     StudentId = userId,
                     FileUrl = submissionDto.FileUrl,
-                    Grade = 0 // Initial grade
+                    Url = submissionDto.Url,
+                    Comment = submissionDto.Comment,
+                    Grade = 0
                 };
                 _context.Submissions.Add(submission);
             }
@@ -101,36 +132,29 @@ namespace CampusConnect.Infrastructure.Services
             return assignmentId;
         }
 
-        public async Task<int> CreateAssignmentAsync(int courseId, AssignmentCreateDto dto, string userId)
+        public async Task<int> CreateAssignmentAsync(int courseId, AssignmentCreateDto dto, string userId, bool isTA = false)
         {
             var course = await _context.Courses.FindAsync(courseId);
             if (course == null) throw new Exception("Course not found.");
 
-            if (!await IsAuthorizedToManageCourseAsync(userId, courseId))
-                throw new UnauthorizedAccessException("Only the instructor or assigned TA can create assignments.");
+            if (!isTA && course.InstructorId != userId)
+                throw new UnauthorizedAccessException("Only the instructor or TA can create assignments.");
 
             var assignment = new Assignment
             {
                 CourseId = courseId,
                 Title = dto.Title,
                 Description = dto.Description,
-                DueDate = dto.DueDate
+                DueDate = dto.DueDate,
+                Points = dto.Points
             };
 
             _context.Assignments.Add(assignment);
             await _context.SaveChangesAsync();
-
-            // Notify students
-            await _notificationService.NotifyStudentsInCourseAsync(
-                courseId,
-                "New Assignment",
-                $"A new assignment '{dto.Title}' has been posted for {course.Title}."
-            );
-
             return assignment.Id;
         }
 
-        public async Task<List<SubmissionDto>> GetSubmissionsForAssignmentAsync(int assignmentId, string userId)
+        public async Task<List<SubmissionDto>> GetSubmissionsForAssignmentAsync(int assignmentId, string userId, bool isTA = false)
         {
             var assignment = await _context.Assignments
                 .Include(a => a.Course)
@@ -138,22 +162,35 @@ namespace CampusConnect.Infrastructure.Services
 
             if (assignment == null) throw new Exception("Assignment not found.");
 
-            if (!await IsAuthorizedToManageCourseAsync(userId, assignment.CourseId))
-                throw new UnauthorizedAccessException("Only the instructor or assigned TA can view all submissions.");
+            if (!isTA && assignment.Course.InstructorId != userId)
+                throw new UnauthorizedAccessException("Only the instructor or TA can view all submissions.");
 
-            return await _context.Submissions
+            var submissions = await _context.Submissions
                 .Where(s => s.AssignmentId == assignmentId)
-                .Select(s => new SubmissionDto
+                .ToListAsync();
+
+            var dtos = new List<SubmissionDto>();
+            foreach (var s in submissions)
+            {
+                var studentName = s.StudentId;
+                var student = await _userManager.FindByIdAsync(s.StudentId);
+                if (student != null) studentName = $"{student.FirstName} {student.LastName}";
+
+                dtos.Add(new SubmissionDto
                 {
                     Id = s.Id,
                     AssignmentId = s.AssignmentId,
                     StudentId = s.StudentId,
+                    StudentName = studentName,
                     FileUrl = s.FileUrl,
-                    Grade = s.Grade
-                }).ToListAsync();
+                    Grade = s.Grade,
+                    Feedback = s.Feedback
+                });
+            }
+            return dtos;
         }
 
-        public async Task<bool> GradeSubmissionAsync(int submissionId, SubmissionGradeDto gradeDto, string userId)
+        public async Task<(bool Success, string StudentId)> GradeSubmissionAsync(int submissionId, SubmissionGradeDto gradeDto, string userId, bool isTA = false)
         {
             var submission = await _context.Submissions
                 .Include(s => s.Assignment)
@@ -162,29 +199,15 @@ namespace CampusConnect.Infrastructure.Services
 
             if (submission == null) throw new Exception("Submission not found.");
 
-            if (!await IsAuthorizedToManageCourseAsync(userId, submission.Assignment.CourseId))
-                throw new UnauthorizedAccessException("Only the instructor or assigned TA can grade submissions.");
+            if (!isTA && submission.Assignment.Course.InstructorId != userId)
+                throw new UnauthorizedAccessException("Only the instructor or TA can grade submissions.");
 
             submission.Grade = gradeDto.Grade;
-            _context.Submissions.Update(submission);
-            return await _context.SaveChangesAsync() > 0;
-        }
+            submission.Feedback = gradeDto.Feedback;
 
-        private async Task<bool> IsAuthorizedToManageCourseAsync(string userId, int courseId)
-        {
-            var course = await _context.Courses.FindAsync(courseId);
-            if (course == null) return false;
-
-            if (course.InstructorId == userId) return true;
-
-            // Check if user has TA role and is enrolled in the course
-            var isTA = await _context.UserRoles
-                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => new { ur.UserId, r.Name })
-                .AnyAsync(x => x.UserId == userId && x.Name == "TA");
-
-            var isEnrolled = await _context.Enrollments.AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
-
-            return isTA && isEnrolled;
+            _context.Entry(submission).State = EntityState.Modified;
+            var success = await _context.SaveChangesAsync() > 0;
+            return (success, submission.StudentId);
         }
     }
 }

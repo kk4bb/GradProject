@@ -1,7 +1,11 @@
 using CampusConnect.Application.Dtos.Assignment;
 using CampusConnect.Application.Interfaces;
+using CampusConnect.API.Hubs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,10 +18,12 @@ namespace CampusConnect.API.Controllers
     public class AssignmentController : ControllerBase
     {
         private readonly IAssignmentService _assignmentService;
+        private readonly IHubContext<AssignmentHub> _hubContext;
 
-        public AssignmentController(IAssignmentService assignmentService)
+        public AssignmentController(IAssignmentService assignmentService, IHubContext<AssignmentHub> hubContext)
         {
             _assignmentService = assignmentService;
+            _hubContext = hubContext;
         }
 
         [HttpGet("course/{courseId}")]
@@ -26,7 +32,8 @@ namespace CampusConnect.API.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var assignments = await _assignmentService.GetAssignmentsByCourseAsync(courseId, userId);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var assignments = await _assignmentService.GetAssignmentsByCourseAsync(courseId, userId, isTA);
                 return Ok(assignments);
             }
             catch (UnauthorizedAccessException ex)
@@ -35,13 +42,14 @@ namespace CampusConnect.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAssignment(int id)
         {
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var assignment = await _assignmentService.GetAssignmentDetailAsync(id, userId);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var assignment = await _assignmentService.GetAssignmentDetailAsync(id, userId, isTA);
                 if (assignment == null) return NotFound();
                 return Ok(assignment);
             }
@@ -51,9 +59,14 @@ namespace CampusConnect.API.Controllers
             }
         }
 
-        [HttpPost("{id}/submit")]
-        public async Task<IActionResult> SubmitAssignment(int id, [FromBody] SubmissionSubmitDto submissionDto)
+        [HttpPost("{id:int}/submit")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> SubmitAssignment(int id, [FromForm] SubmissionSubmitDto submissionDto, IFormFile? file)
         {
+            if (file == null && string.IsNullOrEmpty(submissionDto.Url))
+            {
+                return BadRequest("Either a file or a URL must be provided.");
+            }
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -64,40 +77,57 @@ namespace CampusConnect.API.Controllers
             {
                 return Forbid(ex.Message);
             }
+            catch (DbUpdateException ex)
+            {
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(errorMessage);
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
-        [HttpPost("course/{courseId}/create")]
+        [HttpPost("create")]
+        [Consumes("multipart/form-data")]
         [Authorize(Roles = "Instructor,TA")]
-        public async Task<IActionResult> CreateAssignment(int courseId, [FromBody] AssignmentCreateDto dto)
+        public async Task<IActionResult> CreateAssignment([FromForm] AssignmentCreateDto dto, IFormFile? file)
         {
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var assignmentId = await _assignmentService.CreateAssignmentAsync(courseId, dto, userId);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var assignmentId = await _assignmentService.CreateAssignmentAsync(dto.CourseId, dto, userId, isTA);
+                
+                // Notify students in the course group
+                await _hubContext.Clients.Group(dto.CourseId.ToString()).SendAsync("NewAssignmentAdded", new { Id = assignmentId, Title = dto.Title });
+
                 return Ok(new { Id = assignmentId });
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Forbid(ex.Message);
             }
+            catch (DbUpdateException ex)
+            {
+                var errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(errorMessage);
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
-        [HttpGet("{id}/submissions")]
+        [HttpGet("{id:int}/submissions")]
         [Authorize(Roles = "Instructor,TA")]
         public async Task<IActionResult> GetSubmissions(int id)
         {
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var submissions = await _assignmentService.GetSubmissionsForAssignmentAsync(id, userId);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var submissions = await _assignmentService.GetSubmissionsForAssignmentAsync(id, userId, isTA);
                 return Ok(submissions);
             }
             catch (UnauthorizedAccessException ex)
@@ -117,8 +147,15 @@ namespace CampusConnect.API.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var success = await _assignmentService.GradeSubmissionAsync(id, gradeDto, userId);
-                return Ok(new { Success = success });
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var result = await _assignmentService.GradeSubmissionAsync(id, gradeDto, userId, isTA);
+                
+                if (result.Success)
+                {
+                    await _hubContext.Clients.User(result.StudentId).SendAsync("SubmissionGraded", new { AssignmentId = id });
+                }
+
+                return Ok(new { Success = result.Success });
             }
             catch (UnauthorizedAccessException ex)
             {

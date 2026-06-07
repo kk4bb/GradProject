@@ -3,7 +3,6 @@ using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
 using CampusConnect.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,36 +19,6 @@ namespace CampusConnect.Tests.App
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
             return new ApplicationDbContext(options);
-        }
-
-        [Fact]
-        public async Task CreateModuleAsync_TA_Enrolled_Succeeds()
-        {
-            // Arrange
-            var context = GetDbContext();
-            var taId = "ta-1";
-            var courseId = 1;
-
-            var course = new Course { Id = courseId, InstructorId = "inst-1", Title = "CS101", Description = "Test" };
-            context.Courses.Add(course);
-
-            // Add TA role
-            var taRole = new IdentityRole { Id = "role-ta", Name = "TA", NormalizedName = "TA" };
-            context.Roles.Add(taRole);
-            context.UserRoles.Add(new IdentityUserRole<string> { UserId = taId, RoleId = "role-ta" });
-
-            // Enroll TA
-            context.Enrollments.Add(new Enrollment { StudentId = taId, CourseId = courseId });
-            await context.SaveChangesAsync();
-
-            var service = new CourseService(context);
-
-            // Act
-            var moduleId = await service.CreateModuleAsync(courseId, "TA Module", taId);
-
-            // Assert
-            Assert.True(moduleId > 0);
-            Assert.Equal("TA Module", context.Modules.First().Title);
         }
 
         [Fact]
@@ -135,49 +104,6 @@ namespace CampusConnect.Tests.App
 
             // Act & Assert
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.CreateModuleAsync(1, "New Module", "other-inst"));
-        }
-
-        [Fact]
-        public async Task GetEnrolledStudentsAsync_Instructor_ReturnsStudents()
-        {
-            // Arrange
-            var context = GetDbContext();
-            var instructorId = "inst-1";
-            var studentId = "student-1";
-
-            var instructor = new ApplicationUser { Id = instructorId, FirstName = "Dr.", LastName = "Smith", Faculty = "Engineering" };
-            var student = new ApplicationUser { Id = studentId, FirstName = "John", LastName = "Doe", Email = "john@example.com", Faculty = "Engineering" };
-            context.Users.AddRange(instructor, student);
-
-            var course = new Course { Id = 1, Title = "CS101", InstructorId = instructorId, Description = "Test" };
-            context.Courses.Add(course);
-            context.Enrollments.Add(new Enrollment { StudentId = studentId, CourseId = 1 });
-            await context.SaveChangesAsync();
-
-            var service = new CourseService(context);
-
-            // Act
-            var result = await service.GetEnrolledStudentsAsync(1, instructorId);
-
-            // Assert
-            Assert.NotEmpty(result);
-            Assert.Equal(studentId, result.First().Id);
-            Assert.Equal("John", result.First().FirstName);
-        }
-
-        [Fact]
-        public async Task GetEnrolledStudentsAsync_NotInstructor_ThrowsUnauthorized()
-        {
-            // Arrange
-            var context = GetDbContext();
-            var course = new Course { Id = 1, Title = "CS101", InstructorId = "inst-1", Description = "Test" };
-            context.Courses.Add(course);
-            await context.SaveChangesAsync();
-
-            var service = new CourseService(context);
-
-            // Act & Assert
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => service.GetEnrolledStudentsAsync(1, "other-inst"));
         }
     }
 }

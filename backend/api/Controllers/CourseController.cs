@@ -32,24 +32,9 @@ namespace CampusConnect.API.Controllers
         public async Task<IActionResult> GetAssignedCourses()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var courses = await _courseService.GetAssignedCoursesAsync(userId);
+            var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+            var courses = await _courseService.GetAssignedCoursesAsync(userId, isTA);
             return Ok(courses);
-        }
-
-        [HttpGet("{id}/students")]
-        [Authorize(Roles = "Instructor,TA")]
-        public async Task<IActionResult> GetEnrolledStudents(int id)
-        {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var students = await _courseService.GetEnrolledStudentsAsync(id, userId);
-                return Ok(students);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Forbid(ex.Message);
-            }
         }
 
         [HttpGet("{id}")]
@@ -58,7 +43,8 @@ namespace CampusConnect.API.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var course = await _courseService.GetCourseDetailsAsync(id, userId);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var course = await _courseService.GetCourseDetailsAsync(id, userId, isTA);
                 if (course == null) return NotFound();
                 return Ok(course);
             }
@@ -75,7 +61,8 @@ namespace CampusConnect.API.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var moduleId = await _courseService.CreateModuleAsync(id, title, userId);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var moduleId = await _courseService.CreateModuleAsync(id, title, userId, isTA);
                 return Ok(new { Id = moduleId });
             }
             catch (UnauthorizedAccessException ex)
@@ -91,7 +78,8 @@ namespace CampusConnect.API.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var lessonId = await _courseService.AddLessonAsync(id, title, userId);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var lessonId = await _courseService.AddLessonAsync(id, title, userId, isTA);
                 return Ok(new { Id = lessonId });
             }
             catch (UnauthorizedAccessException ex)
@@ -107,7 +95,8 @@ namespace CampusConnect.API.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var contentId = await _courseService.AddContentToLessonAsync(id, type, url, userId);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                var contentId = await _courseService.AddContentToLessonAsync(id, type, url, userId, isTA);
                 return Ok(new { Id = contentId });
             }
             catch (UnauthorizedAccessException ex)

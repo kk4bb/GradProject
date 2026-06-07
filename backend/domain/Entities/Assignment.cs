@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +15,7 @@ namespace CampusConnect.Domain.Entities
         public string Description { get; set; }
 
         public DateTime DueDate { get; set; }
+        public double Points { get; set; }
 
         public int CourseId { get; set; }
 

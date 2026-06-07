@@ -35,8 +35,8 @@ appsettings.*.json
 # ============================================
 # Flutter specific
 # ============================================
-/bnu_lms_app/.dart_tool/
-/bnu_lms_app/.flutter-plugins
+bnu_lms_app/.dart_tool/
+bnu_lms_app/.flutter-plugins
 bnu_lms_app/.flutter-plugins-dependencies
 bnu_lms_app/.pub-cache/
 bnu_lms_app/.pub/
@@ -45,6 +45,8 @@ doc/api/
 bnu_lms_app/build/
 bnu_lms_app/coverage/
 bnu_lms_app/.last_build_id
+bnu_lms_app/macos
+bnu_lms_app/windows
 
 # ============================================
 # IDE & Editor files

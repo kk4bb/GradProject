@@ -27,6 +27,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<AttendanceSession> AttendanceSessions { get; set; }
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
+    public DbSet<ChatSession> ChatSessions { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -96,13 +98,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         // Post ↔ Discussion
         modelBuilder.Entity<Post>()
-            .HasOne(p => p.Discussion)
+            .HasOne(p => p.Discussion)   // ← binds to Post.Discussion nav property
             .WithMany(d => d.Posts)
             .HasForeignKey(p => p.DiscussionId);
 
         // Comment ↔ Post
         modelBuilder.Entity<Comment>()
-            .HasOne<Post>()
+            .HasOne(c => c.Post)         // ← binds to Comment.Post nav property
             .WithMany(p => p.Comments)
             .HasForeignKey(c => c.PostId);
 
