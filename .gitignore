@@ -49,6 +49,7 @@ bnu_lms_app/windows
 bnu_lms_app/android
 bnu_lms_app/linux
 bnu_lms_app/web
+bnu_lms_app/ios
 
 # ============================================
 # IDE & Editor files
