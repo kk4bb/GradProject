@@ -123,7 +123,7 @@ namespace CampusConnect.Tests.App
 
             // Act & Assert
             var ex = await Assert.ThrowsAsync<Exception>(() => service.MarkAttendanceAsync(request, "student-1"));
-            ex.Message.Should().Be("Invalid QR code.");
+            ex.Message.Should().Be("Invalid QR code. No session found for token: 'invalid-token'.");
         }
 
         [Fact]
@@ -147,7 +147,7 @@ namespace CampusConnect.Tests.App
 
             // Act & Assert
             var ex = await Assert.ThrowsAsync<Exception>(() => service.MarkAttendanceAsync(request, "student-1"));
-            ex.Message.Should().Be("Attendance session has expired.");
+            ex.Message.Should().Be("Attendance session has expired. Please ask your instructor to refresh the QR code.");
         }
 
         [Fact]

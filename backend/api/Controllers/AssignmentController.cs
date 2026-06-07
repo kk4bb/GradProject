@@ -1,6 +1,6 @@
 using CampusConnect.Application.Dtos.Assignment;
 using CampusConnect.Application.Interfaces;
-using CampusConnect.API.Hubs;
+using CampusConnect.Infrastructure.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

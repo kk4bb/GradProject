@@ -87,5 +87,7 @@ ignoring
 - the rank thing
 
 
-# Miscellaneous
-there was some blabbering about removing the username variable being bad for the identity framework and such so I've made it to be the first and last name without spaces
+to publish the backend so that it can be transferred to the remote server run
+```
+dotnet publish -c Release -r linux-arm64 --self-contained true
+```

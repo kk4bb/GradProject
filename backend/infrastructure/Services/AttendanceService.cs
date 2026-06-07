@@ -65,8 +65,8 @@ namespace CampusConnect.Infrastructure.Services
                 throw new Exception($"Invalid QR code. No session found for token: '{incomingToken}'.");
             }
 
-            // Use UTC for both sides; add a 10-second grace period to avoid clock-skew 404s
-            if (DateTime.UtcNow > session.ExpiresAt.ToUniversalTime().AddSeconds(10))
+            // Use UTC for both sides
+            if (DateTime.UtcNow > session.ExpiresAt.AddSeconds(10))
             {
                 throw new Exception("Attendance session has expired. Please ask your instructor to refresh the QR code.");
             }

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace CampusConnect.API.Hubs
+namespace CampusConnect.Infrastructure.Hubs
 {
     public class AssignmentHub : Hub
     {

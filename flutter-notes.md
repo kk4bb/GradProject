@@ -1,6 +1,0 @@
-- Couldn't find a page where the student can submit there assignments
-- Couldn't find a page where the student can take a quiz and the one on the home screen alone is insufficient
-- The profile page is a mess, none of these buttons work and why do we have them in the first place
-- When pressing back to quizzes button after I finish a quiz the whole app freezes for some reason
-- The Forums (discussions) are created using only the title and nothing else and the users need to put the title and body + if we can manage some basic markdown formatting
-- Doctors are unable to mark questions as correct

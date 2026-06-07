@@ -1,4 +1,3 @@
-using CampusConnect.API.Hubs;
 using CampusConnect.Infrastructure.Hubs;
 using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Context;
@@ -9,13 +8,18 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+
+// Hangfire
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfireServer();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -103,6 +107,7 @@ builder.Services.AddScoped<IAssignmentService, AssignmentService>();
 builder.Services.AddScoped<IForumService, ForumService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
+builder.Services.AddScoped<IBackgroundWorker, HangfireBackgroundWorker>();
 builder.Services.AddHttpClient<IAIService, AIService>();
 
 var app = builder.Build();
@@ -123,9 +128,12 @@ app.UseCors("AllowFlutter"); // Enable CORS for Flutter
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseHangfireDashboard(); // Access at /hangfire
+
 app.MapControllers();
 app.MapHub<AssignmentHub>("/assignmentHub");
 app.MapHub<ForumHub>("/forumHub");
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();
 
