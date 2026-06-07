@@ -3,6 +3,8 @@ using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
 using CampusConnect.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,12 @@ namespace CampusConnect.Tests.App
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
             return new ApplicationDbContext(options);
+        }
+
+        private Mock<UserManager<ApplicationUser>> GetMockUserManager()
+        {
+            var store = new Mock<IUserStore<ApplicationUser>>();
+            return new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
         }
 
         [Fact]
@@ -38,7 +46,8 @@ namespace CampusConnect.Tests.App
             context.Enrollments.Add(new Enrollment { StudentId = "student-1", CourseId = 1 });
             await context.SaveChangesAsync();
 
-            var service = new AssignmentService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AssignmentService(context, userManagerMock.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => 
@@ -54,7 +63,8 @@ namespace CampusConnect.Tests.App
             context.Courses.Add(course);
             await context.SaveChangesAsync();
 
-            var service = new AssignmentService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AssignmentService(context, userManagerMock.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => 
@@ -80,7 +90,8 @@ namespace CampusConnect.Tests.App
             
             await context.SaveChangesAsync();
 
-            var service = new AssignmentService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AssignmentService(context, userManagerMock.Object);
 
             // Act
             await service.GradeSubmissionAsync(

@@ -14,6 +14,12 @@ namespace CampusConnect.Domain.Entities
 
         public string Message { get; set; }
 
+        public string? UserId { get; set; }
+
+        public bool IsRead { get; set; } = false;
+
+        public bool IsAnnouncement { get; set; } = false;
+
         public DateTime CreatedAt { get; set; }
     }
 }
