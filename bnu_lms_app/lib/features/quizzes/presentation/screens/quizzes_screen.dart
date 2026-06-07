@@ -1,49 +1,17 @@
 import 'package:bnu_lms_app/features/quizzes/presentation/widgets/quiz/quiz_item.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
+import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/network/repositories/course_repository.dart';
-import '../../../../shared/network/repositories/quiz_repository.dart';
 import '../../../../shared/providers/theme_provider.dart';
-import '../../data/models/quiz_model.dart' as model;
 
-class QuizzesScreen extends StatefulWidget {
+class QuizzesScreen extends StatelessWidget {
   const QuizzesScreen({super.key});
-
-  @override
-  State<QuizzesScreen> createState() => _QuizzesScreenState();
-}
-
-class _QuizzesScreenState extends State<QuizzesScreen> {
-  final CourseRepository _courseRepository = CourseRepository();
-  final QuizRepository _quizRepository = QuizRepository();
-  late Future<List<Map<String, dynamic>>> _quizzesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _quizzesFuture = _fetchAllQuizzes();
-  }
-
-  Future<List<Map<String, dynamic>>> _fetchAllQuizzes() async {
-    final courses = await _courseRepository.getEnrolledCourses();
-    List<Map<String, dynamic>> allQuizzes = [];
-
-    for (var course in courses) {
-      final quizzes = await _quizRepository.getQuizzes(course.id);
-      for (var quiz in quizzes) {
-        allQuizzes.add({
-          'quiz': quiz,
-          'courseTitle': course.title,
-        });
-      }
-    }
-    return allQuizzes;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,60 +19,182 @@ class _QuizzesScreenState extends State<QuizzesScreen> {
     final isLight = themeProvider.isLightTheme();
     final localizations = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          localizations.quizzes,
-          style: isLight
-              ? AppLightTextStyles.headlineLarge
-              : AppDarkTextStyles.headlineLarge,
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            localizations.quizzes,
+            style: isLight
+                ? AppLightTextStyles.headlineLarge
+                : AppDarkTextStyles.headlineLarge,
+          ),
         ),
-      ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _quizzesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
-          final quizzes = snapshot.data!;
-          if (quizzes.isEmpty) {
-            return const Center(child: Text('No quizzes available.'));
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemCount: quizzes.length,
-            itemBuilder: (context, index) {
-              final item = quizzes[index];
-              final model.Quiz quiz = item['quiz'];
-              final String courseTitle = item['courseTitle'];
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: QuizItem(
-                  title: quiz.title,
-                  status: QuizStatus.active,
-                  subtitle: courseTitle,
-                  date: "Available Now",
-                  duration: "--",
-                  questionsCount: "${quiz.questionCount} Questions",
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.quizDetails,
-                      arguments: {'quizId': quiz.id},
-                    );
-                  },
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 48.h,
+              margin: EdgeInsets.symmetric(horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: isLight ? Colors.grey[100] : ColorsManager.darkSurface,
+                borderRadius: BorderRadius.circular(25.r),
+              ),
+              child: TabBar(
+                dividerColor: Colors.transparent,
+                indicator: BoxDecoration(
+                  color: ColorsManager.blue,
+                  borderRadius: BorderRadius.circular(25.r),
                 ),
-              );
-            },
-          );
-        },
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelColor: Colors.white,
+                unselectedLabelColor: isLight ? Colors.black87 : Colors.white70,
+                labelStyle: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+                unselectedLabelStyle: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+                tabs: const [
+                  Tab(text: "All"),
+                  Tab(text: "Upcoming"),
+                  Tab(text: "Completed"),
+                  Tab(text: "Missed"),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 16.h),
+
+            // TabBarView
+            Expanded(
+              child: TabBarView(
+                children: [
+                  // ----------------------------------
+                  // 🔵 TAB 1 — All Quizzes
+                  // ----------------------------------
+                  SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.quizDetails);
+                          },
+                          child: QuizItem(
+                            title: "Midterm Exam",
+                            status: QuizStatus.active,
+                            subtitle: "Introduction to Programming",
+                            date: "Oct 26, 2024",
+                            duration: "30 min",
+                            questionsCount: "20 Questions",
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        QuizItem(
+                          title: "Quiz 1",
+                          status: QuizStatus.completed,
+                          subtitle: "Object Oriented Programming",
+                          date: "Oct 27, 2024",
+                          duration: "10 min",
+                          questionsCount: "15 Questions",
+                        ),
+                        SizedBox(height: 10.h),
+                        QuizItem(
+                          title: "Midterm 2 Exam",
+                          status: QuizStatus.dueSoon,
+                          subtitle: "Database Systems",
+                          date: "Oct 30, 2024",
+                          duration: "60 min",
+                          questionsCount: "40 Questions",
+                        ),
+                        SizedBox(height: 10.h),
+                        QuizItem(
+                          title: "Linear Algebra Quiz",
+                          status: QuizStatus.missed,
+                          subtitle: "Database Systems",
+                          date: "Oct 15, 2024",
+                          duration: "30 min",
+                          questionsCount: "20 Questions",
+                        ),
+                        SizedBox(height: 10.h),
+                      ],
+                    ),
+                  ),
+
+                  // ----------------------------------
+                  // 🟡 TAB 2 — Upcoming
+                  // ----------------------------------
+                  SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Column(
+                      children: [
+                        QuizItem(
+                          title: "Midterm Exam",
+                          status: QuizStatus.active,
+                          subtitle: "Introduction to Programming",
+                          date: "Oct 26, 2024",
+                          duration: "30 min",
+                          questionsCount: "20 Questions",
+                        ),
+                        SizedBox(height: 10.h),
+                        QuizItem(
+                          title: "Quiz 1",
+                          status: QuizStatus.dueSoon,
+                          subtitle: "Object Oriented Programming",
+                          date: "Oct 27, 2024",
+                          duration: "10 min",
+                          questionsCount: "15 Questions",
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ----------------------------------
+                  // 🟢 TAB 3 — Completed
+                  // ----------------------------------
+                  SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Column(
+                      children: [
+                        QuizItem(
+                          title: "Midterm 2 Exam",
+                          status: QuizStatus.completed,
+                          subtitle: "Database Systems",
+                          date: "Oct 15, 2024",
+                          duration: "60 min",
+                          questionsCount: "40 Questions",
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ----------------------------------
+                  // 🔴 TAB 4 — Grade/Missed
+                  // ----------------------------------
+                  SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Column(
+                      children: [
+                        QuizItem(
+                          title: "Weekly Quiz",
+                          status: QuizStatus.missed,
+                          subtitle: "Data Structures",
+                          date: "Oct 10, 2024",
+                          duration: "15 min",
+                          questionsCount: "10 Questions",
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

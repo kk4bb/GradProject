@@ -1,5 +1,6 @@
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../l10n/app_localizations.dart';
@@ -9,9 +10,9 @@ import '../../../../../shared/providers/theme_provider.dart';
 import '../../../../../shared/resources/assets_manager.dart';
 import '../../../../../shared/resources/colors_manager.dart';
 
+
 class HomeHeader extends StatelessWidget {
-  final String name;
-  const HomeHeader({super.key, required this.name});
+  const HomeHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,21 +23,21 @@ class HomeHeader extends StatelessWidget {
     return Row(
       children: [
         CircleAvatar(
-          radius: 24.0,
+          radius: 24.r,
           backgroundColor: ColorsManager.blue,
           child: ClipOval(
             child: Image.asset(
               ImagesManager.profileImage,
               fit: BoxFit.cover,
-              width: 48.0,
-              height: 48.0,
+              width: 48.w,
+              height: 48.h,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.person);
               },
             ),
           ),
         ),
-        SizedBox(width: 12.0),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +53,7 @@ class HomeHeader extends StatelessWidget {
                       ),
               ),
               Text(
-                name,
+                'Mohamed',
                 style: isLight
                     ? AppLightTextStyles.labelLarge
                     : AppDarkTextStyles.labelLarge,
@@ -68,7 +69,7 @@ class HomeHeader extends StatelessWidget {
               },
               child: const ImageIcon(AssetImage(IconsManager.notification)),
             ),
-            SizedBox(width: 20.0),
+            SizedBox(width: 20.w),
             GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, Routes.settings);

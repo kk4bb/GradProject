@@ -1,5 +1,6 @@
 import 'package:bnu_lms_app/shared/resources/app_sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -27,7 +28,7 @@ class DoctorProfileTab extends StatelessWidget {
         children: [
           // 1. Custom Header (Removed the Row to perfectly center the title)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
             child: Center(
               child: Text(
                 'Profile',
@@ -36,25 +37,25 @@ class DoctorProfileTab extends StatelessWidget {
             ),
           ),
 
-          // Added spacing
-          SizedBox(height: AppSizes.largeSpacing),
+          // Added .h here just in case AppSizes.largeSpacing is a raw double
+          SizedBox(height: AppSizes.largeSpacing.h),
 
           // 2. Scrollable Body
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 0),
               child: Column(
                 children: [
                   const DoctorProfileHeader(),
-                  SizedBox(height: 24.0),
+                  SizedBox(height: 24.h),
                   const ContactAndStats(),
-                  SizedBox(height: 32.0),
+                  SizedBox(height: 32.h),
                   const MyCoursesSection(),
-                  SizedBox(height: 24.0),
+                  SizedBox(height: 24.h),
                   const OfficeHoursCard(),
-                  SizedBox(height: 32.0),
+                  SizedBox(height: 32.h),
                   const SettingsSection(),
-                  SizedBox(height: 40.0), // Bottom padding
+                  SizedBox(height: 40.h), // Bottom padding
                 ],
               ),
             ),

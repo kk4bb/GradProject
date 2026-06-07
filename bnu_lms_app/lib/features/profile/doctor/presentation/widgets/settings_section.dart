@@ -1,6 +1,6 @@
-import '../../../../../../shared/network/token_storage.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -19,12 +19,12 @@ class SettingsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Settings', style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall),
-        SizedBox(height: 16.0),
+        SizedBox(height: 16.h),
         Container(
           decoration: BoxDecoration(
             color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-            borderRadius: BorderRadius.circular(20.0),
-            boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.0, offset: const Offset(0, 4))] : [],
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.r, offset: const Offset(0, 4))] : [],
           ),
           child: Column(
             children: [
@@ -44,22 +44,7 @@ class SettingsSection extends StatelessWidget {
               _buildDivider(),
               _buildSettingsItem(context, Icons.help_outline, 'Help Center'),
               _buildDivider(),
-              _buildSettingsItem(
-                context,
-                Icons.logout,
-                'Log Out',
-                isLogout: true,
-                onTap: () async {
-                  await tokenStorage.clearAll();
-                  if (context.mounted) {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      Routes.login,
-                      (route) => false,
-                    );
-                  }
-                },
-              ),
+              _buildSettingsItem(context, Icons.logout, 'Log Out', isLogout: true),
             ],
           ),
         ),
@@ -74,8 +59,8 @@ class SettingsSection extends StatelessWidget {
     final iconColor = isLogout ? ColorsManager.red : ColorsManager.grayMedium;
 
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
-      leading: Icon(icon, color: iconColor, size: 24.0),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
+      leading: Icon(icon, color: iconColor, size: 24.sp),
       title: Text(
         title,
         style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(
@@ -83,7 +68,7 @@ class SettingsSection extends StatelessWidget {
           fontWeight: isLogout ? FontWeight.bold : FontWeight.w600,
         ),
       ),
-      trailing: isLogout ? null : Icon(Icons.arrow_forward_ios, size: 16.0, color: ColorsManager.grayMedium),
+      trailing: isLogout ? null : Icon(Icons.arrow_forward_ios, size: 16.sp, color: ColorsManager.grayMedium),
       // Assigned the onTap parameter to the ListTile
       onTap: onTap,
     );

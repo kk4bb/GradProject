@@ -3,29 +3,17 @@ import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../shared/network/repositories/course_repository.dart';
 import '../../../../../shared/providers/theme_provider.dart';
-import '../../../data/models/course_model.dart';
+import '../../../../../shared/routes_manager/routes.dart';
 import '../widgets/courses/course_card.dart';
 
-class CoursesTab extends StatefulWidget {
+
+
+class CoursesTab extends StatelessWidget {
   const CoursesTab({super.key});
-
-  @override
-  State<CoursesTab> createState() => _CoursesTabState();
-}
-
-class _CoursesTabState extends State<CoursesTab> {
-  final CourseRepository _courseRepository = CourseRepository();
-  late Future<List<CourseSummary>> _coursesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _coursesFuture = _courseRepository.getEnrolledCourses();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +21,63 @@ class _CoursesTabState extends State<CoursesTab> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
 
+    final courses = [
+      {
+        'title': 'Advanced Programming',
+        'instructor': 'Dr. Angela Yu',
+        'category': 'Computer Science',
+        'categoryColor': const Color(0xFF5DADE2),
+        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
+        'icon': Icons.computer,
+      },
+      {
+        'title': 'Data Structures & Algorithms',
+        'instructor': 'Dr. Robert Martin',
+        'category': 'Computer Science',
+        'categoryColor': const Color(0xFF5DADE2),
+        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
+        'icon': Icons.code,
+      },
+      {
+        'title': 'Web Development',
+        'instructor': 'Prof. Sarah Johnson',
+        'category': 'Computer Science',
+        'categoryColor': const Color(0xFF5DADE2),
+        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
+        'icon': Icons.language,
+      },
+      {
+        'title': 'Database Management Systems',
+        'instructor': 'Dr. Michael Chen',
+        'category': 'Computer Science',
+        'categoryColor': const Color(0xFF5DADE2),
+        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
+        'icon': Icons.storage,
+      },
+      {
+        'title': 'Artificial Intelligence',
+        'instructor': 'Prof. Emily Watson',
+        'category': 'Computer Science',
+        'categoryColor': const Color(0xFF5DADE2),
+        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
+        'icon': Icons.psychology,
+      },
+      {
+        'title': 'Mobile App Development',
+        'instructor': 'Dr. Ahmed Hassan',
+        'category': 'Computer Science',
+        'categoryColor': const Color(0xFF5DADE2),
+        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
+        'icon': Icons.phone_android,
+      },
+    ];
+
     return SafeArea(
       child: Column(
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+            padding: REdgeInsets.fromLTRB(24, 16, 24, 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -53,27 +92,27 @@ class _CoursesTabState extends State<CoursesTab> {
                     // TODO: Show semester picker
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: REdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: isLight ? const Color(0xFFB8E9F5) : ColorsManager.darkSurface,
-                      borderRadius: BorderRadius.circular(24.0),
+                      color: isLight ? Color(0xFFB8E9F5) : ColorsManager.darkSurface,
+                      borderRadius: BorderRadius.circular(24.r),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           'Fall 2024',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xFF00A3CC),
+                            color: const Color(0xFF00A3CC),
                           ),
                         ),
-                        SizedBox(width: 8.0),
+                        SizedBox(width: 8.w),
                         Icon(
                           Icons.keyboard_arrow_down,
-                          color: Color(0xFF00A3CC),
-                          size: 20.0,
+                          color: const Color(0xFF00A3CC),
+                          size: 20.sp,
                         ),
                       ],
                     ),
@@ -85,28 +124,28 @@ class _CoursesTabState extends State<CoursesTab> {
 
           // Course List
           Expanded(
-            child: FutureBuilder<List<CourseSummary>>(
-              future: _coursesFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                final courses = snapshot.data!;
-                if (courses.isEmpty) {
-                  return const Center(child: Text('No enrolled courses found.'));
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    final course = courses[index];
-                    return CourseCard(
-                      course: course,
-                      categoryIcon: _getIconForCourse(course.title),
+            child: ListView.builder(
+              padding: REdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              itemCount: courses.length,
+              itemBuilder: (context, index) {
+                final course = courses[index];
+                return CourseCard(
+                  title: course['title'] as String,
+                  instructor: course['instructor'] as String,
+                  category: course['category'] as String,
+                  categoryColor: course['categoryColor'] as Color,
+                  iconBgColor: course['iconBgColor'] as Color,
+                  categoryIcon: course['icon'] as IconData,
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.coursesDetails,
+                      arguments: {
+                        'courseTitle': course['title'] as String,
+                        'instructor': course['instructor'] as String,
+                        'courseCode': 'SWE-301',
+                        'icon': course['icon'] as IconData,
+                      },
                     );
                   },
                 );
@@ -116,15 +155,5 @@ class _CoursesTabState extends State<CoursesTab> {
         ],
       ),
     );
-  }
-
-  IconData _getIconForCourse(String title) {
-    title = title.toLowerCase();
-    if (title.contains('mobile')) return Icons.phone_android;
-    if (title.contains('web')) return Icons.language;
-    if (title.contains('data science') || title.contains('intelligence')) return Icons.psychology;
-    if (title.contains('database') || title.contains('cloud')) return Icons.storage;
-    if (title.contains('programming') || title.contains('code')) return Icons.code;
-    return Icons.book;
   }
 }

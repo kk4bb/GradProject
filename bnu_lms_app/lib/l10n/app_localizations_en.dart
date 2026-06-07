@@ -66,9 +66,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quizzes => 'Quizzes';
 
   @override
-  String get tasks => 'Tasks';
-
-  @override
   String get grades => 'Grades';
 
   @override

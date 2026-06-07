@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -27,11 +28,11 @@ class AssignmentItemCard extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
+      margin: REdgeInsets.only(bottom: 12),
+      padding: REdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: isLight
               ? ColorsManager.grayMedium.withValues(alpha: 0.2)
@@ -41,19 +42,19 @@ class AssignmentItemCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 40.0,
-            height: 40.0,
+            width: 40.w,
+            height: 40.w,
             decoration: BoxDecoration(
               color: ColorsManager.lightBlueAccent,
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
               Icons.assignment,
               color: ColorsManager.blue,
-              size: 20.0,
+              size: 20.sp,
             ),
           ),
-          SizedBox(width: 12.0),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,11 +69,11 @@ class AssignmentItemCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 4.0),
+                SizedBox(height: 4.h),
                 Text(
                   'Due: $dueDate',
                   style: TextStyle(
-                    fontSize: 13.0,
+                    fontSize: 13.sp,
                     color: isLight
                         ? ColorsManager.grayMedium
                         : ColorsManager.darkTextSecondary,
@@ -82,15 +83,15 @@ class AssignmentItemCard extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: REdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: statusColor.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
               status,
               style: TextStyle(
-                fontSize: 12.0,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
                 color: statusColor,
               ),

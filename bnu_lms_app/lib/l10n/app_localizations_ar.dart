@@ -66,9 +66,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quizzes => 'الاختبارات';
 
   @override
-  String get tasks => 'المهام';
-
-  @override
   String get grades => 'الدرجات';
 
   @override

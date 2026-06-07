@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -8,15 +9,14 @@ import '../../../../../../../shared/resources/colors_manager.dart';
 
 
 class CourseGradesTab extends StatelessWidget {
-  final int courseId;
-  const CourseGradesTab({required this.courseId, super.key});
+  const CourseGradesTab({super.key});
 
   @override
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeProvider>(context).isLightTheme();
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -27,10 +27,10 @@ class CourseGradesTab extends StatelessWidget {
                 'Gradebook',
                 style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
               ),
-              Icon(Icons.file_download_outlined, color: ColorsManager.blue, size: 24.0),
+              Icon(Icons.file_download_outlined, color: ColorsManager.blue, size: 24.sp),
             ],
           ),
-          SizedBox(height: 20.0),
+          SizedBox(height: 20.h),
 
           _buildGradeItem(context, 'Midterm Project', 'Oct 24, 2023', 'Graded', 28, 30),
           _buildGradeItem(context, 'Weekly Quiz 4', 'Oct 18, 2023', 'Graded', 30, 30),
@@ -45,13 +45,13 @@ class CourseGradesTab extends StatelessWidget {
     var isLight = Provider.of<ThemeProvider>(context).isLightTheme();
 
     return Container(
-      margin: EdgeInsets.only(bottom: 12.0),
-      padding: EdgeInsets.all(16.0),
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: isLight
-            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8.0, offset: const Offset(0, 2))]
+            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8.r, offset: const Offset(0, 2))]
             : [],
       ),
       child: Row(
@@ -61,7 +61,7 @@ class CourseGradesTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title, style: isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium),
-              SizedBox(height: 4.0),
+              SizedBox(height: 4.h),
               Text(date, style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall),
             ],
           ),
@@ -76,7 +76,7 @@ class CourseGradesTab extends StatelessWidget {
                   Text('/$total', style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium),
                 ],
               ),
-              SizedBox(height: 4.0),
+              SizedBox(height: 4.h),
               Text(status, style: AppLightTextStyles.labelSmall.copyWith(color: ColorsManager.green, fontWeight: FontWeight.bold)),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../shared/providers/theme_provider.dart';
@@ -24,8 +25,8 @@ class CourseHeaderCard extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(24),
+      margin: REdgeInsets.all(16),
+      padding: REdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: isLight
             ? LinearGradient(
@@ -44,7 +45,7 @@ class CourseHeaderCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(20.r),
         border: isLight
             ? null
             : Border.all(
@@ -61,28 +62,28 @@ class CourseHeaderCard extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 22.0,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                     color: isLight
                         ? ColorsManager.black
                         : ColorsManager.darkTextPrimary,
                   ),
                 ),
-                SizedBox(height: 12.0),
+                SizedBox(height: 12.h),
                 Text(
                   instructor,
                   style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 15.sp,
                     color: isLight
                         ? ColorsManager.grayDark
                         : ColorsManager.darkTextSecondary,
                   ),
                 ),
-                SizedBox(height: 4.0),
+                SizedBox(height: 4.h),
                 Text(
                   'Course Code: $courseCode',
                   style: TextStyle(
-                    fontSize: 14.0,
+                    fontSize: 14.sp,
                     color: isLight
                         ? ColorsManager.grayDark
                         : ColorsManager.darkTextSecondary,
@@ -92,15 +93,15 @@ class CourseHeaderCard extends StatelessWidget {
             ),
           ),
           Container(
-            width: 80.0,
-            height: 80.0,
+            width: 80.w,
+            height: 80.w,
             decoration: BoxDecoration(
               color: ColorsManager.blue.withValues(alpha:  isLight ? 0.2 : 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
-              size: 40.0,
+              size: 40.sp,
               color: ColorsManager.blue,
             ),
           ),

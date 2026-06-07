@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -15,10 +16,10 @@ class NextSessionSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,10 +32,10 @@ class NextSessionSection extends StatelessWidget {
                 style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: ColorsManager.lightBlueAccent,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Text(
                   'Tomorrow',
@@ -46,15 +47,15 @@ class NextSessionSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.0),
+          SizedBox(height: 16.h),
           Row(
             children: [
               // Date Box
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 decoration: BoxDecoration(
                   color: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
-                  borderRadius: BorderRadius.circular(12.0),
+                  borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(color: ColorsManager.grayMedium.withValues(alpha: 0.2)),
                 ),
                 child: Column(
@@ -69,7 +70,7 @@ class NextSessionSection extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: 16.0),
+              SizedBox(width: 16.w),
               // Session Details
               Expanded(
                 child: Column(
@@ -79,19 +80,19 @@ class NextSessionSection extends StatelessWidget {
                       'Graph Traversals (DFS/BFS)',
                       style: isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium,
                     ),
-                    SizedBox(height: 6.0),
+                    SizedBox(height: 6.h),
                     Row(
                       children: [
-                        Icon(Icons.access_time, size: 14.0, color: ColorsManager.grayMedium),
-                        SizedBox(width: 4.0),
+                        Icon(Icons.access_time, size: 14.sp, color: ColorsManager.grayMedium),
+                        SizedBox(width: 4.w),
                         Text('09:00 AM - 11:30 AM', style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall),
                       ],
                     ),
-                    SizedBox(height: 4.0),
+                    SizedBox(height: 4.h),
                     Row(
                       children: [
-                        Icon(Icons.location_on_outlined, size: 14.0, color: ColorsManager.grayMedium),
-                        SizedBox(width: 4.0),
+                        Icon(Icons.location_on_outlined, size: 14.sp, color: ColorsManager.grayMedium),
+                        SizedBox(width: 4.w),
                         Text('Room 304, Science Block', style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall),
                       ],
                     ),

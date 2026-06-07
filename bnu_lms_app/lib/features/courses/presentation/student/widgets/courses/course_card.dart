@@ -1,15 +1,20 @@
+
 import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/providers/theme_provider.dart';
-import '../../../../data/models/course_model.dart';
+
+
 
 class CourseCard extends StatelessWidget {
-  final CourseSummary course;
+  final String title;
+  final String instructor;
+  final String category;
   final Color categoryColor;
   final IconData categoryIcon;
   final Color iconBgColor;
@@ -17,7 +22,9 @@ class CourseCard extends StatelessWidget {
 
   const CourseCard({
     super.key,
-    required this.course,
+    this.title = "Mobile App Development",
+    this.instructor = "Dr. Ahmed Hassan",
+    this.category = "Computer Science",
     this.categoryColor = const Color(0xFF5DADE2),
     this.categoryIcon = Icons.computer,
     this.iconBgColor = const Color(0xFFD6EAF8),
@@ -35,19 +42,19 @@ class CourseCard extends StatelessWidget {
           context,
           Routes.coursesDetails,
           arguments: {
-            'courseId': course.id,
-            'courseTitle': course.title,
-            'instructor': course.instructorName,
+            'courseTitle': title,
+            'instructor': instructor,
+            'courseCode': 'SWE-301',
             'icon': categoryIcon,
           },
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16.0),
-        padding: const EdgeInsets.all(20.0),
+        margin: EdgeInsets.only(bottom: 16.h),
+        padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
@@ -67,7 +74,7 @@ class CourseCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        course.title,
+                        title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: isLight
@@ -78,9 +85,9 @@ class CourseCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8.0),
+                      SizedBox(height: 8.h),
                       Text(
-                        course.instructorName,
+                        instructor,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: isLight
@@ -90,29 +97,30 @@ class CourseCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12.0),
+                SizedBox(width: 12.w),
                 Container(
-                  width: 56.0,
-                  height: 56.0,
+                  width: 56.w,
+                  height: 56.w,
                   decoration: BoxDecoration(
-                    color: isLight ? iconBgColor : const Color(0xFF223049),
-                    borderRadius: BorderRadius.circular(16.0),
+                    color: iconBgColor,
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
-                  child: Icon(categoryIcon, size: 28.0, color: categoryColor),
+                  child: Icon(categoryIcon, size: 28.sp, color: categoryColor),
                 ),
               ],
             ),
-            const SizedBox(height: 16.0),
+            SizedBox(height: 16.h),
+            SizedBox(height: 12.h),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
                 color: categoryColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
-                "Computer Science", // Dynamic category could be added to DTO if needed
+                category,
                 style: TextStyle(
-                  fontSize: 12.0,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w500,
                   color: categoryColor,
                 ),

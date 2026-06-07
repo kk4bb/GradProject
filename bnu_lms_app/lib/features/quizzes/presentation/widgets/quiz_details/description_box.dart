@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -16,14 +17,14 @@ class DescriptionBox extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
     return Container(
-      width: 358.0,
+      width: 358.w,
       decoration: BoxDecoration(
         color: isLight ? Colors.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border(
           left: BorderSide(
             color: ColorsManager.blue,
-            width: 4.0,
+            width: 4.w,
           ),
         ),
       ),

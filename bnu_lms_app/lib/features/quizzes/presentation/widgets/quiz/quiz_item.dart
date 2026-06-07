@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -18,7 +19,6 @@ class QuizItem extends StatelessWidget {
     required this.duration,
     required this.questionsCount,
     required this.status,
-    this.onTap,
   });
 
   final String title;
@@ -27,7 +27,6 @@ class QuizItem extends StatelessWidget {
   final String duration;
   final String questionsCount;
   final QuizStatus status;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +63,13 @@ class QuizItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 358.0,
+            width: 358.w,
             decoration: BoxDecoration(
               color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
               borderRadius: BorderRadius.circular(AppSizes.radius),
             ),
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: REdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -89,7 +88,7 @@ class QuizItem extends StatelessWidget {
                       // ⭐ Status badge
                       Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 6.0),
+                            horizontal: 12.w, vertical: 6.h),
                         decoration: BoxDecoration(
                           borderRadius:
                           BorderRadius.circular(AppSizes.radius),
@@ -144,7 +143,9 @@ class QuizItem extends StatelessWidget {
                   if (buttonLabel != null)
                     CustomElevatedButton(
                       label: buttonLabel,
-                      onTap: onTap ?? () {},
+                      onTap: () {
+                        // TODO: Add navigation logic per status
+                      },
                     ),
                 ],
               ),

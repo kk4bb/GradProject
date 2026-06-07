@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../shared/resources/colors_manager.dart';
 
@@ -31,10 +32,10 @@ class SettingsBox extends StatelessWidget {
     return GestureDetector(
       onTap: hasArrow ? onTap : null,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: REdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
           color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-          borderRadius: BorderRadius.circular(18.0),
+          borderRadius: BorderRadius.circular(18.r),
           boxShadow: isLight
               ? [
                   BoxShadow(
@@ -55,29 +56,29 @@ class SettingsBox extends StatelessWidget {
           children: [
             // Icon container
             Container(
-              padding: EdgeInsets.all(10),
+              padding: REdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: isLight
                     ? ColorsManager.blue.withValues(alpha: 0.1)
                     : ColorsManager.blue.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Image.asset(
                 icon,
-                width: 24.0,
-                height: 24.0,
+                width: 24.w,
+                height: 24.h,
                 color: isLight ? ColorsManager.blue : ColorsManager.lightBlue,
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(
                     Icons.settings,
-                    size: 24.0,
+                    size: 24.sp,
                     color:
                         isLight ? ColorsManager.blue : ColorsManager.lightBlue,
                   );
                 },
               ),
             ),
-            SizedBox(width: 16.0),
+            SizedBox(width: 16.w),
 
             // Title and subtitle
             Expanded(
@@ -87,17 +88,17 @@ class SettingsBox extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color:
                           isLight ? ColorsManager.black : ColorsManager.white,
                     ),
                   ),
-                  SizedBox(height: 4.0),
+                  SizedBox(height: 4.h),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: 14.0,
+                      fontSize: 14.sp,
                       color: isLight
                           ? ColorsManager.grayDark
                           : ColorsManager.grayMedium,
@@ -118,7 +119,7 @@ class SettingsBox extends StatelessWidget {
             else if (hasArrow)
               Icon(
                 Icons.arrow_forward_ios,
-                size: 18.0,
+                size: 18.sp,
                 color:
                     isLight ? ColorsManager.grayDark : ColorsManager.grayMedium,
               ),

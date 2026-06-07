@@ -7,61 +7,30 @@ import '../widgets/doctor_stats_grid.dart';
 import '../widgets/doctor_quick_access_section.dart';
 import '../widgets/doctor_my_courses_section.dart';
 
-import '../../../../../../shared/network/repositories/course_repository.dart';
-import '../../../../../../features/courses/data/models/course_model.dart';
-
-class DoctorHomeDashboard extends StatefulWidget {
+class DoctorHomeDashboard extends StatelessWidget {
   const DoctorHomeDashboard({super.key});
 
   @override
-  State<DoctorHomeDashboard> createState() => _DoctorHomeDashboardState();
-}
-
-class _DoctorHomeDashboardState extends State<DoctorHomeDashboard> {
-  final CourseRepository _courseRepository = CourseRepository();
-  late Future<List<CourseSummary>> _assignedCoursesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _assignedCoursesFuture = _courseRepository.getAssignedCourses();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<CourseSummary>>(
-      future: _assignedCoursesFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const DoctorDashboardTopHeader(),
 
-        final courses = snapshot.data!;
-
-        return SingleChildScrollView(
-          child: Column(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const DoctorDashboardTopHeader(),
+              const DoctorStatsGrid(),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DoctorStatsGrid(courseCount: courses.length),
+              SizedBox(height: AppSizes.largeSpacing),
 
-                  SizedBox(height: AppSizes.largeSpacing),
+              const DoctorQuickAccessSection(),
 
-                  const DoctorQuickAccessSection(),
-
-                  DoctorMyCoursesSection(courses: courses),
-                ],
-              ),
+              const DoctorMyCoursesSection(),
             ],
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

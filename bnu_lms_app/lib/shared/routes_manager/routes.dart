@@ -29,5 +29,4 @@ class Routes {
   static const String doctorDashboard = '/doctorDashboard';
   static const String doctorCoursesDetails = '/doctorCoursesDetails';
   static const String doctorQuestionDetails = '/doctorQuestionDetails';
-  static const String taAssignmentGrades = '/taAssignmentGrades';
 }

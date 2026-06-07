@@ -28,9 +28,6 @@ class AppLightTextStyles {
   static TextStyle get titleMedium =>
       AppTypography.titleMedium.copyWith(color: ColorsManager.grayDark);
 
-  static TextStyle get titleSmall =>
-      AppTypography.titleSmall.copyWith(color: ColorsManager.grayDark);
-
   // Body
   static TextStyle get bodyLarge =>
       AppTypography.bodyLarge.copyWith(color: ColorsManager.grayDark);
@@ -50,13 +47,4 @@ class AppLightTextStyles {
 
   static TextStyle get labelSmall =>
       AppTypography.labelSmall.copyWith(color: ColorsManager.grayDark);
-
-  static TextStyle get welcome =>
-      AppTypography.labelMedium.copyWith(color: ColorsManager.grayMedium);
-
-  static TextStyle get userName =>
-      AppTypography.labelLarge.copyWith(color: ColorsManager.black, fontWeight: FontWeight.bold);
-
-  static TextStyle get sectionTitle =>
-      AppTypography.headlineMedium.copyWith(color: ColorsManager.black, fontWeight: FontWeight.bold);
 }

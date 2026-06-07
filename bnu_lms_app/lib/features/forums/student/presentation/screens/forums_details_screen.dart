@@ -3,20 +3,16 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../shared/config/theme/app_light_text_styles.dart';
-import '../../../../../../shared/network/repositories/forum_repository.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
-import '../../../data/models/forum_model.dart';
 import '../widgets/fourms_details/forum_question_card.dart';
-import 'question_details_screen.dart';
+import 'question_details_screen.dart'; // Import the new screen
 
 class ForumsDetailsScreen extends StatefulWidget {
   final String forumTitle;
-  final int courseId;
 
   const ForumsDetailsScreen({
     required this.forumTitle,
-    required this.courseId,
     super.key,
   });
 
@@ -25,57 +21,45 @@ class ForumsDetailsScreen extends StatefulWidget {
 }
 
 class _ForumsDetailsScreenState extends State<ForumsDetailsScreen> {
-  final ForumRepository _forumRepository = ForumRepository();
-  late Future<List<Discussion>> _discussionsFuture;
+  int selectedFilterIndex = 0;
+  final List<String> filters = ['All Questions', 'Open', 'Answered', 'Resolved'];
 
-  @override
-  void initState() {
-    super.initState();
-    _discussionsFuture = _forumRepository.getDiscussions(widget.courseId);
-  }
-
-  void _showCreateDiscussionDialog() {
-    final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Start New Discussion'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: 'Discussion Title'),
-          maxLines: null,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (controller.text.isNotEmpty) {
-                try {
-                  await _forumRepository.createDiscussion(widget.courseId, controller.text);
-                  if (mounted) {
-                    Navigator.pop(context);
-                    setState(() {
-                      _discussionsFuture = _forumRepository.getDiscussions(widget.courseId);
-                    });
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
-                  }
-                }
-              }
-            },
-            child: const Text('Create'),
-          ),
-        ],
-      ),
-    );
-  }
+  // Dummy list of questions for the feed
+  final List<Map<String, dynamic>> questionsList = [
+    {
+      'id': '1',
+      'author': 'Alex Johnson',
+      'timeAgo': '2h ago',
+      'title': 'Differentiating viral vs bacterial pneumonia in neonates?',
+      'question': 'Looking for specific clinical markers that are most reliable in early stages before lab results come back. The textbook mentions a range, but what is the standard protocol at our university clinic?',
+      'votes': 15,
+      'commentsCount': 0,
+      'status': 'OPEN',
+      'statusColor': ColorsManager.blue,
+    },
+    {
+      'id': '2',
+      'author': 'Maria Chen',
+      'timeAgo': '5h ago',
+      'title': 'Amoxicillin dosage for pediatric patients under 10kg',
+      'question': 'The textbook mentions a range, but what is the standard protocol at our university clinic for outpatient care?',
+      'votes': 8,
+      'commentsCount': 4,
+      'status': 'ANSWERED',
+      'statusColor': ColorsManager.blueGray,
+    },
+    {
+      'id': '3',
+      'author': 'Omar Khaled',
+      'timeAgo': '1d ago',
+      'title': 'Reading list for next week\'s seminar?',
+      'question': 'I can\'t find the PDF for the "Endocrine Disorders" module in the shared folder. Has it been uploaded yet?',
+      'votes': 24,
+      'commentsCount': 12,
+      'status': 'RESOLVED',
+      'statusColor': ColorsManager.green,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -117,63 +101,82 @@ class _ForumsDetailsScreenState extends State<ForumsDetailsScreen> {
               child: TextField(
                 style: TextStyle(color: isLight ? ColorsManager.black : ColorsManager.white),
                 decoration: InputDecoration(
-                  hintText: 'Search discussions...',
+                  hintText: 'Search questions...',
                   hintStyle: TextStyle(color: ColorsManager.grayMedium),
                   prefixIcon: Icon(Icons.search, color: ColorsManager.grayMedium),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
             ),
           ),
 
-          // Discussions List
+          // // Filters
+          // SizedBox(
+          //   height: 40,
+          //   child: ListView.builder(
+          //     scrollDirection: Axis.horizontal,
+          //     padding: EdgeInsets.symmetric(horizontal: 16),
+          //     itemCount: filters.length,
+          //     itemBuilder: (context, index) {
+          //       final isSelected = index == selectedFilterIndex;
+          //       return GestureDetector(
+          //         onTap: () => setState(() => selectedFilterIndex = index),
+          //         child: Container(
+          //           margin: EdgeInsets.only(right: 8),
+          //           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          //           decoration: BoxDecoration(
+          //             color: isSelected ? ColorsManager.blue : Colors.transparent,
+          //             borderRadius: BorderRadius.circular(20),
+          //             border: Border.all(
+          //               color: isSelected ? ColorsManager.blue : ColorsManager.grayMedium.withValues(alpha: 0.3),
+          //             ),
+          //           ),
+          //           child: Center(
+          //             child: Text(
+          //               filters[index],
+          //               style: TextStyle(
+          //                 color: isSelected ? ColorsManager.white : (isLight ? ColorsManager.grayDark : ColorsManager.darkTextSecondary),
+          //                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+          //                 fontSize: 14,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
+          // SizedBox(height: 8),
+
+          // Questions List
           Expanded(
-            child: FutureBuilder<List<Discussion>>(
-              future: _discussionsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-
-                final discussions = snapshot.data!;
-                if (discussions.isEmpty) {
-                  return const Center(child: Text('No discussions found.'));
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  itemCount: discussions.length,
-                  itemBuilder: (context, index) {
-                    final discussion = discussions[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => QuestionDetailsScreen(
-                              discussionId: discussion.id,
-                              discussionTitle: discussion.title,
-                            ),
-                          ),
-                        );
-                      },
-                      child: ForumQuestionCard(
-                        authorName: 'Discussion',
-                        timeAgo: '',
-                        questionTitle: discussion.title,
-                        questionBody: '${discussion.postCount} posts in this discussion.',
-                        votes: 0,
-                        commentsCount: discussion.postCount,
-                        status: 'OPEN',
-                        statusColor: ColorsManager.blue,
-                        isPreview: true,
+            child: ListView.builder(
+              padding: EdgeInsets.only(bottom: 20),
+              itemCount: questionsList.length,
+              itemBuilder: (context, index) {
+                final question = questionsList[index];
+                return GestureDetector(
+                  onTap: () {
+                    // Navigate to Question Details on tap
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QuestionDetailsScreen(questionData: question),
                       ),
                     );
                   },
+                  child: ForumQuestionCard(
+                    authorName: question['author'],
+                    timeAgo: question['timeAgo'],
+                    questionTitle: question['title'],
+                    questionBody: question['question'],
+                    votes: question['votes'],
+                    commentsCount: question['commentsCount'],
+                    status: question['status'],
+                    statusColor: question['statusColor'],
+                    isPreview: true, // Truncates text for the list view
+                  ),
                 );
               },
             ),
@@ -181,10 +184,12 @@ class _ForumsDetailsScreenState extends State<ForumsDetailsScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showCreateDiscussionDialog,
+        onPressed: () {
+          // TODO: Add new question
+        },
         backgroundColor: ColorsManager.blue,
         foregroundColor: ColorsManager.white,
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
   }

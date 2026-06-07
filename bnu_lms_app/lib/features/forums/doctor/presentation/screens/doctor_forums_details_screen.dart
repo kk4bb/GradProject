@@ -5,17 +5,13 @@ import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
-import '../../../../../shared/network/repositories/forum_repository.dart';
-import '../../../data/models/forum_model.dart';
-import '../../../student/presentation/screens/question_details_screen.dart';
 import '../widgets/doctor_forum_question_card.dart';
+import 'doctor_question_details_screen.dart';
 
 class DoctorForumsDetailsScreen extends StatefulWidget {
-  final int courseId;
   final String courseName;
 
   const DoctorForumsDetailsScreen({
-    required this.courseId,
     required this.courseName,
     super.key,
   });
@@ -26,52 +22,36 @@ class DoctorForumsDetailsScreen extends StatefulWidget {
 
 class _DoctorForumsDetailsScreenState extends State<DoctorForumsDetailsScreen> {
   int selectedFilterIndex = 0;
-  final List<String> filters = ['All Discussions'];
-  final ForumRepository _forumRepository = ForumRepository();
-  late Future<List<Discussion>> _discussionsFuture;
+  final List<String> filters = ['All Questions', 'Unanswered', 'My Replies'];
 
-  @override
-  void initState() {
-    super.initState();
-    _discussionsFuture = _forumRepository.getDiscussions(widget.courseId);
-  }
-
-  Future<void> _refreshDiscussions() async {
-    setState(() {
-      _discussionsFuture = _forumRepository.getDiscussions(widget.courseId);
-    });
-  }
-
-  void _showCreateDiscussionDialog() {
-    final controller = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Create New Discussion'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: 'Discussion Title'),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () async {
-              if (controller.text.isNotEmpty) {
-                try {
-                  await _forumRepository.createDiscussion(widget.courseId, controller.text);
-                  Navigator.pop(context);
-                  _refreshDiscussions();
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-                }
-              }
-            },
-            child: const Text('Create'),
-          ),
-        ],
-      ),
-    );
-  }
+  final List<Map<String, dynamic>> questionsList = [
+    {
+      'id': '1',
+      'author': 'Alex Johnson',
+      'timeAgo': '24 mins ago',
+      'tag': '#LabNotes',
+      'title': 'How to interpret the clinical markers in Lab 4\'s patient profile?',
+      'question': 'I\'m having trouble understanding why the CRP levels are elevated despite the absence of...',
+      'replies': 3,
+      'views': 142,
+      'status': 'PENDING',
+      'statusColor': ColorsManager.yellow,
+      'hasParticipated': false,
+    },
+    {
+      'id': '2',
+      'author': 'Sarah Williams',
+      'timeAgo': '2 hours ago',
+      'tag': '#FinalProject',
+      'title': 'Submission deadline for the final project?',
+      'question': 'Can you confirm if the deadline is Sunday at midnight or Monday morning? The syllabus says...',
+      'replies': 1,
+      'views': 89,
+      'status': 'RESOLVED',
+      'statusColor': ColorsManager.green,
+      'hasParticipated': true,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -105,119 +85,100 @@ class _DoctorForumsDetailsScreenState extends State<DoctorForumsDetailsScreen> {
         ],
         elevation: 0,
       ),
-      body: FutureBuilder<List<Discussion>>(
-        future: _discussionsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Doctor Stats Row
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(child: _buildStatCard('NEW QUESTIONS', '12', '+4 today', ColorsManager.blue, isLight)),
+                SizedBox(width: 12),
+                Expanded(child: _buildStatCard('PENDING ACTION', '08', '!', ColorsManager.yellow, isLight, isAlert: true)),
+              ],
+            ),
+          ),
 
-          final discussions = snapshot.data ?? [];
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Doctor Stats Row
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Expanded(child: _buildStatCard('DISCUSSIONS', '${discussions.length}', 'Total', ColorsManager.blue, isLight)),
-                    SizedBox(width: 12),
-                    Expanded(child: _buildStatCard('NEW ACTIVITY', '0', 'Today', ColorsManager.yellow, isLight)),
-                  ],
-                ),
-              ),
-
-              // Filters
-              SizedBox(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: filters.length,
-                  itemBuilder: (context, index) {
-                    final isSelected = index == selectedFilterIndex;
-                    return GestureDetector(
-                      onTap: () => setState(() => selectedFilterIndex = index),
-                      child: Container(
-                        margin: EdgeInsets.only(right: 8),
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: isSelected ? ColorsManager.blue : Colors.transparent,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: isSelected ? ColorsManager.blue : ColorsManager.grayMedium.withValues(alpha: 0.3)),
+          // Filters
+          SizedBox(
+            height: 40,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              itemCount: filters.length,
+              itemBuilder: (context, index) {
+                final isSelected = index == selectedFilterIndex;
+                return GestureDetector(
+                  onTap: () => setState(() => selectedFilterIndex = index),
+                  child: Container(
+                    margin: EdgeInsets.only(right: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: isSelected ? ColorsManager.blue : Colors.transparent,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: isSelected ? ColorsManager.blue : ColorsManager.grayMedium.withValues(alpha: 0.3)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        filters[index],
+                        style: TextStyle(
+                          color: isSelected ? ColorsManager.white : (isLight ? ColorsManager.grayDark : ColorsManager.darkTextSecondary),
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                          fontSize: 14,
                         ),
-                        child: Center(
-                          child: Text(
-                            filters[index],
-                            style: TextStyle(
-                              color: isSelected ? ColorsManager.white : (isLight ? ColorsManager.grayDark : ColorsManager.darkTextSecondary),
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+            child: Text(
+              'RECENT DISCUSSIONS',
+              style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+            ),
+          ),
+
+          // Questions List
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.only(bottom: 80),
+              itemCount: questionsList.length,
+              itemBuilder: (context, index) {
+                final question = questionsList[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DoctorQuestionDetailsScreen(questionData: question),
                       ),
                     );
                   },
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-                child: Text(
-                  'RECENT DISCUSSIONS',
-                  style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(fontWeight: FontWeight.bold, letterSpacing: 1.2),
-                ),
-              ),
-
-              // Discussions List
-              Expanded(
-                child: discussions.isEmpty 
-                  ? const Center(child: Text('No discussions yet.'))
-                  : ListView.builder(
-                      padding: EdgeInsets.only(bottom: 80),
-                      itemCount: discussions.length,
-                      itemBuilder: (context, index) {
-                        final discussion = discussions[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => QuestionDetailsScreen(
-                                  discussionId: discussion.id,
-                                  discussionTitle: discussion.title,
-                                ),
-                              ),
-                            );
-                          },
-                          child: DoctorForumQuestionCard(
-                            authorName: 'Course Discussion',
-                            timeAgo: 'Just now',
-                            tag: '#General',
-                            questionTitle: discussion.title,
-                            questionBody: 'Open discussion for all students in this course.',
-                            replies: 0,
-                            views: 0,
-                            status: 'ACTIVE',
-                            statusColor: ColorsManager.blue,
-                            hasParticipated: true,
-                          ),
-                        );
-                      },
-                    ),
-              ),
-            ],
-          );
-        }
+                  child: DoctorForumQuestionCard(
+                    authorName: question['author'],
+                    timeAgo: question['timeAgo'],
+                    tag: question['tag'],
+                    questionTitle: question['title'],
+                    questionBody: question['question'],
+                    replies: question['replies'],
+                    views: question['views'],
+                    status: question['status'],
+                    statusColor: question['statusColor'],
+                    hasParticipated: question['hasParticipated'],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showCreateDiscussionDialog,
+        onPressed: () {},
         backgroundColor: ColorsManager.blue,
         foregroundColor: ColorsManager.white,
         child: Icon(Icons.campaign), // Megaphone icon from design

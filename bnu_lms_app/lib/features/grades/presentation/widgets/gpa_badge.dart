@@ -2,6 +2,7 @@ import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GPABadge extends StatelessWidget {
   final bool isLight;
@@ -18,22 +19,22 @@ class GPABadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: REdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: isLight
             ? ColorsManager.lightBlueAccent
             : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(25.0),
+        borderRadius: BorderRadius.circular(25.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             Icons.star,
-            size: 16.0,
+            size: 16.sp,
             color: isLight ? ColorsManager.blue : Colors.amber,
           ),
-          SizedBox(width: 6.0),
+          SizedBox(width: 6.w),
           Text(
             'GPA: ${gpa.toStringAsFixed(2)} / $performance',
             style: isLight

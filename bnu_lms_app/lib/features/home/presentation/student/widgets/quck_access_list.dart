@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 
@@ -23,7 +24,7 @@ class QuickAccessList extends StatelessWidget {
     final currentLang = languageCubit.currentLanguage;
 
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: REdgeInsets.symmetric(
           horizontal: AppSizes.horizontalPadding,
           vertical: AppSizes.verticalSectionSpacing
       ),
@@ -33,8 +34,8 @@ class QuickAccessList extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 12.0,
-          mainAxisSpacing: 12.0,
+          crossAxisSpacing: 12.w,
+          mainAxisSpacing: 12.h,
           childAspectRatio: 1,
         ),
         itemCount: categoryItem.length,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../resources/colors_manager.dart';
 
@@ -54,29 +55,29 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: widget.hintStyle,
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         filled: true,
         fillColor: widget.fillColor ?? ColorsManager.white,
 
         // Consistent border design with 0px border and radius 15
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: BorderSide.none,
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: BorderSide.none,
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: BorderSide.none,
         ),
 
@@ -101,7 +102,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           icon: Icon(
             isObscure ? Icons.visibility_off : Icons.visibility,
             color: ColorsManager.white,
-            size: 24.0,
+            size: 24.w,
           ),
         )
             : null,

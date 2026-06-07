@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 
@@ -31,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
           icon: Icon(
             Icons.arrow_back_ios_new,
             color: isLight ? ColorsManager.black : ColorsManager.white,
-            size: 22.0,
+            size: 22.sp,
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -43,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: REdgeInsets.symmetric(
           horizontal: AppSizes.horizontalPadding,
           vertical: AppSizes.verticalSectionSpacing,
         ),
@@ -128,7 +129,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.pop(dialogContext);
               },
             ),
-            SizedBox(height: 12.0),
+            SizedBox(height: 12.h),
             _buildLanguageOption(
               context: dialogContext,
               label: localizations.arabic,
@@ -156,9 +157,9 @@ class SettingsScreen extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12.0),
+      borderRadius: BorderRadius.circular(12.r),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         decoration: BoxDecoration(
           color: isSelected
               ? (isLight ? ColorsManager.lightBlue : ColorsManager.blue.withValues(alpha: 0.15))
@@ -171,7 +172,7 @@ class SettingsScreen extends StatelessWidget {
                 : ColorsManager.grayMedium.withValues(alpha: 0.2)),
             width: isSelected ? 2 : 1,
           ),
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
           children: [
@@ -182,9 +183,9 @@ class SettingsScreen extends StatelessWidget {
                   : (isLight
                   ? ColorsManager.grayMedium
                   : ColorsManager.darkTextSecondary),
-              size: 24.0,
+              size: 24.sp,
             ),
-            SizedBox(width: 12.0),
+            SizedBox(width: 12.w),
             Text(
               label,
               style: isLight

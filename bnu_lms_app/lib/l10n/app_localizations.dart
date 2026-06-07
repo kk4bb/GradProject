@@ -212,12 +212,6 @@ abstract class AppLocalizations {
   /// **'Quizzes'**
   String get quizzes;
 
-  /// No description provided for @tasks.
-  ///
-  /// In en, this message translates to:
-  /// **'Tasks'**
-  String get tasks;
-
   /// No description provided for @grades.
   ///
   /// In en, this message translates to:

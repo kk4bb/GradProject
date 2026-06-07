@@ -2,6 +2,7 @@ import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Updated GradeScore class - removed percentage calculation
 class GradeScore {
@@ -44,25 +45,25 @@ class GradeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.only(bottom: 16),
+      margin: REdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: isLight ? Colors.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border(
           left: BorderSide(
             color: borderColor,
-            width: 4.0,
+            width: 4.w,
           ),
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: REdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(),
             _buildInstructor(),
-            SizedBox(height: 20.0),
+            SizedBox(height: 20.h),
             ...scores.map((score) => _buildScoreRow(score)),
           ],
         ),
@@ -88,12 +89,12 @@ class GradeCard extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(width: 12.0),
+        SizedBox(width: 12.w),
         Text(
           gradeLetter,
           style: TextStyle(
             color: gradeColor,
-            fontSize: 32.0,
+            fontSize: 32.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -121,7 +122,7 @@ class GradeCard extends StatelessWidget {
         : ColorsManager.darkTextSecondary;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: 14),
+      padding: REdgeInsets.only(bottom: 14),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

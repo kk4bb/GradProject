@@ -19,7 +19,6 @@ import 'package:bnu_lms_app/features/quizzes/presentation/screens/quiz_details_s
 import 'package:bnu_lms_app/features/quizzes/presentation/screens/quiz_questions_screen.dart';
 import 'package:bnu_lms_app/features/quizzes/presentation/screens/quiz_results_screen.dart';
 import 'package:bnu_lms_app/features/quizzes/presentation/screens/quizzes_screen.dart';
-import 'package:bnu_lms_app/features/quizzes/data/models/quiz_model.dart' as quiz_model;
 
 import '../../features/settings/presentation/screens/settings_screen.dart';
 
@@ -61,24 +60,19 @@ class RoutesGenerator {
     // QUIZ ROUTES
     // -------------------------
       case Routes.quizDetails:
-        final quizId = args?['quizId'] as int? ?? 0;
-        return MaterialPageRoute(builder: (_) => QuizDetailsScreen(quizId: quizId));
+        return MaterialPageRoute(builder: (_) => const QuizDetailsScreen());
       case Routes.quizQuestions:
-        final quiz = args?['quiz'] as quiz_model.QuizTake;
-        return MaterialPageRoute(builder: (_) => QuizQuestionsScreen(quiz: quiz));
+        return MaterialPageRoute(builder: (_) => const QuizQuestionsScreen());
       case Routes.quizResults:
-        final quizTitle = args?['quizTitle'] as String? ?? '';
-        final result = args?['result'] as quiz_model.QuizResult;
-        return MaterialPageRoute(builder: (_) => QuizResultsScreen(quizTitle: quizTitle, result: result));
+        return MaterialPageRoute(builder: (_) => const QuizResultsScreen());
 
     // -------------------------
     // FORUMS ROUTES
     // -------------------------
       case Routes.forumsDetails:
         final forumTitle = args?['forumTitle'] as String? ?? 'Forum Discussion';
-        final courseId = args?['courseId'] as int? ?? 0;
         return MaterialPageRoute(
-          builder: (_) => ForumsDetailsScreen(forumTitle: forumTitle, courseId: courseId),
+          builder: (_) => ForumsDetailsScreen(forumTitle: forumTitle),
         );
 
     // -------------------------
@@ -89,9 +83,9 @@ class RoutesGenerator {
 
         return MaterialPageRoute(
           builder: (_) => CourseDetailsScreen(
-            courseId: args['courseId'] as int? ?? 0,
-            initialTitle: args['courseTitle'] as String? ?? 'Course',
-            initialInstructor: args['instructor'] as String? ?? '',
+            courseTitle: args['courseTitle'] as String? ?? 'Unknown Course',
+            instructor: args['instructor'] as String? ?? 'Unknown Instructor',
+            courseCode: args['courseCode'] as String? ?? 'N/A',
             icon: args['icon'] as IconData? ?? Icons.computer,
           ),
         );
@@ -100,10 +94,10 @@ class RoutesGenerator {
     // DOCTOR VIEW ROUTES
     // -------------------------
       case Routes.doctorDashboard:
-        return MaterialPageRoute(builder: (_) => const DoctorHomeScreen(), settings: settings);
+        return MaterialPageRoute(builder: (_) => const DoctorHomeScreen());
 
       case Routes.doctorCoursesDetails:
-        return MaterialPageRoute(builder: (_) => const DoctorCourseDetailsScreen(), settings: settings);
+        return MaterialPageRoute(builder: (_) => const DoctorCourseDetailsScreen());
 
       case Routes.doctorQuestionDetails: // Fixed duplicate case name
         if (args == null || !args.containsKey('questionData')) return _unDefinedRoute();
