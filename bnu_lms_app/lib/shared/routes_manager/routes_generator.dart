@@ -71,8 +71,12 @@ class RoutesGenerator {
     // -------------------------
       case Routes.forumsDetails:
         final forumTitle = args?['forumTitle'] as String? ?? 'Forum Discussion';
+        final courseId = args?['courseId'] as int? ?? 0;
         return MaterialPageRoute(
-          builder: (_) => ForumsDetailsScreen(forumTitle: forumTitle),
+          builder: (_) => ForumsDetailsScreen(
+            forumTitle: forumTitle,
+            courseId: courseId,
+          ),
         );
 
     // -------------------------

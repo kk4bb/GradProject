@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -23,7 +22,7 @@ class MyCoursesSection extends StatelessWidget {
             Text('View All', style: AppLightTextStyles.labelMedium.copyWith(color: ColorsManager.blue, fontWeight: FontWeight.bold)),
           ],
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16),
         _buildCourseItem(context, 'Advanced Algorithms', 'Fall 2024 • 42 Students', Icons.code),
         _buildCourseItem(context, 'Data Structures', 'Fall 2024 • 56 Students', Icons.storage),
       ],
@@ -34,35 +33,35 @@ class MyCoursesSection extends StatelessWidget {
     final isLight = Provider.of<ThemeProvider>(context).isLightTheme();
 
     return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 8.r, offset: const Offset(0, 2))] : [],
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 8, offset: const Offset(0, 2))] : [],
       ),
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(10.w),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: ColorsManager.lightBlueAccent,
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: ColorsManager.blue, size: 24.sp),
+            child: Icon(icon, color: ColorsManager.blue, size: 24),
           ),
-          SizedBox(width: 16.w),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(fontWeight: FontWeight.bold)),
-                SizedBox(height: 4.h),
+                SizedBox(height: 4),
                 Text(subtitle, style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall),
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios, size: 16.sp, color: ColorsManager.grayMedium),
+          Icon(Icons.arrow_forward_ios, size: 16, color: ColorsManager.grayMedium),
         ],
       ),
     );

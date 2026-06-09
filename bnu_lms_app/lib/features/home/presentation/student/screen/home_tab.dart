@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 
@@ -98,7 +97,7 @@ class _HomeTabState extends State<HomeTab> {
 
     return SafeArea(
       child: Padding(
-        padding: REdgeInsets.symmetric(
+        padding: EdgeInsets.symmetric(
           horizontal: AppSizes.horizontalPadding,
           vertical: AppSizes.verticalSectionSpacing,
         ),

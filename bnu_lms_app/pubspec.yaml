@@ -35,7 +35,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   google_fonts: ^6.3.0
-  flutter_screenutil: ^5.9.3
   flutter_slidable: ^3.1.2
   intl: any
   flutter_localization: ^0.3.3
@@ -43,6 +42,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_native_splash: ^2.4.4
   provider: ^6.1.5+1
+  dio: ^5.9.2
+  table_calendar: ^3.2.0
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

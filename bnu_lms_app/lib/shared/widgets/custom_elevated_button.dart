@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../config/theme/app_light_text_styles.dart';
 import '../resources/colors_manager.dart';
@@ -37,11 +36,11 @@ class CustomElevatedButton extends StatelessWidget {
         elevation: 0, // الشكل المسطح modern مثل الصورة
         backgroundColor: backgroundColor ?? ColorsManager.blue,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius ?? 10.r),
+          borderRadius: BorderRadius.circular(radius ?? 10),
         ),
         padding: EdgeInsets.symmetric(
-          horizontal: horizontalPadding ?? 15.w,
-          vertical: verticalPadding ?? 14.h,
+          horizontal: horizontalPadding ?? 15,
+          vertical: verticalPadding ?? 14,
         ),
       ),
       onPressed: onTap,
@@ -49,19 +48,19 @@ class CustomElevatedButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           prefixIcon ?? const SizedBox(),
-          if (prefixIcon != null) SizedBox(width: 10.w),
+          if (prefixIcon != null) SizedBox(width: 10),
 
           Text(
             label,
             style: textStyle ??
                 AppLightTextStyles.bodyMedium.copyWith(
                   color: ColorsManager.white,
-                  fontSize: 17.sp,
+                  fontSize: 17,
                   fontWeight: FontWeight.w600,
                 ),
           ),
 
-          if (suffixIcon != null) SizedBox(width: 10.w),
+          if (suffixIcon != null) SizedBox(width: 10),
           suffixIcon ?? const SizedBox(),
         ],
       ),

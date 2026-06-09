@@ -1,3 +1,4 @@
+import 'package:bnu_lms_app/shared/network/repositories/forum_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -97,8 +98,20 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
           ),
           ForumAnswerInput(
             controller: answerController,
-            onSubmit: () {
-              // Handle submit
+            onSubmit: () async {
+              if (answerController.text.isEmpty) return;
+              try {
+                // Assuming discussionId is available in questionData
+                int discussionId = widget.questionData['id'] ?? 0;
+                if (discussionId == 0) return;
+                
+                await ForumRepository().createPost(discussionId, answerController.text);
+                answerController.clear();
+                // Refresh list or show success
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Answer posted!")));
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to post: $e")));
+              }
             },
           ),
         ],

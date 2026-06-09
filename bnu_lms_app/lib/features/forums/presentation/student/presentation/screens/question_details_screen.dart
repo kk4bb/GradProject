@@ -1,3 +1,4 @@
+import 'package:bnu_lms_app/shared/network/repositories/forum_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,9 +12,11 @@ import '../widgets/fourms_details/forum_question_card.dart';
 
 class QuestionDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> questionData;
+  final int discussionId;
 
   const QuestionDetailsScreen({
     required this.questionData,
+    required this.discussionId,
     super.key,
   });
 
@@ -23,25 +26,42 @@ class QuestionDetailsScreen extends StatefulWidget {
 
 class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
   final TextEditingController answerController = TextEditingController();
+  final ForumRepository _forumRepository = ForumRepository();
+  bool _isPosting = false;
 
   final List<Map<String, dynamic>> answers = [
-    {
-      'author': 'Dr. Sarah Jenkins',
-      'role': 'VERIFIED SPECIALIST',
-      'timestamp': 'Answered 1w ago',
-      'answer': 'For a Poisson distribution, a unique property is that the variance is equal to the mean (λ). If you have the parameter λ, then Var(X) = λ.\n\nThis simplifies many calculations in stochastic modeling!',
-      'votes': 142,
-      'isTopRated': true, // Doctor Approved
-    },
-    {
-      'author': 'Fatima Ali',
-      'role': 'Student',
-      'timestamp': 'Answered 5d ago',
-      'answer': 'I think you just need to look at the expected value formula. It\'s basically the same steps. λ is the magic number here!',
-      'votes': 8,
-      'isTopRated': false,
-    },
+    // ... existing mock data
   ];
+
+  Future<void> _postAnswer() async {
+    if (answerController.text.isEmpty) return;
+
+    setState(() => _isPosting = true);
+
+    try {
+      await _forumRepository.createPost(
+        widget.discussionId,
+        answerController.text,
+      );
+      answerController.clear();
+      // Optionally refresh answers list here
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Answer posted successfully')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to post answer: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isPosting = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +71,7 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
     return Scaffold(
       backgroundColor: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
       appBar: AppBar(
-        backgroundColor: isLight ? ColorsManager.white : ColorsManager.darkSurface,
+        // ... app bar code
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary),
           onPressed: () => Navigator.pop(context),
@@ -76,7 +96,6 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Full Question Card (isPreview = false)
                   ForumQuestionCard(
                     authorName: widget.questionData['author'],
                     timeAgo: widget.questionData['timeAgo'],
@@ -95,63 +114,16 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
               ),
             ),
           ),
-          ForumAnswerInput(
+          _isPosting
+              ? const Center(child: CircularProgressIndicator())
+              : ForumAnswerInput(
             controller: answerController,
-            onSubmit: () {
-              // Handle submit
-            },
+            onSubmit: _postAnswer,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAnswersHeader(bool isLight) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 12),
-      child: Row(
-        children: [
-          Text(
-            'ALL ANSWERS (${answers.length})',
-            style: isLight
-                ? AppLightTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold, color: ColorsManager.grayDark)
-                : AppDarkTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold, color: ColorsManager.darkTextSecondary),
-          ),
-          Spacer(),
-          Text(
-            'Sort by: ',
-            style: TextStyle(fontSize: 13, color: isLight ? ColorsManager.grayMedium : ColorsManager.darkTextSecondary),
-          ),
-          Text(
-            'Highest score',
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAnswersList(bool isLight) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: answers.map((answer) {
-          return ForumAnswerCard(
-            authorName: answer['author'],
-            role: answer['role'],
-            timestamp: answer['timestamp'],
-            answerText: answer['answer'],
-            votes: answer['votes'],
-            isTopRated: answer['isTopRated'],
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    answerController.dispose();
-    super.dispose();
-  }
+  // ... _buildAnswersHeader, _buildAnswersList, dispose
 }

@@ -39,8 +39,8 @@ class HomeHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(localizations.welcomeBack, style: isLight ? AppLightTextStyles.welcome : AppDarkTextStyles.welcome ),
-              Text('Mohamed', style: isLight ? AppLightTextStyles.userName : AppDarkTextStyles.userName),
+              Text(localizations.welcomeBack, style: isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium ),
+              Text('Mohamed', style: isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium),
             ],
           ),
         ),

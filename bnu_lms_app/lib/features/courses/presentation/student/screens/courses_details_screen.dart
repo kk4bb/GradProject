@@ -2,7 +2,6 @@ import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import '../../../../../shared/providers/theme_provider.dart';
 import '../widgets/courses_details/assignment_item_card.dart';
@@ -171,7 +170,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
         indicatorColor: ColorsManager.blue,
         indicatorWeight: 2,
         labelStyle: TextStyle(
-          fontSize: 15.sp,
+          fontSize: 15,
           fontWeight: FontWeight.w600,
         ),
         tabs: const [
@@ -188,11 +187,11 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
           CourseDescriptionSection(description: courseDescription),
-          SizedBox(height: 32.h),
+          SizedBox(height: 32),
           LearningOutcomesSection(outcomes: learningOutcomes),
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
         ],
       ),
     );
@@ -201,11 +200,11 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
   Widget _buildAssignmentsTab(bool isLight) {
     return SingleChildScrollView(
       child: Padding(
-        padding: REdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
             Text(
               'All Assignments',
               style: isLight
@@ -216,7 +215,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
             ...assignments.map((assignment) {
               return AssignmentItemCard(
                 title: assignment['title'],
@@ -234,11 +233,11 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
   Widget _buildUpcomingTab(bool isLight) {
     return SingleChildScrollView(
       child: Padding(
-        padding: REdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
             Text(
               'Recent Announcements',
               style: isLight
@@ -249,7 +248,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
             ...upcomingEvents.map((event) {
               return UpcomingEventCard(
                 title: event['title'],

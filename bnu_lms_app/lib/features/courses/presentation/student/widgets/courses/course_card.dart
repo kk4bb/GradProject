@@ -4,7 +4,6 @@ import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/providers/theme_provider.dart';
@@ -50,11 +49,11 @@ class CourseCard extends StatelessWidget {
         );
       },
       child: Container(
-        margin: EdgeInsets.only(bottom: 16.h),
-        padding: EdgeInsets.all(20.w),
+        margin: EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
@@ -85,7 +84,7 @@ class CourseCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 8),
                       Text(
                         instructor,
                         maxLines: 1,
@@ -97,30 +96,30 @@ class CourseCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 12.w),
+                SizedBox(width: 12),
                 Container(
-                  width: 56.w,
-                  height: 56.w,
+                  width: 56,
+                  height: 56,
                   decoration: BoxDecoration(
                     color: iconBgColor,
-                    borderRadius: BorderRadius.circular(16.r),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Icon(categoryIcon, size: 28.sp, color: categoryColor),
+                  child: Icon(categoryIcon, size: 28, color: categoryColor),
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
-            SizedBox(height: 12.h),
+            SizedBox(height: 16),
+            SizedBox(height: 12),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: categoryColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 category,
                 style: TextStyle(
-                  fontSize: 12.sp,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                   color: categoryColor,
                 ),

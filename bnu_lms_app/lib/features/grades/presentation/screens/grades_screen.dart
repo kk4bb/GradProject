@@ -2,7 +2,6 @@ import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/app_sizes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -26,7 +25,7 @@ class GradesScreen extends StatelessWidget {
       child: Scaffold(
         appBar: _buildAppBar(context),
         body: Padding(
-          padding: REdgeInsets.all(AppSizes.largeSpacing),
+          padding: EdgeInsets.all(AppSizes.largeSpacing),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -52,7 +51,7 @@ class GradesScreen extends StatelessWidget {
       ),
       actions: [
         Padding(
-          padding: REdgeInsets.all(AppSizes.mediumSpacing),
+          padding: EdgeInsets.all(AppSizes.mediumSpacing),
           child: IconButton(
             icon: const Icon(Icons.more_vert, color: ColorsManager.blue),
             onPressed: () {
@@ -75,7 +74,7 @@ class GradesScreen extends StatelessWidget {
               ? AppLightTextStyles.headlineLarge
               : AppDarkTextStyles.headlineLarge,
         ),
-        SizedBox(height: 4.h),
+        SizedBox(height: 4),
         Text(
           'Your Academic Performance',
           style: isLight

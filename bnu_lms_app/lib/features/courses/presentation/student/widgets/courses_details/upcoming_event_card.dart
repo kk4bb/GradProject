@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -28,11 +27,11 @@ class UpcomingEventCard extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      margin: REdgeInsets.only(bottom: 12),
-      padding: REdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isLight
               ? ColorsManager.grayMedium.withValues(alpha:0.2)
@@ -43,19 +42,19 @@ class UpcomingEventCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 40.w,
-            height: 40.w,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: ColorsManager.lightBlueAccent,
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               icon,
               color: ColorsManager.blue,
-              size: 20.sp,
+              size: 20,
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +69,7 @@ class UpcomingEventCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 8),
                 Text(
                   description,
                   style: isLight
@@ -81,11 +80,11 @@ class UpcomingEventCard extends StatelessWidget {
                     color: ColorsManager.darkTextSecondary,
                   ),
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 8),
                 Text(
                   'Posted on: $date',
                   style: TextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 12,
                     color: isLight
                         ? ColorsManager.grayMedium
                         : ColorsManager.darkTextSecondary,

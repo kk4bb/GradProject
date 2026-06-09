@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -26,7 +25,7 @@ class NotificationsScreen extends StatelessWidget {
           icon: Icon(
             Icons.arrow_back_ios_new,
             color: isLight ? ColorsManager.black : ColorsManager.white,
-            size: 22.sp,
+            size: 22,
           ),
           onPressed: () => Navigator.pop(context),
         ),

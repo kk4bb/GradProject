@@ -4,7 +4,6 @@ import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -35,27 +34,27 @@ class QuizzesScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 48.h,
-              margin: EdgeInsets.symmetric(horizontal: 16.w),
+              height: 48,
+              margin: EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: isLight ? Colors.grey[100] : ColorsManager.darkSurface,
-                borderRadius: BorderRadius.circular(25.r),
+                borderRadius: BorderRadius.circular(25),
               ),
               child: TabBar(
                 dividerColor: Colors.transparent,
                 indicator: BoxDecoration(
                   color: ColorsManager.blue,
-                  borderRadius: BorderRadius.circular(25.r),
+                  borderRadius: BorderRadius.circular(25),
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 labelColor: Colors.white,
                 unselectedLabelColor: isLight ? Colors.black87 : Colors.white70,
                 labelStyle: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
                 unselectedLabelStyle: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
                 tabs: const [
@@ -67,7 +66,7 @@ class QuizzesScreen extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
 
             // TabBarView
             Expanded(
@@ -77,7 +76,7 @@ class QuizzesScreen extends StatelessWidget {
                   // 🔵 TAB 1 — All Quizzes
                   // ----------------------------------
                   SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
                         GestureDetector(
@@ -93,7 +92,7 @@ class QuizzesScreen extends StatelessWidget {
                             questionsCount: "20 Questions",
                           ),
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 10),
                         QuizItem(
                           title: "Quiz 1",
                           status: QuizStatus.completed,
@@ -102,7 +101,7 @@ class QuizzesScreen extends StatelessWidget {
                           duration: "10 min",
                           questionsCount: "15 Questions",
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 10),
                         QuizItem(
                           title: "Midterm 2 Exam",
                           status: QuizStatus.dueSoon,
@@ -111,7 +110,7 @@ class QuizzesScreen extends StatelessWidget {
                           duration: "60 min",
                           questionsCount: "40 Questions",
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 10),
                         QuizItem(
                           title: "Linear Algebra Quiz",
                           status: QuizStatus.missed,
@@ -120,7 +119,7 @@ class QuizzesScreen extends StatelessWidget {
                           duration: "30 min",
                           questionsCount: "20 Questions",
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -129,7 +128,7 @@ class QuizzesScreen extends StatelessWidget {
                   // 🟡 TAB 2 — Upcoming
                   // ----------------------------------
                   SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
                         QuizItem(
@@ -140,7 +139,7 @@ class QuizzesScreen extends StatelessWidget {
                           duration: "30 min",
                           questionsCount: "20 Questions",
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 10),
                         QuizItem(
                           title: "Quiz 1",
                           status: QuizStatus.dueSoon,
@@ -157,7 +156,7 @@ class QuizzesScreen extends StatelessWidget {
                   // 🟢 TAB 3 — Completed
                   // ----------------------------------
                   SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
                         QuizItem(
@@ -176,7 +175,7 @@ class QuizzesScreen extends StatelessWidget {
                   // 🔴 TAB 4 — Grade/Missed
                   // ----------------------------------
                   SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
                         QuizItem(

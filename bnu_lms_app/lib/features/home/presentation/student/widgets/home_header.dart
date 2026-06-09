@@ -1,6 +1,6 @@
+import 'package:bnu_lms_app/shared/network/token_storage.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../l10n/app_localizations.dart';
@@ -11,8 +11,29 @@ import '../../../../../shared/resources/assets_manager.dart';
 import '../../../../../shared/resources/colors_manager.dart';
 
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends StatefulWidget {
   const HomeHeader({super.key});
+
+  @override
+  State<HomeHeader> createState() => _HomeHeaderState();
+}
+
+class _HomeHeaderState extends State<HomeHeader> {
+  String _firstName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFirstName();
+  }
+
+  Future<void> _loadFirstName() async {
+    final firstName = await tokenStorage.getFirstName();
+    debugPrint("DEBUG HOME HEADER: Retrieved name: $firstName");
+    setState(() {
+      _firstName = firstName ?? "User";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,21 +44,21 @@ class HomeHeader extends StatelessWidget {
     return Row(
       children: [
         CircleAvatar(
-          radius: 24.r,
+          radius: 24,
           backgroundColor: ColorsManager.blue,
           child: ClipOval(
             child: Image.asset(
               ImagesManager.profileImage,
               fit: BoxFit.cover,
-              width: 48.w,
-              height: 48.h,
+              width: 48,
+              height: 48,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.person);
               },
             ),
           ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +74,7 @@ class HomeHeader extends StatelessWidget {
                       ),
               ),
               Text(
-                'Mohamed',
+                _firstName,
                 style: isLight
                     ? AppLightTextStyles.labelLarge
                     : AppDarkTextStyles.labelLarge,
@@ -69,7 +90,7 @@ class HomeHeader extends StatelessWidget {
               },
               child: const ImageIcon(AssetImage(IconsManager.notification)),
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: 20),
             GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, Routes.settings);

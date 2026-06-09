@@ -9,9 +9,11 @@ import '../widgets/doctor_forum_question_card.dart';
 import 'doctor_question_details_screen.dart';
 
 class DoctorForumsDetailsScreen extends StatefulWidget {
+  final int courseId;
   final String courseName;
 
   const DoctorForumsDetailsScreen({
+    required this.courseId,
     required this.courseName,
     super.key,
   });

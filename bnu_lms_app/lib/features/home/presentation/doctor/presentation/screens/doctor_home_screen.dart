@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../shared/resources/assets_manager.dart';
 
-import '../../../../../forums/student/presentation/screens/forums_tab.dart';
+import '../../../../../forums/doctor/presentation/screens/doctor_forums_tab.dart';
 
 class DoctorHomeScreen extends StatefulWidget {
   const DoctorHomeScreen({super.key});
@@ -23,7 +23,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
   final List<Widget> tabs = const [
     DoctorHomeDashboard(),
     DoctorCoursesTab(),
-    ForumsTab(),
+    DoctorForumsTab(),
     DoctorProfileTab(),
   ];
 

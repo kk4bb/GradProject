@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../shared/resources/colors_manager.dart';
 
@@ -23,10 +22,10 @@ class ContentBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: REdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(18.r),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: isLight
             ? [
                 BoxShadow(
@@ -46,20 +45,20 @@ class ContentBox extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: REdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isLight
                   ? ColorsManager.blue.withValues(alpha: 0.1)
                   : ColorsManager.blue.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               icon,
               color: isLight ? ColorsManager.blue : ColorsManager.lightBlue,
-              size: 24.sp,
+              size: 24,
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment:
@@ -69,17 +68,17 @@ class ContentBox extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: isLight ? ColorsManager.black : ColorsManager.white,
                   ),
                   textAlign: isArabic ? TextAlign.right : TextAlign.left,
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 14,
                     color: isLight
                         ? ColorsManager.grayDark
                         : ColorsManager.grayMedium,

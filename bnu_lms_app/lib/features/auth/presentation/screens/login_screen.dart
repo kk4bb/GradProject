@@ -1,5 +1,6 @@
+import 'package:bnu_lms_app/features/auth/data/auth_repository.dart';
+import 'package:bnu_lms_app/shared/network/token_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -23,6 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+  final AuthRepository _authRepository = AuthRepository();
 
   @override
   void dispose() {
@@ -31,29 +34,63 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await _authRepository.login(
+        emailController.text,
+        passwordController.text,
+      );
+      
+      await tokenStorage.saveToken(response.token);
+      await tokenStorage.saveRole(response.role);
+      debugPrint("DEBUG LOGIN: Saving name: ${response.firstName} ${response.lastName}");
+      await tokenStorage.saveName(response.firstName, response.lastName);
+
+      if (mounted) {
+        if (response.role == 'DOCTOR' || response.role == 'Instructor' || response.role == 'TA') {
+          Navigator.pushReplacementNamed(context, Routes.doctorDashboard);
+        } else {
+          Navigator.pushReplacementNamed(context, Routes.main);
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
     final localizations = AppLocalizations.of(context)!;
 
-    // final textTheme = isLight ? AppLightTextStyles() : AppDarkTextStyles();
-
     return Scaffold(
       backgroundColor:
       isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          padding: EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 60.h),
+              SizedBox(height: 60),
 
               /// Logo
               Container(
-                width: 120.w,
-                height: 120.w,
+                width: 120,
+                height: 120,
                 decoration: BoxDecoration(
                   color: isLight ? Colors.white : ColorsManager.darkSurface,
                   shape: BoxShape.circle,
@@ -66,15 +103,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                   ],
                 ),
-                clipBehavior: Clip.hardEdge, // IMPORTANT for perfect circle clipping
+                clipBehavior: Clip.hardEdge,
                 child: Image.asset(
                   ImagesManager.bnuLogo,
-                  fit: BoxFit.cover, // makes the logo fill all space
+                  fit: BoxFit.cover,
                 ),
               ),
 
 
-              SizedBox(height: 40.h),
+              SizedBox(height: 40),
 
               /// Title
               Text(
@@ -85,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 textAlign: TextAlign.center,
               ),
 
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
 
               /// Subtitle
               Text(
@@ -96,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 textAlign: TextAlign.center,
               ),
 
-              SizedBox(height: 40.h),
+              SizedBox(height: 40),
 
               Form(
                 key: _formKey,
@@ -117,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: AppValidators.validateEmail,
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 16),
 
                     /// Password
                     CustomTextFormField(
@@ -135,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: AppValidators.validatePassword,
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 16),
 
                     /// Fingerprint + Forgot Password
                     Row(
@@ -143,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Icon(
                           Icons.fingerprint,
-                          size: 40.sp,
+                          size: 40,
                           color: ColorsManager.blue,
                         ),
 
@@ -159,22 +196,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
 
-                    SizedBox(height: 32.h),
+                    SizedBox(height: 32),
 
                     /// Login Button
                     SizedBox(
                       width: double.infinity,
-                      height: 56.h,
-                      child: ElevatedButton(
+                      height: 56,
+                      child: _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ColorsManager.blue,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.r),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(context, Routes.main);
-                        },
+                        onPressed: _login,
                         child: Text(
                           "Login",
                           style: AppLightTextStyles.labelLarge,
@@ -182,9 +219,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 16),
 
-                    SizedBox(height: 40.h),
+                    SizedBox(height: 40),
 
                     /// Contact Support
                     TextButton(
@@ -197,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 20.h),
+                    SizedBox(height: 20),
                   ],
                 ),
               ),

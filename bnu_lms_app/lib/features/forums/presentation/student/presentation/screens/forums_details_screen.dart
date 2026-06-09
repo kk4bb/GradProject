@@ -125,6 +125,34 @@ class _ForumsDetailsScreenState extends State<ForumsDetailsScreen> {
             ),
           ),
 
+          // Filter Chips
+          SizedBox(
+            height: 50,
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              scrollDirection: Axis.horizontal,
+              itemCount: filters.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final isSelected = selectedFilterIndex == index;
+                return ChoiceChip(
+                  label: Text(filters[index]),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      selectedFilterIndex = index;
+                      // TODO: Implement filtering logic
+                    });
+                  },
+                  selectedColor: ColorsManager.blue,
+                  labelStyle: TextStyle(
+                    color: isSelected ? Colors.white : (isLight ? Colors.black : Colors.white),
+                  ),
+                );
+              },
+            ),
+          ),
+          
           // Discussions List
           Expanded(
             child: FutureBuilder<List<Discussion>>(
@@ -138,20 +166,23 @@ class _ForumsDetailsScreenState extends State<ForumsDetailsScreen> {
                 }
 
                 final discussions = snapshot.data ?? [];
+                
+                // TODO: Apply filtering based on selectedFilterIndex
+                // For now, display all
+                final filteredDiscussions = discussions;
 
-                if (discussions.isEmpty) {
-                  return const Center(child: Text('No discussions yet. Be the first to start one!'));
+                if (filteredDiscussions.isEmpty) {
+                  return const Center(child: Text('No discussions found.'));
                 }
 
                 return ListView.builder(
                   padding: const EdgeInsets.only(bottom: 20),
-                  itemCount: discussions.length,
+                  itemCount: filteredDiscussions.length,
                   itemBuilder: (context, index) {
-                    final discussion = discussions[index];
+                    final discussion = filteredDiscussions[index];
                     return GestureDetector(
                       onTap: () {
                         // In a real app, this would navigate to DiscussionPostsScreen
-                        // For now, we'll keep the existing QuestionDetailsScreen if it works with Discussion
                       },
                       child: ForumQuestionCard(
                         authorName: 'Student', // Backend Discussion doesn't have author yet

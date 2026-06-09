@@ -1,11 +1,10 @@
 import 'package:bnu_lms_app/features/home/presentation/ta/presentation/screens/ta_home_dashboard.dart';
 import 'package:flutter/material.dart';
 
-
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../shared/resources/assets_manager.dart';
 import '../../../../../courses/presentation/doctor/presentation/screens/doctor_courses_tab.dart';
-import '../../../../../forums/presentation/student/presentation/screens/forums_tab.dart';
+import '../../../../../forums/doctor/presentation/screens/doctor_forums_tab.dart'; // Import DoctorForumsTab
 import '../../../../../profile/doctor/presentation/screens/doctor_profile_tab.dart';
 import '../../../../../tasks/ta/presentation/screens/ta_tasks_tab.dart';
 
@@ -24,7 +23,7 @@ class _TaHomeScreenState extends State<TaHomeScreen> {
     TaHomeDashboard(),
     DoctorCoursesTab(),
     TaTasksTab(),
-    ForumsTab(),
+    DoctorForumsTab(),
     DoctorProfileTab(),
   ];
 

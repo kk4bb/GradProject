@@ -60,6 +60,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get courses => 'Courses';
 
   @override
+  String get tasks => 'Tasks';
+
+  @override
   String get calendar => 'Calendar';
 
   @override

@@ -28,12 +28,14 @@ class ForumRepository {
     }
   }
 
-  Future<int> createDiscussion(int courseId, String title) async {
+  Future<int> createDiscussion(int courseId, String title, String content) async {
     try {
       final response = await _dio.post(
         '${ApiEndpoints.createDiscussion}$courseId/discussion',
-        data: '"$title"', // Backend expects a plain string as JSON body
-        options: Options(contentType: 'application/json'),
+        data: {
+          'title': title,
+          'content': content,
+        },
       );
       return response.data['id'];
     } catch (e) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
@@ -9,8 +8,50 @@ import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/assets_manager.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
 
-class DoctorDashboardHeader extends StatelessWidget {
+import 'package:bnu_lms_app/shared/network/token_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../../../l10n/app_localizations.dart';
+import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
+import '../../../../../../shared/config/theme/app_light_text_styles.dart';
+import '../../../../../../shared/providers/theme_provider.dart';
+import '../../../../../../shared/resources/assets_manager.dart';
+import '../../../../../../shared/resources/colors_manager.dart';
+
+class DoctorDashboardHeader extends StatefulWidget {
   const DoctorDashboardHeader({super.key});
+
+  @override
+  State<DoctorDashboardHeader> createState() => _DoctorDashboardHeaderState();
+}
+
+class _DoctorDashboardHeaderState extends State<DoctorDashboardHeader> {
+  String _fullName = 'Instructor';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final firstName = await tokenStorage.getFirstName();
+    final lastName = await tokenStorage.getLastName();
+    final role = await tokenStorage.getRole();
+    String prefix = '';
+    if (role == 'Instructor') {
+      prefix = 'Dr. ';
+    } else if (role == 'TA') {
+      prefix = 'TA. ';
+    }
+    
+    if (mounted) {
+      setState(() {
+        _fullName = '$prefix${firstName ?? ""} ${lastName ?? ""}';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,25 +63,25 @@ class DoctorDashboardHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CircleAvatar(
-          radius: 24.r,
+          radius: 24,
           backgroundColor: ColorsManager.blue,
           child: ClipOval(
             child: Image.asset(
               ImagesManager.profileImage,
               fit: BoxFit.cover,
-              width: 48.w,
-              height: 48.h,
+              width: 48,
+              height: 48,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.person);
               },
             ),
           ),
         ),
-        SizedBox(width: 12.w),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center, // Added this to center text vertically
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 localizations.welcomeBack,
@@ -53,13 +94,13 @@ class DoctorDashboardHeader extends StatelessWidget {
                 ),
               ),
               Text(
-                'Dr. Ahmed',
+                _fullName,
                 style: isLight
                     ? AppLightTextStyles.labelLarge
                     : AppDarkTextStyles.labelLarge,
               ),
               Text(
-                'Faculty of Engineering',
+                'Faculty of Engineering', // TODO: Fetch from storage if available
                 style: isLight
                     ? AppLightTextStyles.labelLarge
                     : AppDarkTextStyles.labelLarge,
@@ -67,23 +108,6 @@ class DoctorDashboardHeader extends StatelessWidget {
             ],
           ),
         ),
-        // Row(
-        //   children: [
-        //     GestureDetector(
-        //       onTap: () {
-        //         Navigator.pushNamed(context, Routes.notifications);
-        //       },
-        //       child: const ImageIcon(AssetImage(IconsManager.notification)),
-        //     ),
-        //     SizedBox(width: 20.w),
-        //     GestureDetector(
-        //       onTap: () {
-        //         Navigator.pushNamed(context, Routes.settings);
-        //       },
-        //       child: const Icon(Icons.settings),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }

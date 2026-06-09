@@ -1,6 +1,5 @@
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -9,7 +8,7 @@ import '../../../../../shared/providers/theme_provider.dart';
 
 
 class ProfileMenuItem {
-  final String icon;
+  final dynamic icon; // Can be String or IconData
   final String label;
   final VoidCallback onTap;
 
@@ -39,7 +38,7 @@ class ProfileMenuSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: REdgeInsets.only(left: 4, bottom: 12),
+          padding: EdgeInsets.only(left: 4, bottom: 12),
           child: Text(
             title,
             style: isLight
@@ -54,7 +53,7 @@ class ProfileMenuSection extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             children: [
@@ -63,8 +62,8 @@ class ProfileMenuSection extends StatelessWidget {
                 if (i < items.length - 1)
                   Divider(
                     height: 1,
-                    indent: 70.w,
-                    endIndent: 16.w,
+                    indent: 70,
+                    endIndent: 16,
                     color: isLight
                         ? ColorsManager.grayMedium.withValues(alpha: 0.2)
                         : ColorsManager.darkTextSecondary.withValues(alpha: 0.2),
@@ -93,30 +92,32 @@ class MenuItemRow extends StatelessWidget {
 
     return InkWell(
       onTap: item.onTap,
-      borderRadius: BorderRadius.circular(16.r),
+      borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: REdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
             Container(
-              width: 40.w,
-              height: 40.w,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 color: isLight
                     ? ColorsManager.lightBlueAccent
                     : ColorsManager.darkBackground,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
-                child: Image.asset(
-                  item.icon,
-                  width: 22.w,
-                  height: 22.w,
-                  color: ColorsManager.blue,
-                ),
+                child: item.icon is IconData
+                    ? Icon(item.icon as IconData, size: 22, color: ColorsManager.blue)
+                    : Image.asset(
+                        item.icon as String,
+                        width: 22,
+                        height: 22,
+                        color: ColorsManager.blue,
+                      ),
               ),
             ),
-            SizedBox(width: 14.w),
+            SizedBox(width: 14),
             Expanded(
               child: Text(
                 item.label,
@@ -133,7 +134,7 @@ class MenuItemRow extends StatelessWidget {
             ),
             Icon(
               Icons.arrow_forward_ios,
-              size: 16.sp,
+              size: 16,
               color: ColorsManager.grayMedium,
             ),
           ],

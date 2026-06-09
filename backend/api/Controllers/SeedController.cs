@@ -51,78 +51,40 @@ public class SeedController : ControllerBase
             }
 
             // ── 2. Users ──────────────────────────────────────────────────────
-            var doctor = await EnsureUser(log,
-                "dr.smith@campusconnect.edu", "John", "Smith",
-                "Faculty of Computer Science", "Instructor");
+            var prof = await EnsureUser(log, "prof@bnu.edu", "TF2", "Doctor", "Engineering", "Instructor", "Password123!");
+            var ta = await EnsureUser(log, "ta@bnu.edu", "Youssef", "Hatem", "Engineering", "TA", "Password123!");
+            var student = await EnsureUser(log, "student@bnu.edu", "Jimmy", "Hopkins", "Engineering", "Student", "Password123!");
 
-            await EnsureUser(log,
-                "ta.ahmed@campusconnect.edu", "Ahmed", "Hassan",
-                "Faculty of Computer Science", "TA");
+            // ── 3. Courses ────────────────────────────────────────────────────
+            var godotCourse = await EnsureCourse(log, "Game Development With Godot", "Learn to build games with Godot engine.", prof.Id);
+            await EnsureEnrollment(log, student.Id, godotCourse.Id, godotCourse.Title);
 
-            await EnsureUser(log,
-                "john.doe@example.com", "John", "Doe",
-                "Faculty of Computer Science", "Student",
-                academicYear: 2, creditHours: 72);
+            // ── 4. Assignments ────────────────────────────────────────────────
+            await EnsureAssignment(log, "Godot Basics Assignment", "Create a simple character controller.", DateTime.UtcNow.AddDays(12), godotCourse.Id);
+            await EnsureAssignment(log, "Godot Advanced Assignment", "Implement a platformer level.", DateTime.UtcNow.AddDays(50), godotCourse.Id);
 
-            await EnsureUser(log,
-                "sara.ali@example.com", "Sara", "Ali",
-                "Faculty of Computer Science", "Student",
-                academicYear: 2, creditHours: 68);
+            // ── 5. Quizzes & Questions ────────────────────────────────────────
+            var q1 = await EnsureQuiz(log, "Godot Basics Quiz", godotCourse.Id);
+            await EnsureQuestion(log, "What is GDScript most similar to?", q1.Id);
+            await EnsureQuestion(log, "What is the root node?", q1.Id);
 
-            // ── 3. Courses (owned by doctor) ──────────────────────────────────
-            var cs101 = await EnsureCourse(log,
-                "CS101 - Introduction to Programming",
-                "Fundamentals of programming using Python.",
-                doctor.Id);
+            var q2 = await EnsureQuiz(log, "Godot Advanced Quiz", godotCourse.Id);
+            await EnsureQuestion(log, "Which signal is emitted when a node enters the tree?", q2.Id);
+            await EnsureQuestion(log, "Explain the life cycle of a node?", q2.Id);
 
-            var ds201 = await EnsureCourse(log,
-                "DS201 - Data Structures",
-                "Arrays, linked lists, stacks, queues, trees, and graphs.",
-                doctor.Id);
-
-            var db301 = await EnsureCourse(log,
-                "DB301 - Database Systems",
-                "Relational model, SQL, normalization, and transactions.",
-                doctor.Id);
-
-            // ── 4. Enroll all students in all courses ─────────────────────────
-            var students = await _userManager.GetUsersInRoleAsync("Student");
-            foreach (var student in students)
-            {
-                await EnsureEnrollment(log, student.Id, cs101.Id, cs101.Title);
-                await EnsureEnrollment(log, student.Id, ds201.Id, ds201.Title);
-                await EnsureEnrollment(log, student.Id, db301.Id, db301.Title);
-            }
+            // ── 6. Discussions ────────────────────────────────────────────────
+            await EnsureDiscussion(log, "Godot Scene System Discussion", godotCourse.Id);
+            await EnsureDiscussion(log, "GDScript Performance Tips", godotCourse.Id);
 
             return Ok(new
             {
                 message = "Seed completed successfully!",
-                log,
-                credentials = new[]
-                {
-                    new { role = "Instructor", email = "dr.smith@campusconnect.edu", password = "Password123!" },
-                    new { role = "TA",         email = "ta.ahmed@campusconnect.edu", password = "Password123!" },
-                    new { role = "Student",    email = "john.doe@example.com",       password = "Password123!" },
-                    new { role = "Student",    email = "sara.ali@example.com",       password = "Password123!" },
-                },
-                courses = new[]
-                {
-                    new { id = cs101.Id, title = cs101.Title },
-                    new { id = ds201.Id, title = ds201.Title },
-                    new { id = db301.Id, title = db301.Title },
-                }
+                log
             });
         }
         catch (Exception ex)
         {
-            // Return full error details for debugging
-            return StatusCode(500, new
-            {
-                error   = ex.Message,
-                inner   = ex.InnerException?.Message,
-                log,
-                stack   = ex.StackTrace
-            });
+            return StatusCode(500, new { error = ex.Message, inner = ex.InnerException?.Message, log, stack = ex.StackTrace });
         }
     }
 
@@ -132,12 +94,21 @@ public class SeedController : ControllerBase
         List<string> log,
         string email, string firstName, string lastName,
         string faculty, string role,
+        string password = "qweasd",
         int? academicYear = null, int? creditHours = null)
     {
         var existing = await _userManager.FindByEmailAsync(email);
         if (existing != null)
         {
-            log.Add($"User exists: {email}");
+            // Update name if it's not what we want
+            if (existing.FirstName != firstName || existing.LastName != lastName) {
+                existing.FirstName = firstName;
+                existing.LastName = lastName;
+                await _userManager.UpdateAsync(existing);
+                log.Add($"User updated: {email}");
+            } else {
+                log.Add($"User exists: {email}");
+            }
             return existing;
         }
 
@@ -153,7 +124,8 @@ public class SeedController : ControllerBase
             EmailConfirmed = true,
         };
 
-        var result = await _userManager.CreateAsync(user, "Password123!");
+
+        var result = await _userManager.CreateAsync(user, password);
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
@@ -165,41 +137,56 @@ public class SeedController : ControllerBase
         return user;
     }
 
-    private async Task<Course> EnsureCourse(
-        List<string> log, string title, string description, string instructorId)
+    private async Task<Course> EnsureCourse(List<string> log, string title, string description, string instructorId)
     {
         var existing = await _db.Courses.FirstOrDefaultAsync(c => c.Title == title);
-        if (existing != null)
-        {
-            log.Add($"Course exists: {title}");
-            return existing;
-        }
-
-        var course = new Course
-        {
-            Title        = title,
-            Description  = description,
-            InstructorId = instructorId,
-        };
+        if (existing != null) return existing;
+        var course = new Course { Title = title, Description = description, InstructorId = instructorId };
         _db.Courses.Add(course);
         await _db.SaveChangesAsync();
-        log.Add($"Course created (ID={course.Id}): {title}");
+        log.Add($"Course created: {title}");
         return course;
     }
 
-    private async Task EnsureEnrollment(
-        List<string> log, string studentId, int courseId, string courseTitle)
+    private async Task EnsureEnrollment(List<string> log, string studentId, int courseId, string courseTitle)
     {
-        var exists = await _db.Enrollments
-            .AnyAsync(e => e.StudentId == studentId && e.CourseId == courseId);
-        if (exists)
-        {
-            log.Add($"Enrollment exists: student {studentId[..8]}... → {courseTitle}");
-            return;
-        }
-
+        var exists = await _db.Enrollments.AnyAsync(e => e.StudentId == studentId && e.CourseId == courseId);
+        if (exists) return;
         _db.Enrollments.Add(new Enrollment { StudentId = studentId, CourseId = courseId });
         await _db.SaveChangesAsync();
-        log.Add($"Enrolled: student {studentId[..8]}... → {courseTitle}");
+        log.Add($"Enrolled student in {courseTitle}");
     }
+
+    private async Task<Assignment> EnsureAssignment(List<string> log, string title, string desc, DateTime dueDate, int courseId)
+    {
+        var assignment = new Assignment { Title = title, Description = desc, DueDate = dueDate, CourseId = courseId };
+        _db.Assignments.Add(assignment);
+        await _db.SaveChangesAsync();
+        log.Add($"Assignment created: {title}");
+        return assignment;
+    }
+
+    private async Task<Quiz> EnsureQuiz(List<string> log, string title, int courseId)
+    {
+        var quiz = new Quiz { Title = title, CourseId = courseId };
+        _db.Quizzes.Add(quiz);
+        await _db.SaveChangesAsync();
+        log.Add($"Quiz created: {title}");
+        return quiz;
+    }
+
+    private async Task EnsureQuestion(List<string> log, string text, int quizId)
+    {
+        _db.Questions.Add(new Question { Text = text, QuizId = quizId });
+        await _db.SaveChangesAsync();
+        log.Add($"Question created: {text}");
+    }
+
+    private async Task EnsureDiscussion(List<string> log, string title, int courseId)
+    {
+        _db.Discussions.Add(new Discussion { Title = title, Content = "Default content", CourseId = courseId });
+        await _db.SaveChangesAsync();
+        log.Add($"Discussion created: {title}");
+    }
+
 }

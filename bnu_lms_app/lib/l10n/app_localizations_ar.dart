@@ -60,6 +60,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get courses => 'المقررات';
 
   @override
+  String get tasks => 'المهام';
+
+  @override
   String get calendar => 'التقويم';
 
   @override

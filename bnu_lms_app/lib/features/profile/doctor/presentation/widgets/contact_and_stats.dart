@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -22,34 +21,34 @@ class ContactAndStats extends StatelessWidget {
         //     Expanded(
         //       child: ElevatedButton.icon(
         //         onPressed: () {},
-        //         icon: Icon(Icons.email_outlined, size: 18.sp),
+        //         icon: Icon(Icons.email_outlined, size: 18),
         //         label: const Text('Email'),
         //         style: ElevatedButton.styleFrom(
         //           backgroundColor: ColorsManager.blue,
         //           foregroundColor: ColorsManager.white,
-        //           padding: EdgeInsets.symmetric(vertical: 12.h),
-        //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        //           padding: EdgeInsets.symmetric(vertical: 12),
+        //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         //           elevation: 0,
         //         ),
         //       ),
         //     ),
-        //     SizedBox(width: 12.w),
+        //     SizedBox(width: 12),
         //     Expanded(
         //       child: OutlinedButton.icon(
         //         onPressed: () {},
-        //         icon: Icon(Icons.chat_bubble_outline, size: 18.sp),
+        //         icon: Icon(Icons.chat_bubble_outline, size: 18),
         //         label: const Text('Message'),
         //         style: OutlinedButton.styleFrom(
         //           foregroundColor: isLight ? ColorsManager.black : ColorsManager.white,
         //           side: BorderSide(color: ColorsManager.grayMedium.withValues(alpha: 0.3)),
-        //           padding: EdgeInsets.symmetric(vertical: 12.h),
-        //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        //           padding: EdgeInsets.symmetric(vertical: 12),
+        //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         //         ),
         //       ),
         //     ),
         //   ],
         // ),
-        // SizedBox(height: 24.h),
+        // SizedBox(height: 24),
 
         // Stats Row
         Row(
@@ -69,12 +68,12 @@ class ContactAndStats extends StatelessWidget {
 
     return Expanded(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 4.w),
-        padding: EdgeInsets.symmetric(vertical: 16.h),
+        margin: EdgeInsets.symmetric(horizontal: 4),
+        padding: EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 8.r, offset: const Offset(0, 2))] : [],
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 8, offset: const Offset(0, 2))] : [],
         ),
         child: Column(
           children: [
@@ -82,11 +81,11 @@ class ContactAndStats extends StatelessWidget {
               value,
               style: (isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge).copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 4),
             Text(
               label,
               style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(
-                fontSize: 10.sp,
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
               ),

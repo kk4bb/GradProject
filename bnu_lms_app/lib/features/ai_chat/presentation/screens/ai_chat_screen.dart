@@ -1,3 +1,5 @@
+import 'package:bnu_lms_app/features/ai_chat/data/models/send_message_request.dart';
+import 'package:bnu_lms_app/shared/network/repositories/ai_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -9,19 +11,21 @@ import '../widgets/message_input.dart';
 import '../widgets/empty_state.dart';
 
 class AiChatScreen extends StatefulWidget {
-  const AiChatScreen({super.key});
+  final int? courseId;
+  const AiChatScreen({super.key, this.courseId});
 
   @override
   State<AiChatScreen> createState() => _AiChatScreenState();
 }
 
 class _AiChatScreenState extends State<AiChatScreen> {
-
+  final AiRepository _aiRepository = AiRepository();
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   final List<ChatMessage> _messages = [];
   bool _isTyping = false;
+  int? _sessionId;
 
   @override
   void initState() {
@@ -65,30 +69,36 @@ class _AiChatScreenState extends State<AiChatScreen> {
     _messageController.clear();
     _scrollToBottom();
 
-    // Simulate AI response (replace with actual API call)
-    await Future.delayed(const Duration(milliseconds: 1500));
+    try {
+      final reply = await _aiRepository.sendMessage(
+        SendMessageRequest(
+          sessionId: _sessionId,
+          courseId: widget.courseId,
+          content: messageText,
+        ),
+      );
 
-    if (mounted) {
-      setState(() {
-        _messages.add(
-          ChatMessage(
-            text: _generateResponse(messageText),
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
+      if (mounted) {
+        setState(() {
+          _messages.add(
+            ChatMessage(
+              text: reply,
+              isUser: false,
+              timestamp: DateTime.now(),
+            ),
+          );
+          _isTyping = false;
+        });
+        _scrollToBottom();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isTyping = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
         );
-        _isTyping = false;
-      });
-      _scrollToBottom();
+      }
     }
-  }
-
-  String _generateResponse(String query) {
-    // Replace this with your actual AI API integration
-    if (query.toLowerCase().contains('quantum')) {
-      return 'Quantum entanglement is a phenomenon where two or more particles become linked in such a way that they share the same fate, no matter how far apart they are. If you measure a property of one particle, you instantly know the corresponding property of the other, even if they\'re light-years away. It\'s like having two coins that are magically linked: if one lands on heads, the other instantly lands on tails, and vice versa.';
-    }
-    return 'I understand your question. Let me help you with that. This is a demonstration response. Please integrate your AI API here for actual intelligent responses.';
   }
 
   void _scrollToBottom() {
@@ -102,6 +112,8 @@ class _AiChatScreenState extends State<AiChatScreen> {
       }
     });
   }
+// ... (rest of the file remains the same)
+
 
   void _handleAttachment(BuildContext context) {
     showModalBottomSheet(

@@ -1,6 +1,5 @@
 import 'package:bnu_lms_app/shared/resources/app_sizes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -28,7 +27,7 @@ class DoctorProfileTab extends StatelessWidget {
         children: [
           // 1. Custom Header (Removed the Row to perfectly center the title)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: Center(
               child: Text(
                 'Profile',
@@ -37,25 +36,25 @@ class DoctorProfileTab extends StatelessWidget {
             ),
           ),
 
-          // Added .h here just in case AppSizes.largeSpacing is a raw double
-          SizedBox(height: AppSizes.largeSpacing.h),
+          // Added  here just in case AppSizes.largeSpacing is a raw double
+          SizedBox(height: AppSizes.largeSpacing),
 
           // 2. Scrollable Body
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 0),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               child: Column(
                 children: [
                   const DoctorProfileHeader(),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
                   const ContactAndStats(),
-                  SizedBox(height: 32.h),
+                  SizedBox(height: 32),
                   const MyCoursesSection(),
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 24),
                   const OfficeHoursCard(),
-                  SizedBox(height: 32.h),
+                  SizedBox(height: 32),
                   const SettingsSection(),
-                  SizedBox(height: 40.h), // Bottom padding
+                  SizedBox(height: 40), // Bottom padding
                 ],
               ),
             ),

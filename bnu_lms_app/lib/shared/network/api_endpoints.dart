@@ -29,7 +29,11 @@ class ApiEndpoints {
   static const String takeQuiz = "quiz/"; // + {id}/take
   static const String submitQuiz = "quiz/"; // + {id}/submit
 
-  static const String aiChat = "ai/chat";
+  // AI
+  static const String aiSendMessage = "ai/message";
+  static const String aiSessions = "ai/sessions";
+  static const String aiSessionMessages = "ai/sessions/"; // + {sessionId}/messages
+  static const String aiDeleteSession = "ai/sessions/"; // + {sessionId}
 
   // Forums
   static const String courseDiscussions = "forum/course/"; // + {courseId}

@@ -7,12 +7,16 @@ class AuthResponse {
   final DateTime expiration;
   final String email;
   final String role;
+  final String firstName;
+  final String lastName;
 
   AuthResponse({
     required this.token,
     required this.expiration,
     required this.email,
     required this.role,
+    required this.firstName,
+    required this.lastName,
   });
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
@@ -21,6 +25,8 @@ class AuthResponse {
       expiration: DateTime.parse(json['expiration']),
       email: json['email'],
       role: json['role'],
+      firstName: json['firstName'] ?? '',
+      lastName: json['lastName'] ?? '',
     );
   }
 }

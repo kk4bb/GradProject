@@ -33,15 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       body: tabs[selectedIndex],
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        Navigator.pushNamed(context, Routes.aiChat);
-      },
-        backgroundColor: Color(0xFF32C9E0),
-        foregroundColor: Colors.white,
-        child: ImageIcon(AssetImage(IconsManager.ai)),
-
-        
-      ),
+      floatingActionButton: selectedIndex == 0
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.aiChat);
+              },
+              backgroundColor: const Color(0xFF32C9E0),
+              foregroundColor: Colors.white,
+              child: ImageIcon(AssetImage(IconsManager.ai)),
+            )
+          : null,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: selectedIndex,

@@ -1,6 +1,5 @@
 import 'package:bnu_lms_app/features/notification/presentation/widgets/tab_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/resources/colors_manager.dart';
 import 'notification_card.dart';
 
@@ -15,17 +14,17 @@ class NotificationTabBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: REdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: TabBar(
               isScrollable: true,
               dividerColor: Colors.transparent,
               indicatorColor: Colors.transparent,
               tabAlignment: TabAlignment.start,
               padding: EdgeInsets.zero,
-              labelPadding: REdgeInsets.only(right: 12),
+              labelPadding: EdgeInsets.only(right: 12),
               indicator: BoxDecoration(
                 color: ColorsManager.blue,
-                borderRadius: BorderRadius.circular(24.r),
+                borderRadius: BorderRadius.circular(24),
               ),
               labelColor: ColorsManager.white,
               unselectedLabelColor: ColorsManager.blueGray,
@@ -69,9 +68,9 @@ class NotificationTabBar extends StatelessWidget {
     }
 
     return ListView.separated(
-      padding: REdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: notifications.length,
-      separatorBuilder: (context, index) => SizedBox(height: 16.h),
+      separatorBuilder: (context, index) => SizedBox(height: 16),
       itemBuilder: (context, index) {
         final notification = notifications[index];
         return NotificationCard(

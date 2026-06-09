@@ -5,7 +5,6 @@ import 'package:bnu_lms_app/shared/resources/assets_manager.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:bnu_lms_app/shared/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -38,12 +37,12 @@ class QuizDetailsScreen extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                width: 358.w,
+                width: 358,
                 decoration: BoxDecoration(
                   color: isLight
                       ? ColorsManager.white
                       : ColorsManager.darkSurface,
-                  borderRadius: BorderRadius.circular(24.r),
+                  borderRadius: BorderRadius.circular(24),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -65,8 +64,8 @@ class QuizDetailsScreen extends StatelessWidget {
                           Spacer(),
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 6.h,
+                              horizontal: 12,
+                              vertical: 6,
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(

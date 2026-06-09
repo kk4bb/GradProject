@@ -25,7 +25,10 @@ class ForumCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DoctorForumsDetailsScreen(courseName: forum.title),
+            builder: (context) => DoctorForumsDetailsScreen(
+              courseId: forum.courseId,
+              courseName: forum.title,
+            ),
           ),
         );
       },

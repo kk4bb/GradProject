@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
@@ -22,7 +21,7 @@ class DoctorQuickAccessSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: REdgeInsets.symmetric(horizontal: 30),
+          padding: EdgeInsets.symmetric(horizontal: 30),
           child: Text(
             localizations.quickAccess,
             style: isLight ? AppLightTextStyles.headlineMedium : AppDarkTextStyles.headlineMedium,
@@ -39,7 +38,7 @@ class DoctorQuickAccessSection extends StatelessWidget {
                   label: 'Take Attendance',
                   onTap: () {},
                 ),
-                SizedBox(width: 16.w),
+                SizedBox(width: 16),
                 QuickActionCard(
                   icon: Icons.assignment_add,
                   label: 'Create Assignment',
@@ -47,7 +46,7 @@ class DoctorQuickAccessSection extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -56,7 +55,7 @@ class DoctorQuickAccessSection extends StatelessWidget {
                   label: 'Create Quiz',
                   onTap: () {},
                 ),
-                SizedBox(width: 16.w),
+                SizedBox(width: 16),
                 QuickActionCard(
                   icon: Icons.campaign_outlined,
                   label: 'Post Update',

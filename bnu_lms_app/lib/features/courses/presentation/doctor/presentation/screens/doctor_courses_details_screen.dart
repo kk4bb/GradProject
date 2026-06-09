@@ -1,5 +1,6 @@
+import 'package:bnu_lms_app/features/courses/data/models/course_model.dart';
+import 'package:bnu_lms_app/shared/network/repositories/course_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -20,16 +21,81 @@ import '../widgets/doctor_courses_details/next_session_section.dart';
 import '../widgets/doctor_courses_details/overview_stats_row.dart';
 
 
-class DoctorCourseDetailsScreen extends StatelessWidget {
+class DoctorCourseDetailsScreen extends StatefulWidget {
   const DoctorCourseDetailsScreen({super.key});
+
+  @override
+  State<DoctorCourseDetailsScreen> createState() => _DoctorCourseDetailsScreenState();
+}
+
+class _DoctorCourseDetailsScreenState extends State<DoctorCourseDetailsScreen> {
+  final CourseRepository _courseRepository = CourseRepository();
+  CourseDetail? _courseDetail;
+  bool _isLoading = true;
+  String _errorMessage = '';
+  int? _courseId;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_courseId == null) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      debugPrint("DEBUG: DoctorCourseDetailsScreen args: $args");
+      if (args is Map<String, dynamic>) {
+        _courseId = args['courseId'] as int?;
+      }
+      
+      if (_courseId != null) {
+        _fetchCourseDetails();
+      } else {
+        setState(() {
+          _errorMessage = 'No course ID provided (Arguments: $args)';
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _fetchCourseDetails() async {
+    try {
+      final details = await _courseRepository.getCourseDetails(_courseId!);
+      if (mounted) {
+        setState(() {
+          _courseDetail = details;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
 
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_errorMessage.isNotEmpty || _courseDetail == null) {
+      return Scaffold(
+        backgroundColor: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
+        body: Center(child: Text(_errorMessage)),
+      );
+    }
+
     return DefaultTabController(
-      length: 7, // Updated to 7 to fit all your tabs
+      length: 7,
       child: Scaffold(
         backgroundColor: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
         appBar: AppBar(
@@ -41,7 +107,7 @@ class DoctorCourseDetailsScreen extends StatelessWidget {
             icon: Icon(
               Icons.arrow_back_ios_new_rounded,
               color: isLight ? ColorsManager.black : ColorsManager.white,
-              size: 20.sp,
+              size: 20,
             ),
           ),
           title: Text(
@@ -64,11 +130,11 @@ class DoctorCourseDetailsScreen extends StatelessWidget {
           children: [
             // 1. The Shared Header Banner
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-              child: const CourseHeaderCard(
-                title: 'Advanced Data Structures & Algos',
-                courseCode: 'CS302',
-                instructor: 'Dr. Ahmed',
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: CourseHeaderCard(
+                title: _courseDetail!.title,
+                courseCode: 'N/A', // TODO: Add to model if needed
+                instructor: _courseDetail!.instructorName,
                 icon: Icons.data_object,
               ),
             ),
@@ -100,36 +166,36 @@ class DoctorCourseDetailsScreen extends StatelessWidget {
                 children: [
                   // 1. Overview Tab Content
                   SingleChildScrollView(
-                    padding: EdgeInsets.all(20.w),
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const OverviewStatsRow(),
-                        SizedBox(height: 24.h),
-                        const AboutCourseSection(),
-                        SizedBox(height: 24.h),
+                        const SizedBox(height: 24),
+                        AboutCourseSection(description: _courseDetail!.description),
+                        const SizedBox(height: 24),
                         const LearningOutcomesSection(),
-                        SizedBox(height: 24.h),
+                        const SizedBox(height: 24),
                         const NextSessionSection(),
-                        SizedBox(height: 80.h), // Padding for FAB
+                        const SizedBox(height: 80), // Padding for FAB
                       ],
                     ),
                   ),
 
                   // 2. Students Tab
-                  const CourseStudentsTab(),
+                  CourseStudentsTab(courseId: _courseId!),
 
                   // 3. Assignments Tab
-                  const CourseAssignmentsTab(),
+                  CourseAssignmentsTab(courseId: _courseId!),
 
                   // 4. Quizzes Tab
-                  const CourseQuizzesTab(),
+                  CourseQuizzesTab(courseId: _courseId!),
 
                   // 5. Materials Tab
-                  const CourseMaterialsTab(),
+                  CourseMaterialsTab(courseDetail: _courseDetail!),
 
                   // 6. Attendance Tab
-                  const CourseAttendanceTab(),
+                  CourseAttendanceTab(courseId: _courseId!),
 
                   // 7. Grades Tab
                   const CourseGradesTab(),
@@ -138,7 +204,6 @@ class DoctorCourseDetailsScreen extends StatelessWidget {
             ),
           ],
         ),
-        // Floating Action Button
       ),
     );
   }
