@@ -5,18 +5,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CampusConnect.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedDummyQuiz : Migration
+    public partial class AddPointsToQuestion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Removed hardcoded SQL seeding. Handled by DbSeeder.
+            migrationBuilder.AddColumn<double>(
+                name: "Points",
+                table: "Questions",
+                type: "float",
+                nullable: false,
+                defaultValue: 0.0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            // Removed hardcoded SQL seeding. Handled by DbSeeder.
+            migrationBuilder.DropColumn(
+                name: "Points",
+                table: "Questions");
         }
     }
 }

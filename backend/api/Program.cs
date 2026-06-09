@@ -2,6 +2,7 @@ using CampusConnect.Infrastructure.Hubs;
 using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
+using CampusConnect.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +14,8 @@ using Hangfire;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 builder.Services.AddSignalR();
 
 // Hangfire
@@ -135,6 +137,21 @@ app.MapControllers();
 app.MapHub<AssignmentHub>("/assignmentHub");
 app.MapHub<ForumHub>("/forumHub");
 app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<QuizHub>("/quizHub");
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await DbSeeder.SeedAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
 
 app.Run();
 

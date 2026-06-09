@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusConnect.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260608115832_OneShot")]
+    partial class OneShot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -462,9 +465,6 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.Property<bool>("IsEssay")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Points")
-                        .HasColumnType("float");
-
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
 
@@ -512,27 +512,8 @@ namespace CampusConnect.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("AreGradesPublished")
-                        .HasColumnType("bit");
-
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DurationMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsAutoGraded")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -555,9 +536,6 @@ namespace CampusConnect.Infrastructure.Migrations
 
                     b.Property<string>("EssayAnswer")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("ManualScore")
-                        .HasColumnType("float");
 
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
