@@ -62,7 +62,7 @@ namespace CampusConnect.Tests.App
             var courseId = 1;
             
             context.Enrollments.Add(new Enrollment { StudentId = studentId, CourseId = courseId });
-            context.Discussions.Add(new Discussion { Id = 1, CourseId = courseId, Title = "General", Content = "Test Content", Status = "OPEN", CreatedAt = DateTime.UtcNow });
+            context.Discussions.Add(new Discussion { Id = 1, CourseId = courseId, UserId = studentId, Title = "General", Content = "Test Content", Status = "OPEN", CreatedAt = DateTime.UtcNow });
             
             await context.SaveChangesAsync();
 
@@ -70,7 +70,7 @@ namespace CampusConnect.Tests.App
             var service = new ForumService(context, hubMock.Object);
 
             // Act
-            var postId = await service.CreatePostAsync(1, new PostCreateDto { Content = "Hello World" }, studentId, "Student", "John Doe");
+            var postId = await service.CreatePostAsync(1, new PostCreateDto { Content = "Hello World" }, studentId, "Student", "John Doe", null);
 
             // Assert
             Assert.True(postId > 0);
@@ -89,7 +89,7 @@ namespace CampusConnect.Tests.App
             context.Users.Add(user);
 
             context.Enrollments.Add(new Enrollment { StudentId = studentId, CourseId = courseId });
-            context.Discussions.Add(new Discussion { Id = 1, CourseId = courseId, Title = "General", Content = "Test Content", Status = "OPEN", CreatedAt = DateTime.UtcNow });
+            context.Discussions.Add(new Discussion { Id = 1, CourseId = courseId, UserId = studentId, Title = "General", Content = "Test Content", Status = "OPEN", CreatedAt = DateTime.UtcNow });
             
             var post = new Post { Id = 1, DiscussionId = 1, UserId = studentId, Content = "Main Post", CreatedAt = DateTime.UtcNow, ApprovedByRole = "" };
             context.Posts.Add(post);

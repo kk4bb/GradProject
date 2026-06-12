@@ -107,11 +107,12 @@ namespace CampusConnect.Infrastructure.Services
                     session.Latitude.Value, session.Longitude.Value,
                     request.Latitude.Value, request.Longitude.Value);
 
-                // TODO: Re-enable for production
+                // Geolocation verification
                 if (distance > MaxDistanceMeters)
                 {
-                    // throw new Exception("You are too far from the classroom.");
+                     throw new Exception("You are too far from the classroom.");
                 }
+
             }
 
             // Check if student already marked

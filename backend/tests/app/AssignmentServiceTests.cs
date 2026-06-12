@@ -1,9 +1,12 @@
 using CampusConnect.Application.Dtos.Assignment;
+using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
+using CampusConnect.Infrastructure.Hubs;
 using CampusConnect.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -29,6 +32,16 @@ namespace CampusConnect.Tests.App
             return new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
         }
 
+        private Mock<IHubContext<NotificationHub>> GetMockNotificationHub()
+        {
+            var mockHubContext = new Mock<IHubContext<NotificationHub>>();
+            var mockClients = new Mock<IHubClients>();
+            var mockClientProxy = new Mock<IClientProxy>();
+            mockHubContext.Setup(h => h.Clients).Returns(mockClients.Object);
+            mockClients.Setup(c => c.Group(It.IsAny<string>())).Returns(mockClientProxy.Object);
+            return mockHubContext;
+        }
+
         [Fact]
         public async Task SubmitAssignmentAsync_PastDueDate_ThrowsException()
         {
@@ -47,7 +60,9 @@ namespace CampusConnect.Tests.App
             await context.SaveChangesAsync();
 
             var userManagerMock = GetMockUserManager();
-            var service = new AssignmentService(context, userManagerMock.Object);
+            var gradeServiceMock = new Mock<IGradeService>();
+            var notificationHubMock = GetMockNotificationHub();
+            var service = new AssignmentService(context, userManagerMock.Object, gradeServiceMock.Object, notificationHubMock.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => 
@@ -64,7 +79,9 @@ namespace CampusConnect.Tests.App
             await context.SaveChangesAsync();
 
             var userManagerMock = GetMockUserManager();
-            var service = new AssignmentService(context, userManagerMock.Object);
+            var gradeServiceMock = new Mock<IGradeService>();
+            var notificationHubMock = GetMockNotificationHub();
+            var service = new AssignmentService(context, userManagerMock.Object, gradeServiceMock.Object, notificationHubMock.Object);
 
             // Act & Assert
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => 
@@ -91,7 +108,9 @@ namespace CampusConnect.Tests.App
             await context.SaveChangesAsync();
 
             var userManagerMock = GetMockUserManager();
-            var service = new AssignmentService(context, userManagerMock.Object);
+            var gradeServiceMock = new Mock<IGradeService>();
+            var notificationHubMock = GetMockNotificationHub();
+            var service = new AssignmentService(context, userManagerMock.Object, gradeServiceMock.Object, notificationHubMock.Object);
 
             // Act
             await service.GradeSubmissionAsync(

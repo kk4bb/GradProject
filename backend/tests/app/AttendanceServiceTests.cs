@@ -3,7 +3,9 @@ using CampusConnect.Domain.Entities;
 using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,12 @@ namespace CampusConnect.Tests.App
             return new ApplicationDbContext(options);
         }
 
+        private Mock<UserManager<ApplicationUser>> GetMockUserManager()
+        {
+            var store = new Mock<IUserStore<ApplicationUser>>();
+            return new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
+        }
+
         [Fact]
         public async Task CreateSessionAsync_ValidRequest_CreatesSession()
         {
@@ -32,7 +40,8 @@ namespace CampusConnect.Tests.App
             context.Courses.Add(course);
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new CreateAttendanceSessionRequest
             {
                 CourseId = 1,
@@ -43,11 +52,11 @@ namespace CampusConnect.Tests.App
             };
 
             // Act
-            var response = await service.CreateSessionAsync(request, instructorId);
+            var response = await service.CreateSessionAsync(request, instructorId, false);
 
             // Assert
             response.Should().NotBeNull();
-            response.SessionTitle.Should().Be("Morning Lecture");
+            response.SessionTitle.Should().Be("Lecture #1");
             response.QRCodeToken.Should().NotBeNullOrEmpty();
             context.AttendanceSessions.Count().Should().Be(1);
         }
@@ -62,12 +71,13 @@ namespace CampusConnect.Tests.App
             context.Courses.Add(course);
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new CreateAttendanceSessionRequest { CourseId = 1 };
 
             // Act & Assert
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => 
-                service.CreateSessionAsync(request, "wrong-instructor"));
+                service.CreateSessionAsync(request, "wrong-instructor", false));
         }
 
         [Fact]
@@ -95,7 +105,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceSessions.Add(session);
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new MarkAttendanceRequest
             {
                 QRCodeToken = "valid-token",
@@ -118,7 +129,8 @@ namespace CampusConnect.Tests.App
         {
             // Arrange
             var context = GetDbContext();
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new MarkAttendanceRequest { QRCodeToken = "invalid-token" };
 
             // Act & Assert
@@ -142,7 +154,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceSessions.Add(session);
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new MarkAttendanceRequest { QRCodeToken = "expired-token" };
 
             // Act & Assert
@@ -166,7 +179,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceSessions.Add(session);
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new MarkAttendanceRequest { QRCodeToken = "token" };
 
             // Act & Assert
@@ -195,7 +209,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceSessions.Add(session);
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new MarkAttendanceRequest
             {
                 QRCodeToken = "token",
@@ -231,7 +246,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceSessions.Add(session);
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new MarkAttendanceRequest
             {
                 QRCodeToken = "token",
@@ -266,7 +282,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceRecords.Add(new AttendanceRecord { AttendanceSessionId = 1, StudentId = studentId, DeviceId = "device-1" });
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new MarkAttendanceRequest { QRCodeToken = "token", DeviceId = "device-1" };
 
             // Act & Assert
@@ -297,7 +314,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceRecords.Add(new AttendanceRecord { AttendanceSessionId = 1, StudentId = "student-1", DeviceId = deviceId });
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
             var request = new MarkAttendanceRequest { QRCodeToken = "token", DeviceId = deviceId };
 
             // Act & Assert
@@ -330,7 +348,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceRecords.Add(new AttendanceRecord { AttendanceSessionId = 1, StudentId = studentId, DeviceId = "d1" });
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
 
             // Act
             var report = await service.GetCourseAttendanceAsync(courseId, instructorId);
@@ -365,7 +384,8 @@ namespace CampusConnect.Tests.App
             context.AttendanceRecords.Add(new AttendanceRecord { AttendanceSessionId = 1, StudentId = studentId, DeviceId = "d1" });
             await context.SaveChangesAsync();
 
-            var service = new AttendanceService(context);
+            var userManagerMock = GetMockUserManager();
+            var service = new AttendanceService(context, userManagerMock.Object);
 
             // Act
             var records = await service.GetStudentAttendanceAsync(courseId, studentId);
