@@ -1,34 +1,35 @@
-class CourseSummary {
+// lib/features/courses/data/models/course_model.dart
+
+class CourseSummaryModel {
   final int id;
   final String title;
   final String description;
   final String instructorName;
 
-  CourseSummary({
+  const CourseSummaryModel({
     required this.id,
     required this.title,
     required this.description,
     required this.instructorName,
   });
 
-  factory CourseSummary.fromJson(Map<String, dynamic> json) {
-    return CourseSummary(
-      id: json['id'] ?? 0,
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      instructorName: json['instructorName'] ?? '',
-    );
-  }
+  factory CourseSummaryModel.fromJson(Map<String, dynamic> json) =>
+      CourseSummaryModel(
+        id: json['id'] as int,
+        title: json['title'] as String? ?? '',
+        description: json['description'] as String? ?? '',
+        instructorName: json['instructorName'] as String? ?? 'Unknown',
+      );
 }
 
-class CourseDetail {
+class CourseDetailModel {
   final int id;
   final String title;
   final String description;
   final String instructorName;
-  final List<CourseModule> modules;
+  final List<ModuleModel> modules;
 
-  CourseDetail({
+  const CourseDetailModel({
     required this.id,
     required this.title,
     required this.description,
@@ -36,82 +37,77 @@ class CourseDetail {
     required this.modules,
   });
 
-  factory CourseDetail.fromJson(Map<String, dynamic> json) {
-    return CourseDetail(
-      id: json['id'] ?? 0,
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      instructorName: json['instructorName'] ?? '',
-      modules: (json['modules'] as List?)
-              ?.map((e) => CourseModule.fromJson(e))
-              .toList() ??
-          [],
-    );
-  }
+  factory CourseDetailModel.fromJson(Map<String, dynamic> json) =>
+      CourseDetailModel(
+        id: json['id'] as int,
+        title: json['title'] as String? ?? '',
+        description: json['description'] as String? ?? '',
+        instructorName: json['instructorName'] as String? ?? 'Unknown',
+        modules: (json['modules'] as List<dynamic>?)
+                ?.map((e) => ModuleModel.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
 }
 
-class CourseModule {
+class ModuleModel {
   final int id;
   final String title;
-  final List<CourseLesson> lessons;
+  final List<LessonModel> lessons;
 
-  CourseModule({
+  const ModuleModel({
     required this.id,
     required this.title,
     required this.lessons,
   });
 
-  factory CourseModule.fromJson(Map<String, dynamic> json) {
-    return CourseModule(
-      id: json['id'] ?? 0,
-      title: json['title'] ?? '',
-      lessons: (json['lessons'] as List?)
-              ?.map((e) => CourseLesson.fromJson(e))
-              .toList() ??
-          [],
-    );
-  }
+  factory ModuleModel.fromJson(Map<String, dynamic> json) => ModuleModel(
+        id: json['id'] as int,
+        title: json['title'] as String? ?? '',
+        lessons: (json['lessons'] as List<dynamic>?)
+                ?.map((e) => LessonModel.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
 }
 
-class CourseLesson {
+class LessonModel {
   final int id;
   final String title;
-  final List<EducationalContent> contents;
+  final List<EducationalContentModel> contents;
 
-  CourseLesson({
+  const LessonModel({
     required this.id,
     required this.title,
     required this.contents,
   });
 
-  factory CourseLesson.fromJson(Map<String, dynamic> json) {
-    return CourseLesson(
-      id: json['id'] ?? 0,
-      title: json['title'] ?? '',
-      contents: (json['contents'] as List?)
-              ?.map((e) => EducationalContent.fromJson(e))
-              .toList() ??
-          [],
-    );
-  }
+  factory LessonModel.fromJson(Map<String, dynamic> json) => LessonModel(
+        id: json['id'] as int,
+        title: json['title'] as String? ?? '',
+        contents: (json['contents'] as List<dynamic>?)
+                ?.map((e) =>
+                    EducationalContentModel.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
 }
 
-class EducationalContent {
+class EducationalContentModel {
   final int id;
   final String contentType;
   final String fileUrl;
 
-  EducationalContent({
+  const EducationalContentModel({
     required this.id,
     required this.contentType,
     required this.fileUrl,
   });
 
-  factory EducationalContent.fromJson(Map<String, dynamic> json) {
-    return EducationalContent(
-      id: json['id'] ?? 0,
-      contentType: json['contentType'] ?? '',
-      fileUrl: json['fileUrl'] ?? '',
-    );
-  }
+  factory EducationalContentModel.fromJson(Map<String, dynamic> json) =>
+      EducationalContentModel(
+        id: json['id'] as int,
+        contentType: json['contentType'] as String? ?? '',
+        fileUrl: json['fileUrl'] as String? ?? '',
+      );
 }

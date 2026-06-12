@@ -80,16 +80,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             SizedBox(height: AppSizes.smallSpacing),
 
-            /// NOTIFICATIONS
-            SettingsBox(
-              icon: IconsManager.notification,
-              title: localizations.notifications,
-              subtitle: localizations.on,
-              hasSwitch: true,
-              switchValue: true,
-              onToggle: (value) {},
-              isLight: isLight,
-            ),
+
           ],
         ),
       ),

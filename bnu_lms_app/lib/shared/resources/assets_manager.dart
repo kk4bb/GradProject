@@ -44,7 +44,6 @@ class IconsManager {
   static const String advisingSessions = "$_iconsPath/help_center.png"; // Same icon?
   static const String contactSupport = "$_iconsPath/contact_support.png";
   static const String report = "$_iconsPath/report.png";
-  static const String logout = "$_iconsPath/logout.png";
 
   // -- Quiz Specific --
   static const String time = "$_iconsPath/time.png";

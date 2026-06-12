@@ -7,8 +7,7 @@ import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../../shared/resources/colors_manager.dart';
 
 class AboutCourseSection extends StatelessWidget {
-  final String description;
-  const AboutCourseSection({required this.description, super.key});
+  const AboutCourseSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,7 @@ class AboutCourseSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
         borderRadius: BorderRadius.circular(20),
@@ -37,9 +36,9 @@ class AboutCourseSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Text(
-            description,
+            'This course dives deep into the design and analysis of efficient algorithms. We will explore advanced data structures including Heaps, Balanced Search Trees, and Hash Tables. Emphasis is placed on complexity analysis and practical application in software development.',
             style: isLight ? AppLightTextStyles.bodySmall.copyWith(height: 1.6) : AppDarkTextStyles.bodySmall.copyWith(height: 1.6),
           ),
         ],

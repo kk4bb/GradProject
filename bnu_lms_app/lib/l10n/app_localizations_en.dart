@@ -60,9 +60,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get courses => 'Courses';
 
   @override
-  String get tasks => 'Tasks';
-
-  @override
   String get calendar => 'Calendar';
 
   @override
@@ -70,6 +67,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get grades => 'Grades';
+
+  @override
+  String get tasks => 'Tasks';
 
   @override
   String get attendance => 'Attendance';

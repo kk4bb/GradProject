@@ -1,5 +1,3 @@
-import 'package:bnu_lms_app/features/courses/data/models/course_model.dart';
-import 'package:bnu_lms_app/shared/network/repositories/course_repository.dart';
 import 'package:bnu_lms_app/l10n/app_localizations.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
@@ -10,40 +8,27 @@ import 'package:provider/provider.dart';
 import '../../../../../shared/providers/theme_provider.dart';
 import '../../../../../shared/routes_manager/routes.dart';
 import '../widgets/courses/course_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../shared/di/injection.dart';
+import '../../cubit/courses_cubit/courses_cubit.dart';
+import '../../cubit/courses_cubit/courses_state.dart';
 
-class CoursesTab extends StatefulWidget {
+
+
+class CoursesTab extends StatelessWidget {
   const CoursesTab({super.key});
 
   @override
-  State<CoursesTab> createState() => _CoursesTabState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<CoursesCubit>()..fetchEnrolledCourses(),
+      child: const _CoursesTabView(),
+    );
+  }
 }
 
-class _CoursesTabState extends State<CoursesTab> {
-  final CourseRepository _courseRepository = CourseRepository();
-  List<CourseSummary> _courses = [];
-  bool _isLoading = true;
-  String _errorMessage = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchCourses();
-  }
-
-  Future<void> _fetchCourses() async {
-    try {
-      final courses = await _courseRepository.getEnrolledCourses();
-      setState(() {
-        _courses = courses;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
-    }
-  }
+class _CoursesTabView extends StatelessWidget {
+  const _CoursesTabView();
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +52,13 @@ class _CoursesTabState extends State<CoursesTab> {
                       : AppDarkTextStyles.headlineLarge,
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    // TODO: Show semester picker
+                  },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: isLight ? Color(0xFFB8E9F5) : ColorsManager.darkSurface,
+                      color: isLight ? const Color(0xFFB8E9F5) : ColorsManager.darkSurface,
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Row(
@@ -101,36 +88,64 @@ class _CoursesTabState extends State<CoursesTab> {
 
           // Course List
           Expanded(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : _errorMessage.isNotEmpty
-                    ? Center(child: Text(_errorMessage))
-                    : ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                        itemCount: _courses.length,
-                        itemBuilder: (context, index) {
-                          final course = _courses[index];
-                          return CourseCard(
-                            title: course.title,
-                            instructor: course.instructorName,
-                            category: 'Computer Science', // TODO: Fetch category if available
-                            categoryColor: const Color(0xFF5DADE2),
-                            iconBgColor: isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
-                            categoryIcon: Icons.computer, // TODO: Use dynamic icon
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                Routes.coursesDetails,
-                                arguments: {
-                                  'courseId': course.id,
-                                  'courseTitle': course.title,
-                                  'instructor': course.instructorName,
-                                },
-                              );
+            child: BlocBuilder<CoursesCubit, CoursesState>(
+              builder: (context, state) {
+                if (state is CoursesLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is CoursesError) {
+                  return Center(
+                    child: Text(
+                      state.message,
+                      style: TextStyle(color: ColorsManager.red, fontSize: 16),
+                    ),
+                  );
+                } else if (state is CoursesLoaded) {
+                  final courses = state.courses;
+                  if (courses.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'You are not enrolled in any courses.',
+                        style: TextStyle(color: ColorsManager.grayDark, fontSize: 16),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    itemCount: courses.length,
+                    itemBuilder: (context, index) {
+                      final course = courses[index];
+                      // UI defaults since API doesn't have them yet
+                      const categoryColor = Color(0xFF5DADE2);
+                      final iconBgColor = isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049);
+                      const icon = Icons.computer;
+
+                      return CourseCard(
+                        title: course.title,
+                        instructor: course.instructorName,
+                        category: 'Computer Science',
+                        categoryColor: categoryColor,
+                        iconBgColor: iconBgColor,
+                        categoryIcon: icon,
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            Routes.coursesDetails,
+                            arguments: {
+                              'courseId': course.id, // passing ID to details screen
+                              'courseTitle': course.title,
+                              'instructor': course.instructorName,
+                              'courseCode': 'SWE-301',
+                              'icon': icon,
                             },
                           );
                         },
-                      ),
+                      );
+                    },
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
           ),
         ],
       ),

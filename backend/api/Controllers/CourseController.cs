@@ -94,7 +94,7 @@ namespace CampusConnect.API.Controllers
         [HttpPost("lesson/{id}/content")]
         [Authorize(Roles = "Instructor,TA")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddContent(int id, IFormFile file, [FromForm] string contentType)
+        public async Task<IActionResult> AddContent(int id, [FromForm] IFormFile file, [FromForm] string contentType)
         {
             if (!FileUploadHelper.IsValidFile(file, out var errorMessage))
                 return BadRequest(errorMessage);

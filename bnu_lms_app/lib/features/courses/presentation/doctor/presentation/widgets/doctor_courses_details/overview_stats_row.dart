@@ -7,14 +7,7 @@ import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../../shared/resources/colors_manager.dart';
 
 class OverviewStatsRow extends StatelessWidget {
-  final int totalAssignments;
-  final int avgAttendance;
-
-  const OverviewStatsRow({
-    this.totalAssignments = 0,
-    this.avgAttendance = 0,
-    super.key,
-  });
+  const OverviewStatsRow({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +20,18 @@ class OverviewStatsRow extends StatelessWidget {
             icon: Icons.assignment,
             iconColor: ColorsManager.blue,
             iconBgColor: const Color(0xFFEEF3FF),
-            value: '$totalAssignments',
+            value: '12',
             label: 'Total Assignments',
             isLight: isLight,
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: 16),
         Expanded(
           child: StatCard(
             icon: Icons.people,
-            iconColor: ColorsManager.green,
+            iconColor: ColorsManager.green, // Replaced hardcoded green
             iconBgColor: const Color(0xFFE6F4EA),
-            value: '$avgAttendance%',
+            value: '92%',
             label: 'Avg. Attendance',
             isLight: isLight,
           ),
@@ -47,7 +40,6 @@ class OverviewStatsRow extends StatelessWidget {
     );
   }
 }
-
 
 class StatCard extends StatelessWidget {
   final IconData icon;

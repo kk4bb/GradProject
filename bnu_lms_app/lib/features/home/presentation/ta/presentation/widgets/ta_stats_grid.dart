@@ -1,50 +1,176 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../shared/providers/theme_provider.dart';
-import '../../../doctor/presentation/widgets/dashboard_stat_card.dart';
+import '../../../../../../shared/di/injection.dart';
+import '../../../../../../shared/resources/colors_manager.dart';
+import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
+import '../../../../../../shared/config/theme/app_light_text_styles.dart';
+import '../../../../../courses/presentation/cubit/courses_cubit/courses_cubit.dart';
+import '../../../../../courses/presentation/cubit/courses_cubit/courses_state.dart';
+import '../../../../../notification/presentation/cubit/notification_cubit.dart';
+import '../../../../../notification/presentation/cubit/notification_state.dart';
 
-class TaStatsGrid extends StatelessWidget {
+class TaStatsGrid extends StatefulWidget {
   const TaStatsGrid({super.key});
 
   @override
+  State<TaStatsGrid> createState() => _TaStatsGridState();
+}
+
+class _TaStatsGridState extends State<TaStatsGrid> {
+  late final CoursesCubit _coursesCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the factory cubit and fetch assigned courses for the TA
+    _coursesCubit = getIt<CoursesCubit>()..fetchAssignedCourses();
+    // Fetch notifications on the singleton
+    getIt<NotificationCubit>().getNotifications();
+  }
+
+  @override
+  void dispose() {
+    _coursesCubit.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final isLight = themeProvider.isLightTheme();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _coursesCubit),
+        BlocProvider.value(value: getIt<NotificationCubit>()),
+      ],
+      child: Builder(
+        builder: (context) {
+          final themeProvider = Provider.of<ThemeProvider>(context);
+          final isLight = themeProvider.isLightTheme();
 
-    // TA Specific Colors (Cyan dominant)
-    const cyan = Color(0xFF2FBAD7);
-    const orange = Color(0xFFF25C05);
-    const purple = Color(0xFF8B5CF6);
+          return Padding(
+            padding: EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: BlocBuilder<CoursesCubit, CoursesState>(
+                    builder: (context, state) {
+                      String value = '...';
+                      if (state is CoursesLoaded) {
+                        value = state.courses.length.toString();
+                      } else if (state is CoursesInitial || state is CoursesLoading) {
+                        value = '...';
+                      } else if (state is CoursesError) {
+                        value = '0';
+                      }
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(), // Adds a nice bounce effect on iOS/Android 12+
-      padding: EdgeInsets.symmetric(horizontal: 24), // Padding is now inside the scroll
-      child: Row(
+                      return _buildPremiumCard(
+                        context: context,
+                        isLight: isLight,
+                        title: 'Active Courses',
+                        value: value,
+                        icon: Icons.menu_book_rounded,
+                        color: const Color(0xFF2FBAD7), // TA Cyan
+                        isLoading: state is CoursesLoading,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: BlocBuilder<NotificationCubit, NotificationState>(
+                    builder: (context, state) {
+                      String value = '...';
+                      if (state is NotificationLoaded) {
+                        value = state.notifications.where((n) => !n.isRead).length.toString();
+                      } else if (state is NotificationEmpty) {
+                        value = '0';
+                      } else if (state is NotificationInitial || state is NotificationLoading) {
+                        value = '...';
+                      } else if (state is NotificationError) {
+                        value = '0';
+                      }
+
+                      return _buildPremiumCard(
+                        context: context,
+                        isLight: isLight,
+                        title: 'New Updates',
+                        value: value,
+                        icon: Icons.notifications_active,
+                        color: const Color(0xFFF25C05), // Orange
+                        isLoading: state is NotificationLoading,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPremiumCard({
+    required BuildContext context,
+    required bool isLight,
+    required String title,
+    required String value,
+    required IconData icon,
+    required Color color,
+    required bool isLoading,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isLight ? Colors.white : ColorsManager.darkSurface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.1),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DashboardStatCard(
-            icon: Icons.science_outlined,
-            iconColor: cyan,
-            iconBackgroundColor: isLight ? cyan.withValues(alpha: 0.1) : cyan.withValues(alpha: 0.15),
-            value: '4',
-            title: 'Labs This Week',
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isLight ? color.withValues(alpha: 0.1) : color.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 24),
           ),
-          SizedBox(width: 16.0),
-          DashboardStatCard(
-            icon: Icons.star_border_rounded,
-            iconColor: orange,
-            iconBackgroundColor: isLight ? orange.withValues(alpha: 0.1) : orange.withValues(alpha: 0.15),
-            value: '12',
-            title: 'Pending Grading',
-          ),
-          SizedBox(width: 16.0),
-          DashboardStatCard(
-            icon: Icons.forum_outlined,
-            iconColor: purple,
-            iconBackgroundColor: isLight ? purple.withValues(alpha: 0.1) : purple.withValues(alpha: 0.15),
-            value: '8',
-            title: 'Forum Questions',
+          SizedBox(height: 16),
+          if (isLoading)
+            SizedBox(
+              height: 28,
+              width: 28,
+              child: const CircularProgressIndicator(strokeWidth: 2),
+            )
+          else
+            Text(
+              value,
+              style: (isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge).copyWith(
+                fontWeight: FontWeight.bold,
+                height: 1.0,
+              ),
+            ),
+          SizedBox(height: 4),
+          Text(
+            title,
+            style: (isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium).copyWith(
+              color: isLight ? ColorsManager.grayDark : ColorsManager.darkTextSecondary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),

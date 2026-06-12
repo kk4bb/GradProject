@@ -1,13 +1,16 @@
-import 'package:bnu_lms_app/features/profile/student/data/models/student_profile_model.dart';
-import 'package:bnu_lms_app/shared/network/repositories/student_repository.dart';
-import 'package:bnu_lms_app/shared/network/token_storage.dart';
 import 'package:bnu_lms_app/shared/resources/assets_manager.dart';
 import 'package:flutter/material.dart';
 import '../../../../../l10n/app_localizations.dart';
-import '../widget/profile_action_card.dart';
+import '../../../presentation/cubit/profile_cubit.dart';
+import '../../../presentation/cubit/profile_state.dart';
+
 import '../widget/profile_header.dart';
 import '../widget/profile_menu_section.dart';
 import '../widget/profile_stats.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../../auth/presentation/cubit/auth_state.dart';
+import '../../../../../shared/routes_manager/routes.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
@@ -17,105 +20,113 @@ class ProfileTab extends StatefulWidget {
 }
 
 class _ProfileTabState extends State<ProfileTab> {
-  final StudentRepository _studentRepository = StudentRepository();
-  StudentProfile? _profile;
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
-    _loadProfile();
-  }
-
-  Future<void> _loadProfile() async {
-    try {
-      final profile = await _studentRepository.getProfile();
-      setState(() {
-        _profile = profile;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() => _isLoading = false);
-      // Handle error
-    }
+    // Fetch profile once when the tab is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileCubit>().fetchProfile();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (_profile == null) {
-      return Center(child: Text("Failed to load profile"));
-    }
-
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-             ProfileHeaderCard(
-              name: _profile!.fullName,
-              department: _profile!.faculty,
-              studentId: _profile!.id,
-              year: _profile!.academicYear,
-              profileImage: ImagesManager.profileImage,
-            ),
-            SizedBox(height: 24),
-            const ProfileStatsGrid(),
-            SizedBox(height: 24),
-            const PaymentCard(),
-            SizedBox(height: 16),
-            const AdvisingSessionCard(),
-            SizedBox(height: 24),
-            ProfileMenuSection(
-              title: localizations.account,
-              items: [
-                ProfileMenuItem(
-                  icon: IconsManager.editProfile,
-                  label: localizations.editProfile,
-                  onTap: () {},
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthUnauthenticated) {
+          Navigator.pushNamedAndRemoveUntil(context, Routes.login, (route) => false);
+        }
+      },
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, state) {
+          if (state is ProfileLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ProfileError) {
+            return Center(child: Text(state.message));
+          } else if (state is ProfileLoaded) {
+            final profile = state.profile;
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ProfileHeaderCard(
+                      name: profile.fullName,
+                      department: profile.faculty,
+                      studentId: profile.studentId ?? 'N/A', 
+                      year: profile.academicYear,
+                      profileImage: ImagesManager.profileImage,
+                      profilePictureUrl: profile.profilePictureUrl,
+                    ),
+                    SizedBox(height: 24),
+                    ProfileStatsGrid(
+                      gpa: profile.gpa?.toString() ?? 'N/A',
+                      credits: profile.creditHours.toString(),
+                      rank: profile.rank?.toString() ?? 'N/A',
+                    ), 
+                    SizedBox(height: 24),
+                    ProfileMenuSection(
+                      title: localizations.account,
+                      items: [
+                        ProfileMenuItem(
+                          icon: IconsManager.editProfile,
+                          label: localizations.editProfile,
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.editProfile);
+                          },
+                        ),
+                        ProfileMenuItem(
+                          icon: IconsManager.password,
+                          label: localizations.changePassword,
+                          onTap: () {},
+                        ),
+                        ProfileMenuItem(
+                          icon: IconsManager.theme,
+                          label: 'Theme and Language',
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.settings);
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    ProfileMenuSection(
+                      title: localizations.support,
+                      items: [
+                        ProfileMenuItem(
+                          icon: IconsManager.helpCenter,
+                          label: localizations.helpCenter,
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.helpCenter);
+                          },
+                        ),
+                        ProfileMenuItem(
+                          icon: IconsManager.warning, 
+                          label: 'Log Out',
+                          onTap: () async {
+                            await context.read<AuthCubit>().logout();
+                            if (context.mounted) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context, 
+                                Routes.login, 
+                                (route) => false,
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 24),
+                  ],
                 ),
-                ProfileMenuItem(
-                  icon: IconsManager.password,
-                  label: localizations.changePassword,
-                  onTap: () {},
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            ProfileMenuSection(
-              title: localizations.support,
-              items: [
-                ProfileMenuItem(
-                  icon: IconsManager.helpCenter,
-                  label: localizations.helpCenter,
-                  onTap: () {},
-                ),
-                ProfileMenuItem(
-                  icon: IconsManager.contactSupport,
-                  label: localizations.contactSupport,
-                  onTap: () {},
-                ),
-                ProfileMenuItem(
-                  icon: Icons.logout, // Use Icons.logout instead of an asset image
-                  label: 'Log out',
-                  onTap: () async {
-                    await tokenStorage.clearAll();
-                    if(mounted) {
-                      Navigator.pushReplacementNamed(context, '/login'); 
-                    }
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 24),
-          ],
-        ),
+              ),
+            );
+          }
+          return const SizedBox();
+        },
       ),
     );
   }

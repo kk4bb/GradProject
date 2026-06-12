@@ -21,13 +21,14 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpPost("session")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TeachingAssistant,TA")]
         public async Task<IActionResult> CreateSession([FromBody] CreateAttendanceSessionRequest request)
         {
             try
             {
-                var instructorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var response = await _attendanceService.CreateSessionAsync(request, instructorId);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var isTA = User.IsInRole("TeachingAssistant") || User.IsInRole("TA");
+                var response = await _attendanceService.CreateSessionAsync(request, userId, isTA);
                 return Ok(response);
             }
             catch (UnauthorizedAccessException ex)
@@ -65,14 +66,26 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpGet("course/{courseId}")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TeachingAssistant,TA,Student")]
         public async Task<IActionResult> GetCourseAttendance(int courseId)
         {
             try
             {
-                var instructorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var report = await _attendanceService.GetCourseAttendanceAsync(courseId, instructorId);
-                return Ok(report);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var isStudent = User.IsInRole("Student");
+
+                if (isStudent)
+                {
+                    // Students only see their own attendance history
+                    var records = await _attendanceService.GetStudentAttendanceAsync(courseId, userId);
+                    return Ok(records);
+                }
+                else
+                {
+                    // Instructors and TAs see the full course report
+                    var report = await _attendanceService.GetCourseAttendanceAsync(courseId, userId);
+                    return Ok(report);
+                }
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -100,13 +113,13 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpDelete("record")]
-        [Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor,TeachingAssistant,TA")]
         public async Task<IActionResult> RemoveAttendanceRecord([FromBody] RemoveAttendanceRecordRequest request)
         {
             try
             {
-                var instructorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var success = await _attendanceService.RemoveAttendanceRecordAsync(request.CourseId, request.StudentId, instructorId);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var success = await _attendanceService.RemoveAttendanceRecordAsync(request.CourseId, request.StudentId, userId);
                 if (success)
                 {
                     return Ok(new { Message = "Attendance record removed successfully." });
@@ -120,6 +133,26 @@ namespace CampusConnect.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// DEV ONLY: Simulates a student scan for emulator/presentation testing.
+        /// </summary>
+        [HttpPost("mock-scan/{courseId}")]
+        [Authorize(Roles = "Instructor,TeachingAssistant,TA")]
+        public async Task<IActionResult> MockScan(int courseId)
+        {
+            try
+            {
+                var result = await _attendanceService.MockScanAsync(courseId);
+                if (result)
+                    return Ok(new { Message = "Mock scan successful. A student attendance has been simulated." });
+                return BadRequest(new { Message = "No active session found for this course, or no enrolled students available to mock." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
             }
         }
     }

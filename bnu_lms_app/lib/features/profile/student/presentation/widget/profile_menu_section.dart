@@ -8,7 +8,7 @@ import '../../../../../shared/providers/theme_provider.dart';
 
 
 class ProfileMenuItem {
-  final dynamic icon; // Can be String or IconData
+  final String icon;
   final String label;
   final VoidCallback onTap;
 
@@ -107,14 +107,12 @@ class MenuItemRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
-                child: item.icon is IconData
-                    ? Icon(item.icon as IconData, size: 22, color: ColorsManager.blue)
-                    : Image.asset(
-                        item.icon as String,
-                        width: 22,
-                        height: 22,
-                        color: ColorsManager.blue,
-                      ),
+                child: Image.asset(
+                  item.icon,
+                  width: 22,
+                  height: 22,
+                  color: ColorsManager.blue,
+                ),
               ),
             ),
             SizedBox(width: 14),

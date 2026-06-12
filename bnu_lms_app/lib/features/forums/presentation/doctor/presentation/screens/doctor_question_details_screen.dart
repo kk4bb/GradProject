@@ -6,13 +6,19 @@ import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
 import '../../../student/presentation/widgets/fourms_details/forum_answer_input.dart';
+import '../../../student/presentation/widgets/fourms_details/forum_question_card.dart';
 import '../widgets/doctor_forum_answer_card.dart';
 
+import '../../../../domain/entities/forum_entities.dart';
+import '../../../../presentation/cubit/forums_cubit.dart';
+import '../../../../presentation/cubit/forums_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 class DoctorQuestionDetailsScreen extends StatefulWidget {
-  final Map<String, dynamic> questionData;
+  final DiscussionEntity discussion;
 
   const DoctorQuestionDetailsScreen({
-    required this.questionData,
+    required this.discussion,
     super.key,
   });
 
@@ -23,20 +29,16 @@ class DoctorQuestionDetailsScreen extends StatefulWidget {
 class _DoctorQuestionDetailsScreenState extends State<DoctorQuestionDetailsScreen> {
   final TextEditingController answerController = TextEditingController();
 
-  final List<Map<String, dynamic>> studentAnswers = [
-    {
-      'author': 'Mark Spencer',
-      'timeAgo': '1 hour ago',
-      'answer': 'I used the Python `heapq` module and it worked fine for the same project last semester. Make sure your graph is an adjacency list and not a matrix!',
-      'isCorrect': false,
-    },
-    {
-      'author': 'Elena Ruiz',
-      'timeAgo': '45 mins ago',
-      'answer': 'Wait, is the matrix representation always slower for Dijkstra? I thought for dense graphs it might be better?',
-      'isCorrect': false,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => context.read<ForumsCubit>().initSignalR());
+    Future.microtask(() {
+      if (mounted) {
+        context.read<ForumsCubit>().loadPosts(widget.discussion.id, widget.discussion.title);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +55,6 @@ class _DoctorQuestionDetailsScreenState extends State<DoctorQuestionDetailsScree
         ),
         title: Text('Question Details', style: isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge),
         centerTitle: true,
-        actions: [
-          IconButton(icon: Icon(Icons.more_vert, color: isLight ? ColorsManager.black : ColorsManager.white), onPressed: () {}),
-        ],
         elevation: 0,
       ),
       body: Column(
@@ -70,35 +69,66 @@ class _DoctorQuestionDetailsScreenState extends State<DoctorQuestionDetailsScree
                   _buildFullQuestion(isLight),
                   SizedBox(height: 24),
 
-                  // Doctor's Approved Answer (If exists)
-                  _buildDoctorApprovedAnswer(isLight),
-                  SizedBox(height: 24),
-
-                  Text(
-                    'STUDENT RESPONSES (${studentAnswers.length})',
-                    style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(fontWeight: FontWeight.bold, letterSpacing: 1.2),
-                  ),
-                  SizedBox(height: 12),
-
-                  // Student Answers List
-                  ...studentAnswers.map((answer) => DoctorForumAnswerCard(
-                    authorName: answer['author'],
-                    timeAgo: answer['timeAgo'],
-                    answerText: answer['answer'],
-                    isCorrect: answer['isCorrect'],
-                    onMarkCorrect: () {
-                      setState(() {
-                        answer['isCorrect'] = !answer['isCorrect'];
-                      });
+                  BlocBuilder<ForumsCubit, ForumsState>(
+                    builder: (context, state) {
+                      if (state is ForumsLoading || state is ForumsActionLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is PostsLoaded) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'STUDENT RESPONSES (${state.posts.length})',
+                              style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+                            ),
+                            SizedBox(height: 12),
+                            // Student Answers List
+                            ...state.posts.map((post) {
+                                String postTimeAgo = 'Just now';
+                                if (post.createdAt != null) {
+                                  final diff = DateTime.now().difference(post.createdAt!);
+                                  if (diff.inDays > 0) { postTimeAgo = '${diff.inDays}d ago'; }
+                                  else if (diff.inHours > 0) { postTimeAgo = '${diff.inHours}h ago'; }
+                                  else if (diff.inMinutes > 0) { postTimeAgo = '${diff.inMinutes}m ago'; }
+                                }
+                                return DoctorForumAnswerCard(
+                                  authorName: post.authorName,
+                                  authorAvatarUrl: post.authorAvatarUrl,
+                                  timeAgo: postTimeAgo,
+                                  answerText: post.content,
+                                  isCorrect: post.isCorrect,
+                                  votes: post.votes,
+                                  approvedByRole: post.approvedByRole,
+                                  onMarkCorrect: () => context.read<ForumsCubit>().markAsCorrect(post.id, widget.discussion.id, widget.discussion.title),
+                                  onUpvote: () => context.read<ForumsCubit>().votePost(post.id, true, widget.discussion.id, widget.discussion.title),
+                                  onDownvote: () => context.read<ForumsCubit>().votePost(post.id, false, widget.discussion.id, widget.discussion.title),
+                                );
+                              }),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
                     },
-                  )),
+                  ),
                 ],
               ),
             ),
           ),
           ForumAnswerInput(
             controller: answerController,
-            onSubmit: () {},
+            onSubmit: () {
+              final text = answerController.text.trim();
+              if (text.isNotEmpty) {
+                context.read<ForumsCubit>().createPost(
+                  widget.discussion.id,
+                  widget.discussion.title,
+                  text,
+                );
+                answerController.clear();
+                FocusScope.of(context).unfocus();
+              }
+            },
           ),
         ],
       ),
@@ -106,101 +136,36 @@ class _DoctorQuestionDetailsScreenState extends State<DoctorQuestionDetailsScree
   }
 
   Widget _buildFullQuestion(bool isLight) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            _buildTag('RESOLVED', ColorsManager.green),
-            SizedBox(width: 8),
-            _buildTag('CS402: ALGORITHMS', ColorsManager.grayMedium),
-          ],
-        ),
-        SizedBox(height: 12),
-        Row(
-          children: [
-            CircleAvatar(radius: 16, backgroundColor: ColorsManager.grayMedium),
-            SizedBox(width: 8),
-            Text('Alex Thompson • 3 hours ago', style: TextStyle(color: ColorsManager.grayMedium, fontSize: 12)),
-          ],
-        ),
-        SizedBox(height: 16),
-        Text(
-          'How do I implement Dijkstra\'s algorithm for the final project pathfinder?',
-          style: (isLight ? AppLightTextStyles.headlineMedium : AppDarkTextStyles.headlineMedium).copyWith(fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 12),
-        Text(
-          'I\'m struggling with the priority queue implementation. The graph has over 5,000 nodes, and my current approach is timing out. Should I use a Fibonacci heap or is a binary heap sufficient for the university\'s performance requirements?',
-          style: isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium,
-        ),
-        SizedBox(height: 16),
-        // Pin to Top Button
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {},
-            icon: Icon(Icons.push_pin, color: ColorsManager.green, size: 16),
-            label: Text('PIN TO TOP', style: TextStyle(color: ColorsManager.green, fontWeight: FontWeight.bold)),
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: ColorsManager.green),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-          ),
-        )
-      ],
+    final author = widget.discussion.authorName ?? 'Unknown';
+    String timeAgo = 'Just now';
+    if (widget.discussion.createdAt != null) {
+      final diff = DateTime.now().difference(widget.discussion.createdAt!);
+      if (diff.inDays > 0) { timeAgo = '${diff.inDays}d ago'; }
+      else if (diff.inHours > 0) { timeAgo = '${diff.inHours}h ago'; }
+      else if (diff.inMinutes > 0) { timeAgo = '${diff.inMinutes}m ago'; }
+    }
+
+    return ForumQuestionCard(
+      authorName: author,
+      authorAvatarUrl: widget.discussion.authorAvatarUrl,
+      timeAgo: timeAgo,
+      questionTitle: widget.discussion.title,
+      questionBody: widget.discussion.content ?? 'No content provided.',
+      votes: 0,
+      commentsCount: widget.discussion.postCount,
+      status: widget.discussion.status,
+      statusColor: widget.discussion.status == 'RESOLVED' ? ColorsManager.green : (widget.discussion.status == 'CLOSED' ? ColorsManager.grayMedium : ColorsManager.blue),
+      isPreview: false,
     );
   }
 
-  Widget _buildDoctorApprovedAnswer(bool isLight) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isLight ? ColorsManager.green.withValues(alpha: 0.05) : ColorsManager.green.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ColorsManager.green.withValues(alpha: 0.5)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.check_circle, color: ColorsManager.green, size: 16),
-              SizedBox(width: 8),
-              Text('DOCTOR APPROVED ANSWER', style: TextStyle(color: ColorsManager.green, fontWeight: FontWeight.bold, fontSize: 11)),
-            ],
-          ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              CircleAvatar(radius: 16, backgroundColor: ColorsManager.blue),
-              SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Dr. Sarah Jenkins', style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(fontWeight: FontWeight.bold)),
-                  Text('DEPARTMENT HEAD', style: TextStyle(color: ColorsManager.grayMedium, fontSize: 10, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              Spacer(),
-              Icon(Icons.verified, color: ColorsManager.green),
-            ],
-          ),
-          SizedBox(height: 12),
-          Text(
-            '"For a graph of 5,000 nodes, a binary heap is perfectly adequate. The bottleneck is likely in how you\'re updating the distances. Ensure you\'re using a \'lazy\' deletion approach or a dict to track entry references for O(log n) updates."',
-            style: (isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium).copyWith(fontStyle: FontStyle.italic),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildTag(String text, Color color) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4), border: Border.all(color: color.withValues(alpha: 0.3))),
-      child: Text(text, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
-    );
-  }
+
+  // Widget _buildTag(String text, Color color) {
+  //   return Container(
+  //     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  //     decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4), border: Border.all(color: color.withValues(alpha: 0.3))),
+  //     child: Text(text, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+  //   );
+  // }
 }

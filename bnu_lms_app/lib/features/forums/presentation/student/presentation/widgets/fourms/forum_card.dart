@@ -1,13 +1,16 @@
 
-import '../../screens/forums_details_screen.dart';
-import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
-import '../../../../../../../shared/config/theme/app_light_text_styles.dart';
-import '../../../../../../../shared/resources/colors_manager.dart';
+import 'package:bnu_lms_app/features/forums/presentation/doctor/presentation/screens/doctor_forums_details_screen.dart';
+import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
+import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
+import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../data/forums_data.dart';
+
+
+
 
 class ForumCard extends StatelessWidget {
   final ForumsData forum;
@@ -21,17 +24,12 @@ class ForumCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        if (forum.courseId != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ForumsDetailsScreen(
-                forumTitle: forum.title,
-                courseId: forum.courseId!,
-              ),
-            ),
-          );
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DoctorForumsDetailsScreen(courseName: 'courseName'),
+          ),
+        );
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

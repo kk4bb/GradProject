@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
-import '../../../../../../shared/config/theme/app_light_text_styles.dart';
+
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
 import 'doctor_dashboard_header.dart';
@@ -16,10 +15,9 @@ class DoctorDashboardTopHeader extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      height: 170,
       width: double.infinity,
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top,
+        top: MediaQuery.of(context).padding.top + 16,
         left: 24,
         right: 24,
       ),
@@ -42,38 +40,9 @@ class DoctorDashboardTopHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const DoctorDashboardHeader(),
-          SizedBox(height: 14),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: isLight ? ColorsManager.lightBlueAccent : ColorsManager.darkSurface,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.calendar_month,
-                  size: 16,
-                  color: isLight ? ColorsManager.blue : Colors.amber,
-                ),
-                SizedBox(width: 6),
-                Text(
-                  _getFormattedDate(),
-                  style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium,
-                ),
-              ],
-            ),
-          ),
+          SizedBox(height: 16),
         ],
       ),
     );
-  }
-
-  String _getFormattedDate() {
-    final now = DateTime.now();
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    final days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    return '${days[now.weekday - 1]}, ${now.day} ${months[now.month - 1]} ${now.year}';
   }
 }

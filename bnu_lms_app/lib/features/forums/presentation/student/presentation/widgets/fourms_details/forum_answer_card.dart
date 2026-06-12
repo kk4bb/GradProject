@@ -5,6 +5,7 @@ import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../../shared/resources/colors_manager.dart';
+import '../../../../../../../shared/config/api_constants.dart';
 
 
 
@@ -15,6 +16,11 @@ class ForumAnswerCard extends StatelessWidget {
   final String answerText;
   final int votes;
   final bool isTopRated;
+  final String? approvedByRole;
+  final VoidCallback? onUpvote;
+  final VoidCallback? onDownvote;
+  final VoidCallback? onReplyTap;
+  final String? authorAvatarUrl;
 
   const ForumAnswerCard({
     required this.authorName,
@@ -23,6 +29,11 @@ class ForumAnswerCard extends StatelessWidget {
     required this.answerText,
     required this.votes,
     this.isTopRated = false,
+    this.approvedByRole,
+    this.onUpvote,
+    this.onDownvote,
+    this.onReplyTap,
+    this.authorAvatarUrl,
     super.key,
   });
 
@@ -31,133 +42,188 @@ class ForumAnswerCard extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (isTopRated)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              children: [
-                Icon(Icons.check_circle, color: ColorsManager.green, size: 16),
-                SizedBox(width: 6),
-                Text(
-                  'DOCTOR APPROVED ANSWER',
-                  style: TextStyle(color: ColorsManager.green, fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 0.5),
-                ),
-              ],
-            ),
+    // Mention styling
+    final List<TextSpan> textSpans = [];
+    final words = answerText.split(' ');
+    for (var word in words) {
+      if (word.startsWith('@')) {
+        textSpans.add(TextSpan(
+          text: '$word ',
+          style: TextStyle(color: ColorsManager.blue, fontWeight: FontWeight.w600),
+        ));
+      } else {
+        textSpans.add(TextSpan(
+          text: '$word ',
+          style: isLight
+              ? AppLightTextStyles.bodyMedium.copyWith(color: ColorsManager.grayDark, height: 1.5)
+              : AppDarkTextStyles.bodyMedium.copyWith(color: ColorsManager.darkTextSecondary, height: 1.5),
+        ));
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
+        border: Border(
+          left: BorderSide(
+            color: isTopRated ? ColorsManager.green : (isLight ? ColorsManager.grayMedium.withValues(alpha: 0.3) : ColorsManager.darkTextSecondary.withValues(alpha: 0.2)),
+            width: 4,
           ),
-        Container(
-          margin: EdgeInsets.only(bottom: 16),
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: isLight
-                ? (isTopRated ? ColorsManager.green.withValues(alpha: 0.05) : ColorsManager.white)
-                : (isTopRated ? ColorsManager.green.withValues(alpha: 0.1) : ColorsManager.darkSurface),
-            borderRadius: BorderRadius.circular(12),
-            border: isTopRated ? Border.all(color: ColorsManager.green.withValues(alpha: 0.5), width: 1.5) : null,
+          top: BorderSide(color: isLight ? ColorsManager.grayMedium.withValues(alpha: 0.2) : ColorsManager.darkTextSecondary.withValues(alpha: 0.1)),
+          right: BorderSide(color: isLight ? ColorsManager.grayMedium.withValues(alpha: 0.2) : ColorsManager.darkTextSecondary.withValues(alpha: 0.1)),
+          bottom: BorderSide(color: isLight ? ColorsManager.grayMedium.withValues(alpha: 0.2) : ColorsManager.darkTextSecondary.withValues(alpha: 0.1)),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        ],
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Left Vote Column
+            Container(
+              width: 56,
+              decoration: BoxDecoration(
+                color: isLight ? ColorsManager.lightBackground.withValues(alpha: 0.5) : ColorsManager.darkBackground.withValues(alpha: 0.3),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: ColorsManager.grayMedium,
+                  const SizedBox(height: 12),
+                  _buildVoteButton(Icons.keyboard_arrow_up, isLight, onUpvote),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
-                      authorName[0].toUpperCase(),
-                      style: TextStyle(color: ColorsManager.white, fontWeight: FontWeight.bold, fontSize: 14),
+                      votes.toString(),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary),
                     ),
                   ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
+                  _buildVoteButton(Icons.keyboard_arrow_down, isLight, onDownvote),
+                  if (isTopRated) ...[
+                    const SizedBox(height: 12),
+                    Icon(Icons.check, color: ColorsManager.green, size: 28),
+                  ]
+                ],
+              ),
+            ),
+            
+            // Right Content Column
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Top Row: Author Name and Timestamp
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
+                            CircleAvatar(
+                              radius: 12,
+                              backgroundColor: ColorsManager.blue,
+                              child: ClipOval(
+                                child: authorAvatarUrl != null && authorAvatarUrl!.isNotEmpty
+                                    ? Image.network(
+                                        authorAvatarUrl!.startsWith('http')
+                                            ? authorAvatarUrl!
+                                            : '${ApiConstants.baseUrl.replaceAll('api/', '')}${authorAvatarUrl!.startsWith('/') ? authorAvatarUrl!.substring(1) : authorAvatarUrl!}',
+                                        width: 24,
+                                        height: 24,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) => Text(
+                                          authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
+                                          style: TextStyle(color: ColorsManager.white, fontWeight: FontWeight.bold, fontSize: 10),
+                                        ),
+                                      )
+                                    : Text(
+                                        authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
+                                        style: TextStyle(color: ColorsManager.white, fontWeight: FontWeight.bold, fontSize: 10),
+                                      ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
                             Text(
                               authorName,
-                              style: isLight
-                                  ? AppLightTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w600, color: ColorsManager.black)
-                                  : AppDarkTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w600, color: ColorsManager.darkTextPrimary),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: isLight ? ColorsManager.blue : ColorsManager.blue,
+                              ),
                             ),
-                            if (isTopRated) ...[
-                              SizedBox(width: 4),
-                              Icon(Icons.verified, color: ColorsManager.blue, size: 14),
-                            ]
                           ],
                         ),
-                        SizedBox(height: 2),
                         Text(
-                          role,
-                          style: TextStyle(fontSize: 10, color: isLight ? ColorsManager.grayMedium : ColorsManager.darkTextSecondary, fontWeight: FontWeight.bold),
+                          timestamp,
+                          style: TextStyle(fontSize: 12, color: isLight ? ColorsManager.grayMedium : ColorsManager.darkTextSecondary),
                         ),
                       ],
                     ),
-                  ),
-                  if (isTopRated)
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: ColorsManager.green,
-                        borderRadius: BorderRadius.circular(12),
+                    const SizedBox(height: 12),
+
+                    if (isTopRated)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.verified, color: ColorsManager.green, size: 14),
+                            const SizedBox(width: 4),
+                            Text(
+                              approvedByRole == 'TA' ? 'CORRECTED BY TA' : 'DOCTOR APPROVED ANSWER',
+                              style: TextStyle(color: ColorsManager.green, fontWeight: FontWeight.bold, fontSize: 10, letterSpacing: 0.5),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          Text('Correct Answer', style: TextStyle(color: ColorsManager.white, fontSize: 10, fontWeight: FontWeight.bold)),
-                          SizedBox(width: 4),
-                          Icon(Icons.check, color: ColorsManager.white, size: 12),
-                        ],
-                      ),
+                    
+                    // Answer Content
+                    RichText(
+                      text: TextSpan(children: textSpans),
                     ),
-                ],
+                    
+                    const SizedBox(height: 20),
+                    
+                    // Bottom Row: Reply
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: onReplyTap,
+                          child: Text(
+                            'Reply',
+                            style: TextStyle(fontSize: 13, color: ColorsManager.grayMedium, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 12),
-              Text(
-                answerText,
-                style: isLight
-                    ? AppLightTextStyles.bodyMedium.copyWith(color: ColorsManager.grayDark, height: 1.5)
-                    : AppDarkTextStyles.bodyMedium.copyWith(color: ColorsManager.darkTextSecondary, height: 1.5),
-              ),
-              SizedBox(height: 16),
-              Row(
-                children: [
-                  _buildVoteButton(Icons.arrow_upward, isLight),
-                  SizedBox(width: 12),
-                  Text(
-                    votes.toString(),
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary),
-                  ),
-                  SizedBox(width: 12),
-                  _buildVoteButton(Icons.arrow_downward, isLight),
-                  Spacer(),
-                  Text(
-                    'Reply',
-                    style: TextStyle(fontSize: 13, color: ColorsManager.grayMedium, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildVoteButton(IconData icon, bool isLight) {
-    return Container(
-      padding: EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Icon(
-        icon,
-        size: 16,
-        color: isLight ? ColorsManager.grayDark : ColorsManager.darkTextSecondary,
+  Widget _buildVoteButton(IconData icon, bool isLight, VoidCallback? onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        child: Icon(
+          icon,
+          size: 28,
+          color: ColorsManager.grayMedium,
+        ),
       ),
     );
   }

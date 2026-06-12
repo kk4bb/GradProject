@@ -200,12 +200,6 @@ abstract class AppLocalizations {
   /// **'Courses'**
   String get courses;
 
-  /// No description provided for @tasks.
-  ///
-  /// In en, this message translates to:
-  /// **'Tasks'**
-  String get tasks;
-
   /// No description provided for @calendar.
   ///
   /// In en, this message translates to:
@@ -223,6 +217,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Grades'**
   String get grades;
+
+  /// No description provided for @tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get tasks;
 
   /// No description provided for @attendance.
   ///

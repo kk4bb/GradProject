@@ -4,7 +4,7 @@ import '../resources/colors_manager.dart';
 
 
 class CustomTextFormField extends StatefulWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hintText;
   final TextStyle? hintStyle;
   final String? Function(String?)? validator;
@@ -15,10 +15,11 @@ class CustomTextFormField extends StatefulWidget {
   final Widget? suffixIcon;
   final Color? prefixIconColor;
   final Color? fillColor;
+  final int maxLines;
 
   const CustomTextFormField({
     super.key,
-    required this.controller,
+    this.controller,
     required this.hintText,
     this.hintStyle,
     this.validator,
@@ -29,6 +30,7 @@ class CustomTextFormField extends StatefulWidget {
     this.suffixIcon,
     this.prefixIconColor,
     this.fillColor,
+    this.maxLines = 1,
   });
 
   @override
@@ -37,17 +39,20 @@ class CustomTextFormField extends StatefulWidget {
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
   late bool isObscure;
+  late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
     isObscure = widget.isPassword;
+    _controller = widget.controller ?? TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: widget.controller,
+      controller: _controller,
+      maxLines: widget.maxLines,
       keyboardType: widget.keyboardType,
       style: widget.style ,
       obscureText: isObscure,

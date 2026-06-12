@@ -1,4 +1,3 @@
-import 'package:bnu_lms_app/shared/network/repositories/forum_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,13 +9,16 @@ import '../widgets/fourms_details/forum_answer_card.dart';
 import '../widgets/fourms_details/forum_answer_input.dart';
 import '../widgets/fourms_details/forum_question_card.dart';
 
+import '../../../../domain/entities/forum_entities.dart';
+import '../../../../presentation/cubit/forums_cubit.dart';
+import '../../../../presentation/cubit/forums_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 class QuestionDetailsScreen extends StatefulWidget {
-  final Map<String, dynamic> questionData;
-  final int discussionId;
+  final DiscussionEntity discussion;
 
   const QuestionDetailsScreen({
-    required this.questionData,
-    required this.discussionId,
+    required this.discussion,
     super.key,
   });
 
@@ -26,41 +28,17 @@ class QuestionDetailsScreen extends StatefulWidget {
 
 class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
   final TextEditingController answerController = TextEditingController();
-  final ForumRepository _forumRepository = ForumRepository();
-  bool _isPosting = false;
+  final FocusNode _replyFocusNode = FocusNode();
 
-  final List<Map<String, dynamic>> answers = [
-    // ... existing mock data
-  ];
-
-  Future<void> _postAnswer() async {
-    if (answerController.text.isEmpty) return;
-
-    setState(() => _isPosting = true);
-
-    try {
-      await _forumRepository.createPost(
-        widget.discussionId,
-        answerController.text,
-      );
-      answerController.clear();
-      // Optionally refresh answers list here
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => context.read<ForumsCubit>().initSignalR());
+    Future.microtask(() {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Answer posted successfully')),
-        );
+        context.read<ForumsCubit>().loadPosts(widget.discussion.id, widget.discussion.title);
       }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to post answer: $e')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isPosting = false);
-      }
-    }
+    });
   }
 
   @override
@@ -71,7 +49,7 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
     return Scaffold(
       backgroundColor: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
       appBar: AppBar(
-        // ... app bar code
+        backgroundColor: isLight ? ColorsManager.white : ColorsManager.darkSurface,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary),
           onPressed: () => Navigator.pop(context),
@@ -81,12 +59,6 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
           style: isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge,
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_vert, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary),
-            onPressed: () {},
-          ),
-        ],
         elevation: 0,
       ),
       body: Column(
@@ -96,34 +68,139 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ForumQuestionCard(
-                    authorName: widget.questionData['author'],
-                    timeAgo: widget.questionData['timeAgo'],
-                    questionTitle: widget.questionData['title'],
-                    questionBody: widget.questionData['question'],
-                    votes: widget.questionData['votes'],
-                    commentsCount: widget.questionData['commentsCount'],
-                    status: widget.questionData['status'],
-                    statusColor: widget.questionData['statusColor'],
-                    isPreview: false,
+                  // Full Question Card (isPreview = false)
+                  Builder(
+                    builder: (context) {
+                      String author = widget.discussion.authorName ?? 'Unknown';
+                      String timeAgo = 'Just now';
+                      if (widget.discussion.createdAt != null) {
+                        final diff = DateTime.now().difference(widget.discussion.createdAt!);
+                        if (diff.inDays > 0) { timeAgo = '${diff.inDays}d ago'; }
+                        else if (diff.inHours > 0) { timeAgo = '${diff.inHours}h ago'; }
+                        else if (diff.inMinutes > 0) { timeAgo = '${diff.inMinutes}m ago'; }
+                      }
+
+                      return ForumQuestionCard(
+                        authorName: author,
+                        authorAvatarUrl: widget.discussion.authorAvatarUrl,
+                        timeAgo: timeAgo,
+                        questionTitle: widget.discussion.title,
+                        questionBody: widget.discussion.content ?? 'No content provided.',
+                        votes: 0,
+                        commentsCount: widget.discussion.postCount,
+                        status: widget.discussion.status,
+                        statusColor: widget.discussion.status == 'RESOLVED' ? ColorsManager.green : (widget.discussion.status == 'CLOSED' ? ColorsManager.grayMedium : ColorsManager.blue),
+                        isPreview: false,
+                      );
+                    }
                   ),
-                  _buildAnswersHeader(isLight),
-                  _buildAnswersList(isLight),
+                  BlocBuilder<ForumsCubit, ForumsState>(
+                    builder: (context, state) {
+                      if (state is ForumsLoading || state is ForumsActionLoading) {
+                        return const Padding(
+                          padding: EdgeInsets.all(32.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      if (state is PostsLoaded) {
+                        return Column(
+                          children: [
+                            _buildAnswersHeader(isLight, state.posts.length),
+                            _buildAnswersList(isLight, state.posts),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                   SizedBox(height: 80),
                 ],
               ),
             ),
           ),
-          _isPosting
-              ? const Center(child: CircularProgressIndicator())
-              : ForumAnswerInput(
+          ForumAnswerInput(
             controller: answerController,
-            onSubmit: _postAnswer,
+            focusNode: _replyFocusNode,
+            onSubmit: () {
+              final text = answerController.text.trim();
+              if (text.isNotEmpty) {
+                context.read<ForumsCubit>().createPost(
+                  widget.discussion.id,
+                  widget.discussion.title,
+                  text,
+                );
+                answerController.clear();
+                FocusScope.of(context).unfocus();
+              }
+            },
           ),
         ],
       ),
     );
   }
 
-  // ... _buildAnswersHeader, _buildAnswersList, dispose
+  Widget _buildAnswersHeader(bool isLight, int count) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 12),
+      child: Row(
+        children: [
+          Text(
+            'ALL ANSWERS ($count)',
+            style: isLight
+                ? AppLightTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold, color: ColorsManager.grayDark)
+                : AppDarkTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold, color: ColorsManager.darkTextSecondary),
+          ),
+          Spacer(),
+          Text(
+            'Sort by: ',
+            style: TextStyle(fontSize: 13, color: isLight ? ColorsManager.grayMedium : ColorsManager.darkTextSecondary),
+          ),
+          Text(
+            'Highest score',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnswersList(bool isLight, List<PostEntity> posts) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: posts.map((post) {
+          String postTimeAgo = 'Just now';
+          if (post.createdAt != null) {
+            final diff = DateTime.now().difference(post.createdAt!);
+            if (diff.inDays > 0) { postTimeAgo = '${diff.inDays}d ago'; }
+            else if (diff.inHours > 0) { postTimeAgo = '${diff.inHours}h ago'; }
+            else if (diff.inMinutes > 0) { postTimeAgo = '${diff.inMinutes}m ago'; }
+          }
+          return ForumAnswerCard(
+            authorName: post.authorName,
+            authorAvatarUrl: post.authorAvatarUrl,
+            role: 'Student', // Can be derived dynamically later
+            timestamp: postTimeAgo,
+            answerText: post.content,
+            votes: post.votes,
+            isTopRated: post.isCorrect,
+            approvedByRole: post.approvedByRole,
+            onUpvote: () => context.read<ForumsCubit>().votePost(post.id, true, widget.discussion.id, widget.discussion.title),
+            onDownvote: () => context.read<ForumsCubit>().votePost(post.id, false, widget.discussion.id, widget.discussion.title),
+            onReplyTap: () {
+              answerController.text = '@${post.authorName} ';
+              _replyFocusNode.requestFocus();
+            },
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    answerController.dispose();
+    _replyFocusNode.dispose();
+    super.dispose();
+  }
 }

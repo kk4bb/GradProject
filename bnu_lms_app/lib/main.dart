@@ -1,27 +1,37 @@
+import 'package:bnu_lms_app/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:bnu_lms_app/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_theme.dart';
 import 'package:bnu_lms_app/shared/providers/language_provider.dart';
 import 'package:bnu_lms_app/shared/providers/theme_provider.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:bnu_lms_app/shared/routes_manager/routes_generator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'l10n/app_localizations.dart';
+import 'package:bnu_lms_app/shared/di/injection.dart';
 
-
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
       ],
-      child: const BNU(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthCubit>(create: (_) => getIt<AuthCubit>()),
+          BlocProvider<ProfileCubit>(create: (_) => getIt<ProfileCubit>()),
+        ],
+        child: const BNU(),
+      ),
     ),
   );
 }
 
 class BNU extends StatelessWidget {
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   const BNU({super.key});
 
   @override
@@ -30,7 +40,6 @@ class BNU extends StatelessWidget {
     final languageProvider = Provider.of<LanguageProvider>(context);
 
     return MaterialApp(
-      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,

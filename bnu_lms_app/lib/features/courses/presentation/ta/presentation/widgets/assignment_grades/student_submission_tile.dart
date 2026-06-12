@@ -28,10 +28,10 @@ class StudentSubmissionTile extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: isLight
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 6, offset: const Offset(0, 2))]
             : [],
@@ -39,10 +39,10 @@ class StudentSubmissionTile extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 18.0,
+            radius: 18,
             backgroundColor: isLight ? Colors.grey.shade300 : Colors.grey.shade700,
           ),
-          SizedBox(width: 12.0),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,11 +52,11 @@ class StudentSubmissionTile extends StatelessWidget {
                   style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 4.0),
+                SizedBox(height: 4),
                 Text(
                   status,
                   style: TextStyle(
-                      fontSize: 10.0,
+                      fontSize: 10,
                       fontWeight: FontWeight.bold,
                       color: statusColor ?? ColorsManager.grayMedium
                   ),
@@ -65,14 +65,14 @@ class StudentSubmissionTile extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: isLight ? Colors.grey.shade100 : ColorsManager.darkBackground,
               shape: BoxShape.circle,
             ),
             child: Icon(
               isGraded ? Icons.edit_outlined : Icons.keyboard_arrow_down_rounded,
-              size: 20.0,
+              size: 20,
               color: isGraded ? const Color(0xFF2FBAD7) : ColorsManager.grayMedium,
             ),
           ),

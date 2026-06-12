@@ -69,24 +69,25 @@ dr.smith@campusconnect.edu   Password123!
 **Student**
 john.doe@example.com   Password123!
 
-Screw these two, here are three better credentials to test with and the script is already there
-prof@bnu.edu
-ta@bnu.edu
-student@bnu.edu
-
-Password for all of them:
-qweasd
-
 ## Commands
 to avoid issue with the copying and pasting the jwt token you can use httpie and jq with this command
 http GET localhost:5205/api/student/me "Authorization: Bearer $(http --ignore-stdin POST localhost:5205/api/auth/login email=john.doe@example.com password='Password123!' | jq -r .token)"
+
+# Gathering required features
+## Student View
+### Profile page
+the profile section for teaching staff has
+- name
+- Faculty
+- ID
+- academic year
+- credit hours
+
+ignoring
+- the rank thing
 
 
 to publish the backend so that it can be transferred to the remote server run
 ```
 dotnet publish -c Release -r linux-arm64 --self-contained true
 ```
-
-some error that I should look into
-The app's functional changes are complete. As mentioned, the remaining build failure related to "Android v1 embedding" is a structural project configuration issue. You will need to follow the official Flutter documentation on Android embedding migration (https://docs.flutter.dev/release/breaking-changes/android-v1-embedding-deprecation) to update your android/ configuration to the V2 embedding to resolve this final build barrier.
-

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +17,8 @@ namespace CampusConnect.Domain.Entities
         public double Score { get; set; }
 
         public string? EssayAnswer { get; set; }
+
+        public double? ManualScore { get; set; }
 
         public string Status { get; set; } = "Completed";
     }

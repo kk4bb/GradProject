@@ -19,10 +19,10 @@ class GradingSummaryCard extends StatelessWidget {
     const cyan = Color(0xFF2FBAD7);
 
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: isLight
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))]
             : [],
@@ -37,32 +37,32 @@ class GradingSummaryCard extends StatelessWidget {
                 child: Text(
                   assignmentTitle,
                   style: (isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall)
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 18.0),
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: cyan.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   'ACTIVE',
-                  style: TextStyle(color: cyan, fontSize: 10.0, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: cyan, fontSize: 10, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 8),
           Text(
             'Due: Oct 24, 2023 • 11:59 PM',
-            style: TextStyle(color: ColorsManager.grayMedium, fontSize: 12.0),
+            style: TextStyle(color: ColorsManager.grayMedium, fontSize: 12),
           ),
-          SizedBox(height: 20.0),
+          SizedBox(height: 20),
           Row(
             children: [
               Expanded(child: _buildStatBox(isLight, 'TOTAL\nSUBMISSIONS', '45', Colors.transparent)),
-              SizedBox(width: 12.0),
+              SizedBox(width: 12),
               Expanded(child: _buildStatBox(isLight, 'PENDING\nGRADE', '12', cyan.withValues(alpha: 0.05))),
             ],
           )
@@ -73,10 +73,10 @@ class GradingSummaryCard extends StatelessWidget {
 
   Widget _buildStatBox(bool isLight, String label, String value, Color bgColor) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isLight && bgColor == Colors.transparent ? Colors.grey.shade50 : bgColor,
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: ColorsManager.grayMedium.withValues(alpha: 0.1)),
       ),
       child: Column(
@@ -85,13 +85,13 @@ class GradingSummaryCard extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-                fontSize: 9.0,
+                fontSize: 9,
                 fontWeight: FontWeight.bold,
                 color: ColorsManager.grayMedium,
                 letterSpacing: 1.0
             ),
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 8),
           Text(
             value,
             style: (isLight ? AppLightTextStyles.headlineMedium : AppDarkTextStyles.headlineMedium)

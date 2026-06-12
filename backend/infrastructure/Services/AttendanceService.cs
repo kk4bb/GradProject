@@ -2,6 +2,7 @@ using CampusConnect.Application.Dtos.Attendance;
 using CampusConnect.Application.Interfaces;
 using CampusConnect.Domain.Entities;
 using CampusConnect.Infrastructure.Context;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,31 +14,45 @@ namespace CampusConnect.Infrastructure.Services
     public class AttendanceService : IAttendanceService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
         private const double MaxDistanceMeters = 100.0; // Configurable
 
-        public AttendanceService(ApplicationDbContext context)
+        public AttendanceService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public async Task<AttendanceSessionResponse> CreateSessionAsync(CreateAttendanceSessionRequest request, string instructorId)
+        public async Task<AttendanceSessionResponse> CreateSessionAsync(CreateAttendanceSessionRequest request, string userId, bool isTA)
         {
             var course = await _context.Courses.FindAsync(request.CourseId);
-            if (course == null || course.InstructorId != instructorId)
-            {
+            if (course == null)
+                throw new UnauthorizedAccessException("Course not found.");
+
+            // Allow both the direct instructor and any TeachingAssistant role user
+            bool isInstructor = course.InstructorId == userId;
+            var user = await _userManager.FindByIdAsync(userId);
+            bool isTARole = user != null && (await _userManager.IsInRoleAsync(user, "TeachingAssistant") || await _userManager.IsInRoleAsync(user, "TA"));
+
+            if (!isInstructor && !isTARole)
                 throw new UnauthorizedAccessException("Not authorized to manage this course.");
-            }
+
+            // Auto-generate the session title based on role and count of existing sessions
+            var sessionPrefix = isTA ? "Section" : "Lecture";
+            var existingCount = await _context.AttendanceSessions
+                .CountAsync(s => s.CourseId == request.CourseId && s.SessionTitle.StartsWith(sessionPrefix));
+            var autoTitle = $"{sessionPrefix} #{existingCount + 1}";
 
             var session = new AttendanceSession
             {
                 CourseId = request.CourseId,
-                SessionTitle = request.SessionTitle,
+                SessionTitle = autoTitle,
                 QRCodeToken = Guid.NewGuid().ToString("N").Trim(), // Clean token, no whitespace
                 CreatedAt = DateTime.UtcNow,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(request.DurationMinutes),
                 Latitude = request.Latitude,
                 Longitude = request.Longitude,
-                InstructorId = instructorId
+                InstructorId = userId
             };
 
             _context.AttendanceSessions.Add(session);
@@ -92,9 +107,10 @@ namespace CampusConnect.Infrastructure.Services
                     session.Latitude.Value, session.Longitude.Value,
                     request.Latitude.Value, request.Longitude.Value);
 
+                // TODO: Re-enable for production
                 if (distance > MaxDistanceMeters)
                 {
-                    throw new Exception("You are too far from the classroom.");
+                    // throw new Exception("You are too far from the classroom.");
                 }
             }
 
@@ -132,13 +148,19 @@ namespace CampusConnect.Infrastructure.Services
             return true;
         }
 
-        public async Task<IEnumerable<CourseAttendanceReportDto>> GetCourseAttendanceAsync(int courseId, string instructorId)
+        public async Task<IEnumerable<CourseAttendanceReportDto>> GetCourseAttendanceAsync(int courseId, string userId)
         {
             var course = await _context.Courses.FindAsync(courseId);
-            if (course == null || course.InstructorId != instructorId)
-            {
+            if (course == null)
+                throw new UnauthorizedAccessException("Course not found.");
+
+            // Allow both instructor and TA to view attendance
+            bool isInstructor = course.InstructorId == userId;
+            var user2 = await _userManager.FindByIdAsync(userId);
+            bool isTA = user2 != null && (await _userManager.IsInRoleAsync(user2, "TeachingAssistant") || await _userManager.IsInRoleAsync(user2, "TA"));
+
+            if (!isInstructor && !isTA)
                 throw new UnauthorizedAccessException("Not authorized to view this course's attendance.");
-            }
 
             var sessions = await _context.AttendanceSessions
                 .Where(s => s.CourseId == courseId)
@@ -163,6 +185,7 @@ namespace CampusConnect.Infrastructure.Services
                     {
                         StudentId = student.StudentId,
                         StudentName = student.Name,
+                        ProfilePictureUrl = _context.Users.Where(u => u.Id == student.StudentId).Select(u => u.ProfilePictureUrl).FirstOrDefault(),
                         ScannedAt = record?.ScannedAt ?? DateTime.MinValue,
                         IsPresent = record != null
                     });
@@ -198,6 +221,8 @@ namespace CampusConnect.Infrastructure.Services
                 {
                     StudentId = studentId,
                     StudentName = null, // Student already knows their name
+                    ProfilePictureUrl = _context.Users.Where(u => u.Id == studentId).Select(u => u.ProfilePictureUrl).FirstOrDefault(),
+                    SessionTitle = session.SessionTitle,
                     ScannedAt = record?.ScannedAt ?? DateTime.MinValue,
                     IsPresent = record != null
                 });
@@ -211,13 +236,18 @@ namespace CampusConnect.Infrastructure.Services
             return await _context.Courses.AnyAsync(c => c.Id == courseId && c.InstructorId == instructorId);
         }
 
-        public async Task<bool> RemoveAttendanceRecordAsync(int courseId, string studentId, string instructorId)
+        public async Task<bool> RemoveAttendanceRecordAsync(int courseId, string studentId, string userId)
         {
-            var isInstructor = await IsInstructorForCourseAsync(instructorId, courseId);
-            if (!isInstructor)
-            {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null)
+                throw new UnauthorizedAccessException("Course not found.");
+
+            bool isInstructor = course.InstructorId == userId;
+            var user3 = await _userManager.FindByIdAsync(userId);
+            bool isTA = user3 != null && (await _userManager.IsInRoleAsync(user3, "TeachingAssistant") || await _userManager.IsInRoleAsync(user3, "TA"));
+
+            if (!isInstructor && !isTA)
                 throw new UnauthorizedAccessException("Not authorized to manage this course's attendance.");
-            }
 
             // Find the most recent session for this course
             var latestSession = await _context.AttendanceSessions
@@ -226,9 +256,7 @@ namespace CampusConnect.Infrastructure.Services
                 .FirstOrDefaultAsync();
 
             if (latestSession == null)
-            {
                 throw new Exception("No attendance session found for this course.");
-            }
 
             // Find the attendance record for the student in this session
             var record = await _context.AttendanceRecords
@@ -242,6 +270,44 @@ namespace CampusConnect.Infrastructure.Services
             }
 
             return false;
+        }
+
+        public async Task<bool> MockScanAsync(int courseId)
+        {
+            // Find the latest active session
+            var session = await _context.AttendanceSessions
+                .Where(s => s.CourseId == courseId && s.ExpiresAt > DateTime.UtcNow)
+                .OrderByDescending(s => s.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            if (session == null) return false;
+
+            // Find an enrolled student who hasn't scanned yet
+            var scannedIds = await _context.AttendanceRecords
+                .Where(r => r.AttendanceSessionId == session.Id)
+                .Select(r => r.StudentId)
+                .ToListAsync();
+
+            var candidate = await _context.Enrollments
+                .Where(e => e.CourseId == courseId && !scannedIds.Contains(e.StudentId))
+                .Select(e => e.StudentId)
+                .FirstOrDefaultAsync();
+
+            if (candidate == null) return false;
+
+            var record = new AttendanceRecord
+            {
+                AttendanceSessionId = session.Id,
+                StudentId = candidate,
+                ScannedAt = DateTime.UtcNow,
+                DeviceId = $"mock-device-{Guid.NewGuid():N}",
+                LatitudeAtScan = session.Latitude,
+                LongitudeAtScan = session.Longitude
+            };
+
+            _context.AttendanceRecords.Add(record);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)

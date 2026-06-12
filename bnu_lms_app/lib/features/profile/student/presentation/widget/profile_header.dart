@@ -1,6 +1,7 @@
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:bnu_lms_app/shared/config/api_constants.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../shared/config/theme/app_light_text_styles.dart';
@@ -12,6 +13,7 @@ class ProfileHeaderCard extends StatelessWidget {
   final String studentId;
   final int year;
   final String profileImage;
+  final String? profilePictureUrl;
 
   const ProfileHeaderCard({
     super.key,
@@ -20,6 +22,7 @@ class ProfileHeaderCard extends StatelessWidget {
     required this.studentId,
     required this.year,
     required this.profileImage,
+    this.profilePictureUrl,
   });
 
   @override
@@ -46,7 +49,20 @@ class ProfileHeaderCard extends StatelessWidget {
             ),
             child: CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage(profileImage),
+              backgroundColor: ColorsManager.grayMedium.withValues(alpha: 0.1),
+              child: ClipOval(
+                child: profilePictureUrl != null && profilePictureUrl!.isNotEmpty
+                    ? Image.network(
+                        profilePictureUrl!.startsWith('http') 
+                            ? profilePictureUrl! 
+                            : '${ApiConstants.baseUrl.replaceAll('api/', '')}${profilePictureUrl!.startsWith('/') ? profilePictureUrl!.substring(1) : profilePictureUrl!}',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Image.asset(profileImage, width: 100, height: 100, fit: BoxFit.cover),
+                      )
+                    : Image.asset(profileImage, width: 100, height: 100, fit: BoxFit.cover),
+              ),
             ),
           ),
           SizedBox(height: 16),

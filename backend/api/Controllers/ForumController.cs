@@ -48,7 +48,7 @@ namespace CampusConnect.API.Controllers
                 var authorName = $"{firstName} {lastName}".Trim();
                 if (string.IsNullOrWhiteSpace(authorName)) authorName = "Unknown";
 
-                var id = await _forumService.CreateDiscussionAsync(courseId, dto, userId, authorName);
+                var id = await _forumService.CreateDiscussionAsync(courseId, dto, userId, authorName, null);
                 return Ok(new { Id = id });
             }
             catch (UnauthorizedAccessException ex) { return StatusCode(403, ex.Message); }
@@ -103,7 +103,7 @@ namespace CampusConnect.API.Controllers
                 var authorName = $"{firstName} {lastName}".Trim();
                 if (string.IsNullOrWhiteSpace(authorName)) authorName = "Unknown";
 
-                var postId = await _forumService.CreatePostAsync(id, dto, userId, role, authorName);
+                var postId = await _forumService.CreatePostAsync(id, dto, userId, role, authorName, null);
                 return Ok(new { Id = postId });
             }
             catch (UnauthorizedAccessException ex) { return StatusCode(403, ex.Message); }

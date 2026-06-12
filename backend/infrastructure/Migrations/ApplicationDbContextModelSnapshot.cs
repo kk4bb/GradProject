@@ -21,6 +21,48 @@ namespace CampusConnect.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CampusConnect.Domain.Entities.Announcement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPinned")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetSection")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("Announcements");
+                });
+
             modelBuilder.Entity("CampusConnect.Domain.Entities.Assignment", b =>
                 {
                     b.Property<int>("Id")
@@ -276,6 +318,10 @@ namespace CampusConnect.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Discussions");
@@ -318,6 +364,9 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Section")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StudentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -330,6 +379,55 @@ namespace CampusConnect.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Enrollments");
+                });
+
+            modelBuilder.Entity("CampusConnect.Domain.Entities.GradeRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("AssignmentsTotal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AttendanceTotal")
+                        .HasColumnType("float");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("FinalExam")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("IsTermWorkPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Midterm1")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Midterm2")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ProjectGrade")
+                        .HasColumnType("float");
+
+                    b.Property<double>("QuizzesTotal")
+                        .HasColumnType("float");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("StudentId", "CourseId")
+                        .IsUnique();
+
+                    b.ToTable("GradeRecords");
                 });
 
             modelBuilder.Entity("CampusConnect.Domain.Entities.Lesson", b =>
@@ -387,9 +485,6 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsAnnouncement")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
@@ -397,11 +492,18 @@ namespace CampusConnect.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ReferenceId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -448,6 +550,31 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("CampusConnect.Domain.Entities.PostVote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsUpvote")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostVotes");
+                });
+
             modelBuilder.Entity("CampusConnect.Domain.Entities.Question", b =>
                 {
                     b.Property<int>("Id")
@@ -461,6 +588,9 @@ namespace CampusConnect.Infrastructure.Migrations
 
                     b.Property<bool>("IsEssay")
                         .HasColumnType("bit");
+
+                    b.Property<double>("Points")
+                        .HasColumnType("float");
 
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
@@ -509,8 +639,27 @@ namespace CampusConnect.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("AreGradesPublished")
+                        .HasColumnType("bit");
+
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAutoGraded")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -533,6 +682,9 @@ namespace CampusConnect.Infrastructure.Migrations
 
                     b.Property<string>("EssayAnswer")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("ManualScore")
+                        .HasColumnType("float");
 
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
@@ -651,6 +803,9 @@ namespace CampusConnect.Infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -808,6 +963,17 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CampusConnect.Domain.Entities.Announcement", b =>
+                {
+                    b.HasOne("CampusConnect.Domain.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("CampusConnect.Domain.Entities.Assignment", b =>
                 {
                     b.HasOne("CampusConnect.Domain.Entities.Course", "Course")
@@ -909,6 +1075,23 @@ namespace CampusConnect.Infrastructure.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("CampusConnect.Domain.Entities.GradeRecord", b =>
+                {
+                    b.HasOne("CampusConnect.Domain.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CampusConnect.Infrastructure.Context.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("CampusConnect.Domain.Entities.Lesson", b =>
                 {
                     b.HasOne("CampusConnect.Domain.Entities.Module", "Module")
@@ -940,6 +1123,17 @@ namespace CampusConnect.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Discussion");
+                });
+
+            modelBuilder.Entity("CampusConnect.Domain.Entities.PostVote", b =>
+                {
+                    b.HasOne("CampusConnect.Domain.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("CampusConnect.Domain.Entities.Question", b =>

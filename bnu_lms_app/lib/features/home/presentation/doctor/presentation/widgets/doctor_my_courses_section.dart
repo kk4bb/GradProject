@@ -1,6 +1,3 @@
-import 'package:bnu_lms_app/features/courses/data/models/course_model.dart';
-import 'package:bnu_lms_app/shared/network/repositories/course_repository.dart';
-import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,39 +7,8 @@ import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
 import 'doctor_course_card.dart';
 
-class DoctorMyCoursesSection extends StatefulWidget {
+class DoctorMyCoursesSection extends StatelessWidget {
   const DoctorMyCoursesSection({super.key});
-
-  @override
-  State<DoctorMyCoursesSection> createState() => _DoctorMyCoursesSectionState();
-}
-
-class _DoctorMyCoursesSectionState extends State<DoctorMyCoursesSection> {
-  final CourseRepository _courseRepository = CourseRepository();
-  List<CourseSummary> _courses = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchCourses();
-  }
-
-  Future<void> _fetchCourses() async {
-    try {
-      final courses = await _courseRepository.getAssignedCourses();
-      if (mounted) {
-        setState(() {
-          _courses = courses;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +16,7 @@ class _DoctorMyCoursesSectionState extends State<DoctorMyCoursesSection> {
     final isLight = themeProvider.isLightTheme();
 
     return Padding(
-      padding: const EdgeInsets.all(22),
+      padding: EdgeInsets.all(22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -63,9 +29,7 @@ class _DoctorMyCoursesSectionState extends State<DoctorMyCoursesSection> {
                 style: isLight ? AppLightTextStyles.headlineMedium : AppDarkTextStyles.headlineMedium,
               ),
               GestureDetector(
-                onTap: () {
-                  // Navigate to Courses Tab in Home
-                },
+                onTap: () {},
                 child: Text(
                   'View All',
                   style: isLight
@@ -75,29 +39,24 @@ class _DoctorMyCoursesSectionState extends State<DoctorMyCoursesSection> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          if (_isLoading)
-            const Center(child: CircularProgressIndicator())
-          else if (_courses.isEmpty)
-            const Center(child: Text('No assigned courses found'))
-          else
-            ..._courses.take(2).map((course) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: DoctorCourseCard(
-                    academicYear: 'Academic Year 2023/24',
-                    courseName: course.title,
-                    studentsCount: '0 Students', // TODO: Fetch from API
-                    timeString: 'N/A', // TODO: Fetch from API
-                    courseIcon: Icons.engineering_outlined,
-                    onManageTap: () {
-                       Navigator.pushNamed(
-                        context,
-                        Routes.doctorCoursesDetails,
-                        arguments: {'courseId': course.id},
-                      );
-                    },
-                  ),
-                )),
+          SizedBox(height: 16),
+          DoctorCourseCard(
+            academicYear: 'Academic Year 2023/24',
+            courseName: 'Advanced Structural Engineering',
+            courseCode: 'ENG-402',
+            instructorName: 'Dr. Emily Chen',
+            courseIcon: Icons.engineering_outlined,
+            onManageTap: () {},
+          ),
+          SizedBox(height: 16),
+          DoctorCourseCard(
+            academicYear: 'Academic Year 2023/24',
+            courseName: 'Intro to Neural Networks',
+            courseCode: 'CS-501',
+            instructorName: 'Dr. Alan Turing',
+            courseIcon: Icons.psychology_outlined,
+            onManageTap: () {},
+          ),
         ],
       ),
     );

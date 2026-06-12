@@ -8,17 +8,26 @@ import '../../../../../shared/providers/theme_provider.dart';
 
 
 class ProfileStatsGrid extends StatelessWidget {
-  const ProfileStatsGrid({super.key});
+  final String gpa;
+  final String credits;
+  final String rank;
+
+  const ProfileStatsGrid({
+    super.key,
+    required this.gpa,
+    required this.credits,
+    required this.rank,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: StatCard(label: 'GPA', value: '3.85')),
+        Expanded(child: StatCard(label: 'GPA', value: gpa)),
         SizedBox(width: 12),
-        Expanded(child: StatCard(label: 'Credits', value: '92')),
+        Expanded(child: StatCard(label: 'Credits', value: credits)),
         SizedBox(width: 12),
-        Expanded(child: StatCard(label: 'Rank', value: '7th')),
+        Expanded(child: StatCard(label: 'Rank', value: rank)),
       ],
     );
   }

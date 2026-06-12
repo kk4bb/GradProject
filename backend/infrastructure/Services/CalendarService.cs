@@ -61,7 +61,7 @@ namespace CampusConnect.Infrastructure.Services
                     Id = q.Id,
                     Title = q.Title,
                     Description = string.Empty,
-                    EventDate = startDate, // No date on Quiz entity; placed at start of queried range
+                    EventDate = q.StartDate, // Use the actual Quiz StartDate
                     EventType = "Quiz",
                     CourseId = q.CourseId,
                     CourseTitle = q.Course.Title ?? string.Empty

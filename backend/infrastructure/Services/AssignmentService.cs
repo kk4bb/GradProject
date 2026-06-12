@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using CampusConnect.Infrastructure.Hubs;
+using CampusConnect.Domain.Enums;
 
 namespace CampusConnect.Infrastructure.Services
 {
@@ -15,11 +18,15 @@ namespace CampusConnect.Infrastructure.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IGradeService _gradeService;
+        private readonly IHubContext<NotificationHub> _notificationHubContext;
 
-        public AssignmentService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public AssignmentService(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IGradeService gradeService, IHubContext<NotificationHub> notificationHubContext)
         {
             _context = context;
             _userManager = userManager;
+            _gradeService = gradeService;
+            _notificationHubContext = notificationHubContext;
         }
 
         public async Task<List<AssignmentDto>> GetAssignmentsByCourseAsync(int courseId, string userId, bool isTA = false)
@@ -151,6 +158,36 @@ namespace CampusConnect.Infrastructure.Services
 
             _context.Assignments.Add(assignment);
             await _context.SaveChangesAsync();
+
+            // Create Notification records for each enrolled student
+            var studentIds = await _context.Enrollments
+                .Where(e => e.CourseId == courseId)
+                .Select(e => e.StudentId)
+                .ToListAsync();
+
+            var assignmentNotifications = studentIds.Select(sid => new Notification
+            {
+                UserId = sid,
+                Title = "New Assignment Posted",
+                Message = $"A new assignment '{dto.Title}' has been posted. Due: {dto.DueDate:MMM d, yyyy}.",
+                Type = NotificationType.Assignment,
+                ReferenceId = assignment.Id.ToString(),
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
+            }).ToList();
+
+            if (assignmentNotifications.Any())
+            {
+                _context.Notifications.AddRange(assignmentNotifications);
+                await _context.SaveChangesAsync();
+
+                foreach (var sid in studentIds)
+                {
+                    await _notificationHubContext.Clients.Group($"User_{sid}")
+                        .SendAsync("ReceiveNotification", new { title = "New Assignment Posted", message = $"A new assignment '{dto.Title}' has been posted." });
+                }
+            }
+
             return assignment.Id;
         }
 
@@ -207,6 +244,12 @@ namespace CampusConnect.Infrastructure.Services
 
             _context.Entry(submission).State = EntityState.Modified;
             var success = await _context.SaveChangesAsync() > 0;
+            
+            if (success)
+            {
+                await _gradeService.AggregateStudentGradesAsync(submission.Assignment.CourseId, submission.StudentId);
+            }
+            
             return (success, submission.StudentId);
         }
     }

@@ -1,32 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
-import '../../../../../../../shared/config/theme/app_light_text_styles.dart';
-import '../../../../../../../shared/providers/theme_provider.dart';
-import '../../../../../../../shared/resources/colors_manager.dart';
-
-import 'package:bnu_lms_app/features/courses/data/models/course_model.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../../shared/resources/colors_manager.dart';
 
-class CourseMaterialsTab extends StatelessWidget {
-  final CourseDetail courseDetail;
-  const CourseMaterialsTab({required this.courseDetail, super.key});
+class CourseMaterialsTab extends StatefulWidget {
+  const CourseMaterialsTab({super.key});
+
+  @override
+  State<CourseMaterialsTab> createState() => _CourseMaterialsTabState();
+}
+
+class _CourseMaterialsTabState extends State<CourseMaterialsTab> {
+  bool _isUploading = false;
+  
+  Future<void> _mockUploadMaterial() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null) {
+      setState(() {
+        _isUploading = true;
+      });
+
+      // Simulate network upload delay
+      await Future.delayed(const Duration(seconds: 2));
+
+      setState(() {
+        _isUploading = false;
+      });
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("File uploaded successfully!"),
+            backgroundColor: ColorsManager.green,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var isLight = Provider.of<ThemeProvider>(context).isLightTheme();
-    
-    final allContent = courseDetail.modules.expand((m) => m.lessons.expand((l) => l.contents)).toList();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,53 +66,52 @@ class CourseMaterialsTab extends StatelessWidget {
                     'Course Materials',
                     style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
-                    '${allContent.length} files uploaded this semester',
+                    '12 files uploaded this semester',
                     style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall,
                   ),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: ColorsManager.blue,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.add, color: ColorsManager.white, size: 16),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Upload',
-                      style: AppDarkTextStyles.labelMedium.copyWith(color: ColorsManager.white, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+              GestureDetector(
+                onTap: _isUploading ? null : _mockUploadMaterial,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _isUploading ? ColorsManager.grayMedium : ColorsManager.blue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      if (_isUploading)
+                        SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: const CircularProgressIndicator(
+                            color: ColorsManager.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      else
+                        Icon(Icons.add, color: ColorsManager.white, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        _isUploading ? 'Uploading...' : 'Upload',
+                        style: AppDarkTextStyles.labelMedium.copyWith(color: ColorsManager.white, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
-          ...allContent.map((content) {
-            IconData icon = Icons.description;
-            Color color = ColorsManager.blue;
-            if (content.contentType.contains('pdf')) {
-              icon = Icons.picture_as_pdf;
-              color = ColorsManager.red;
-            } else if (content.contentType.contains('video')) {
-              icon = Icons.play_circle_fill;
-              color = ColorsManager.yellow;
-            }
-            
-            return _buildMaterialItem(
-              context,
-              content.fileUrl.split('/').last,
-              'Type: ${content.contentType}',
-              icon,
-              color,
-            );
-          }),
+          _buildMaterialItem(context, 'Lecture 01 - Intro to Neonat...', 'Oct 12, 2023 • 2.4 MB', Icons.picture_as_pdf, ColorsManager.red),
+          _buildMaterialItem(context, 'Case Study Assignment #1...', 'Oct 15, 2023 • 1.1 MB', Icons.description, ColorsManager.blue),
+          _buildMaterialItem(context, 'Week 3 - Pediatric Surgery...', 'Oct 28, 2023 • 8.6 MB', Icons.play_circle_fill, ColorsManager.yellow),
+          _buildMaterialItem(context, 'Clinical Rotation Schedule.x...', 'Nov 02, 2023 • 450 KB', Icons.table_chart, ColorsManager.green),
+          _buildMaterialItem(context, 'Final Exam Study Guide.pdf', 'Nov 10, 2023 • 3.2 MB', Icons.picture_as_pdf, ColorsManager.red),
         ],
       ),
     );

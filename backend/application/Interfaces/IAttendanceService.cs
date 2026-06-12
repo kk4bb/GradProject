@@ -6,7 +6,7 @@ namespace CampusConnect.Application.Interfaces
 {
     public interface IAttendanceService
     {
-        Task<AttendanceSessionResponse> CreateSessionAsync(CreateAttendanceSessionRequest request, string instructorId);
+        Task<AttendanceSessionResponse> CreateSessionAsync(CreateAttendanceSessionRequest request, string userId, bool isTA);
         
         Task<bool> MarkAttendanceAsync(MarkAttendanceRequest request, string studentId);
         
@@ -16,6 +16,8 @@ namespace CampusConnect.Application.Interfaces
 
         Task<bool> IsInstructorForCourseAsync(string instructorId, int courseId);
 
-        Task<bool> RemoveAttendanceRecordAsync(int courseId, string studentId, string instructorId);
+        Task<bool> RemoveAttendanceRecordAsync(int courseId, string studentId, string userId);
+
+        Task<bool> MockScanAsync(int courseId);
     }
 }

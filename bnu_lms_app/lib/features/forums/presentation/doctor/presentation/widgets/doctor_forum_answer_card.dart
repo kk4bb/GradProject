@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../shared/config/api_constants.dart';
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
@@ -11,14 +12,24 @@ class DoctorForumAnswerCard extends StatelessWidget {
   final String timeAgo;
   final String answerText;
   final bool isCorrect;
+  final int votes;
   final VoidCallback onMarkCorrect;
+  final String? approvedByRole;
+  final String? authorAvatarUrl;
+  final VoidCallback? onUpvote;
+  final VoidCallback? onDownvote;
 
   const DoctorForumAnswerCard({
     required this.authorName,
     required this.timeAgo,
     required this.answerText,
     required this.isCorrect,
+    required this.votes,
     required this.onMarkCorrect,
+    this.approvedByRole,
+    this.authorAvatarUrl,
+    this.onUpvote,
+    this.onDownvote,
     super.key,
   });
 
@@ -38,12 +49,46 @@ class DoctorForumAnswerCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (isCorrect)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                children: [
+                  Icon(Icons.check_circle, color: ColorsManager.green, size: 16),
+                  SizedBox(width: 6),
+                  Text(
+                    approvedByRole == 'TA' ? 'CORRECTED BY TA' : 'DOCTOR APPROVED ANSWER',
+                    style: TextStyle(color: ColorsManager.green, fontWeight: FontWeight.bold, fontSize: 11, letterSpacing: 0.5),
+                  ),
+                ],
+              ),
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  CircleAvatar(radius: 14, backgroundColor: ColorsManager.grayMedium),
+                  CircleAvatar(
+                    radius: 14,
+                    backgroundColor: ColorsManager.blue,
+                    child: ClipOval(
+                      child: authorAvatarUrl != null && authorAvatarUrl!.isNotEmpty
+                          ? Image.network(
+                              ApiConstants.fullUrl(authorAvatarUrl),
+                              width: 28,
+                              height: 28,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Text(
+                                authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
+                                style: TextStyle(color: ColorsManager.white, fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            )
+                          : Text(
+                              authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
+                              style: TextStyle(color: ColorsManager.white, fontWeight: FontWeight.bold, fontSize: 12),
+                            ),
+                    ),
+                  ),
                   SizedBox(width: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,6 +117,34 @@ class DoctorForumAnswerCard extends StatelessWidget {
           ),
           SizedBox(height: 12),
           Text(answerText, style: isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium),
+          SizedBox(height: 16),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: onUpvote,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(color: ColorsManager.grayMedium.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+                  child: Row(
+                    children: [
+                      Icon(Icons.arrow_upward, size: 14, color: isLight ? ColorsManager.grayDark : ColorsManager.darkTextSecondary),
+                      SizedBox(width: 4),
+                      Text(votes.toString(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary)),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 8),
+              GestureDetector(
+                onTap: onDownvote,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(color: ColorsManager.grayMedium.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
+                  child: Icon(Icons.arrow_downward, size: 14, color: isLight ? ColorsManager.grayDark : ColorsManager.darkTextSecondary),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
