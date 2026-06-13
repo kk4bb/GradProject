@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -16,10 +15,10 @@ class AboutCourseSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +36,7 @@ class AboutCourseSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           Text(
             'This course dives deep into the design and analysis of efficient algorithms. We will explore advanced data structures including Heaps, Balanced Search Trees, and Hash Tables. Emphasis is placed on complexity analysis and practical application in software development.',
             style: isLight ? AppLightTextStyles.bodySmall.copyWith(height: 1.6) : AppDarkTextStyles.bodySmall.copyWith(height: 1.6),

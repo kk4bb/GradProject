@@ -5,7 +5,6 @@ import 'package:bnu_lms_app/shared/resources/assets_manager.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:bnu_lms_app/shared/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -14,8 +13,12 @@ import '../../../../shared/resources/app_sizes.dart';
 import '../widgets/quiz_details/double_divider.dart';
 import '../widgets/quiz_details/info_item.dart';
 
+import 'package:intl/intl.dart';
+import '../../domain/entities/quiz_entity.dart';
+
 class QuizDetailsScreen extends StatelessWidget {
-  const QuizDetailsScreen({super.key});
+  final QuizEntity quiz;
+  const QuizDetailsScreen({super.key, required this.quiz});
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +41,12 @@ class QuizDetailsScreen extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                width: 358.w,
+                width: 358,
                 decoration: BoxDecoration(
                   color: isLight
                       ? ColorsManager.white
                       : ColorsManager.darkSurface,
-                  borderRadius: BorderRadius.circular(24.r),
+                  borderRadius: BorderRadius.circular(24),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -53,7 +56,7 @@ class QuizDetailsScreen extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            'Chapter 3: Function',
+                            quiz.title,
                             style: isLight
                                 ? AppLightTextStyles.bodyLarge.copyWith(
                                     fontWeight: FontWeight.bold,
@@ -65,8 +68,8 @@ class QuizDetailsScreen extends StatelessWidget {
                           Spacer(),
                           Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 6.h,
+                              horizontal: 12,
+                              vertical: 6,
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
@@ -99,7 +102,7 @@ class QuizDetailsScreen extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        'CS-101 - Dr. A. Smith',
+                        quiz.description,
                         style: isLight
                             ? AppLightTextStyles.bodyMedium
                             : AppDarkTextStyles.bodyMedium,
@@ -113,14 +116,14 @@ class QuizDetailsScreen extends StatelessWidget {
                           Expanded(
                             child: InfoItem(
                               title: 'Due Date',
-                              value: 'Oct 28, 2024',
+                              value: DateFormat('dd/MM/yyyy hh:mm a').format(quiz.startDate.toLocal()),
                               isLight: isLight,
                             ),
                           ),
                           Expanded(
                             child: InfoItem(
                               title: 'Duration',
-                              value: '25',
+                              value: '${quiz.durationMinutes}',
                               isLight: isLight,
                             ),
                           ),
@@ -134,7 +137,7 @@ class QuizDetailsScreen extends StatelessWidget {
                           Expanded(
                             child: InfoItem(
                               title: 'Questions',
-                              value: '25',
+                              value: '${quiz.questionCount}',
                               isLight: isLight,
                             ),
                           ),

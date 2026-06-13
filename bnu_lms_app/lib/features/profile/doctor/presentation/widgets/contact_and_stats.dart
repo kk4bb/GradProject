@@ -1,66 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
+import '../../../../../../shared/di/injection.dart';
+import '../../../../courses/presentation/cubit/courses_cubit/courses_cubit.dart';
+import '../../../../courses/presentation/cubit/courses_cubit/courses_state.dart';
 
-class ContactAndStats extends StatelessWidget {
+class ContactAndStats extends StatefulWidget {
   const ContactAndStats({super.key});
 
   @override
+  State<ContactAndStats> createState() => _ContactAndStatsState();
+}
+
+class _ContactAndStatsState extends State<ContactAndStats> {
+  late final CoursesCubit _coursesCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _coursesCubit = getIt<CoursesCubit>()..fetchAssignedCourses();
+  }
+
+  @override
+  void dispose() {
+    _coursesCubit.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // final isLight = Provider.of<ThemeProvider>(context).isLightTheme();
+    return BlocProvider.value(
+      value: _coursesCubit,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BlocBuilder<CoursesCubit, CoursesState>(
+            builder: (context, state) {
+              String coursesCount = '...';
+              if (state is CoursesLoaded) {
+                coursesCount = state.courses.length.toString();
+              } else if (state is CoursesError) {
+                coursesCount = '0';
+              }
 
-    return Column(
-      children: [
-        // Action Buttons (Email & Message)
-        // Row(
-        //   children: [
-        //     Expanded(
-        //       child: ElevatedButton.icon(
-        //         onPressed: () {},
-        //         icon: Icon(Icons.email_outlined, size: 18.sp),
-        //         label: const Text('Email'),
-        //         style: ElevatedButton.styleFrom(
-        //           backgroundColor: ColorsManager.blue,
-        //           foregroundColor: ColorsManager.white,
-        //           padding: EdgeInsets.symmetric(vertical: 12.h),
-        //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-        //           elevation: 0,
-        //         ),
-        //       ),
-        //     ),
-        //     SizedBox(width: 12.w),
-        //     Expanded(
-        //       child: OutlinedButton.icon(
-        //         onPressed: () {},
-        //         icon: Icon(Icons.chat_bubble_outline, size: 18.sp),
-        //         label: const Text('Message'),
-        //         style: OutlinedButton.styleFrom(
-        //           foregroundColor: isLight ? ColorsManager.black : ColorsManager.white,
-        //           side: BorderSide(color: ColorsManager.grayMedium.withValues(alpha: 0.3)),
-        //           padding: EdgeInsets.symmetric(vertical: 12.h),
-        //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        // SizedBox(height: 24.h),
-
-        // Stats Row
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildStatBlock(context, '04', 'COURSES'),
-            _buildStatBlock(context, '128', 'STUDENTS'),
-            _buildStatBlock(context, '12', 'TASKS'),
-          ],
-        ),
-      ],
+              return _buildStatBlock(context, coursesCount, 'ASSIGNED COURSES');
+            },
+          ),
+          _buildStatBlock(context, 'N/A', 'STUDENTS'),
+          _buildStatBlock(context, 'N/A', 'TASKS'),
+        ],
+      ),
     );
   }
 
@@ -69,12 +63,12 @@ class ContactAndStats extends StatelessWidget {
 
     return Expanded(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 4.w),
-        padding: EdgeInsets.symmetric(vertical: 16.h),
+        margin: EdgeInsets.symmetric(horizontal: 4),
+        padding: EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 8.r, offset: const Offset(0, 2))] : [],
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 8, offset: const Offset(0, 2))] : [],
         ),
         child: Column(
           children: [
@@ -82,11 +76,11 @@ class ContactAndStats extends StatelessWidget {
               value,
               style: (isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge).copyWith(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 4),
             Text(
               label,
               style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(
-                fontSize: 10.sp,
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
               ),

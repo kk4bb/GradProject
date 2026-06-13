@@ -1,14 +1,14 @@
+using System.Threading.Tasks;
 using CampusConnect.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace CampusConnect.API.Controllers
 {
     [Authorize]
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
@@ -19,27 +19,44 @@ namespace CampusConnect.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMyNotifications()
+        public async Task<IActionResult> GetUserNotifications()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
             var notifications = await _notificationService.GetUserNotificationsAsync(userId);
             return Ok(notifications);
         }
 
-        [HttpPost("{id}/read")]
+        [HttpPut("{id}/read")]
         public async Task<IActionResult> MarkAsRead(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _notificationService.MarkAsReadAsync(id, userId);
-            return Ok();
+            var success = await _notificationService.MarkAsReadAsync(id);
+            if (!success) return NotFound();
+
+            return Ok(new { message = "Notification marked as read." });
         }
 
-        [HttpPost("read-all")]
+        [HttpPut("read-all")]
         public async Task<IActionResult> MarkAllAsRead()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
             await _notificationService.MarkAllAsReadAsync(userId);
-            return Ok();
+            return Ok(new { message = "All notifications marked as read." });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteNotification(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var success = await _notificationService.DeleteNotificationAsync(id, userId);
+            if (!success) return NotFound(new { message = "Notification not found or access denied." });
+
+            return Ok(new { message = "Notification deleted successfully." });
         }
     }
 }

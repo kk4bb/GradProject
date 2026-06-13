@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -17,7 +16,7 @@ class DoctorMyCoursesSection extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Padding(
-      padding: REdgeInsets.all(22),
+      padding: EdgeInsets.all(22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,21 +39,21 @@ class DoctorMyCoursesSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           DoctorCourseCard(
             academicYear: 'Academic Year 2023/24',
             courseName: 'Advanced Structural Engineering',
-            studentsCount: '120 Students',
-            timeString: 'Today, 10:00 AM',
+            courseCode: 'ENG-402',
+            instructorName: 'Dr. Emily Chen',
             courseIcon: Icons.engineering_outlined,
             onManageTap: () {},
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           DoctorCourseCard(
             academicYear: 'Academic Year 2023/24',
             courseName: 'Intro to Neural Networks',
-            studentsCount: '85 Students',
-            timeString: 'Tomorrow, 02:00 PM',
+            courseCode: 'CS-501',
+            instructorName: 'Dr. Alan Turing',
             courseIcon: Icons.psychology_outlined,
             onManageTap: () {},
           ),

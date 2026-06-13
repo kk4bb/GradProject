@@ -15,10 +15,10 @@ class ForumTaskCard extends StatelessWidget {
     const cyan = Color(0xFF2FBAD7);
 
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: isLight
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, 4))]
             : [],
@@ -28,31 +28,31 @@ class ForumTaskCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(radius: 18.0, backgroundColor: const Color(0xFFEAB398)),
-              SizedBox(width: 12.0),
+              CircleAvatar(radius: 18, backgroundColor: const Color(0xFFEAB398)),
+              SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Algorithms Course', style: TextStyle(color: cyan, fontSize: 13.0, fontWeight: FontWeight.bold)),
-                  Text('14m ago', style: TextStyle(color: ColorsManager.grayMedium, fontSize: 11.0)),
+                  Text('Algorithms Course', style: TextStyle(color: cyan, fontSize: 13, fontWeight: FontWeight.bold)),
+                  Text('14m ago', style: TextStyle(color: ColorsManager.grayMedium, fontSize: 11)),
                 ],
               )
             ],
           ),
-          SizedBox(height: 16.0),
+          SizedBox(height: 16),
           Text(
             'Clarification on Big O for Task 2?',
             style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
-                .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0),
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 8),
           Text(
             '"Hi TA, I\'m confused if we should consider the space complexity for the recursive calls..."',
-            style: TextStyle(color: ColorsManager.grayMedium, fontSize: 13.0, height: 1.4),
+            style: TextStyle(color: ColorsManager.grayMedium, fontSize: 13, height: 1.4),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 20.0),
+          SizedBox(height: 20),
           Row(
             children: [
               Expanded(
@@ -61,13 +61,13 @@ class ForumTaskCard extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: ColorsManager.grayMedium,
                     side: BorderSide(color: ColorsManager.grayMedium.withValues(alpha: 0.3)),
-                    padding: EdgeInsets.symmetric(vertical: 12.0),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   ),
                   child: const Text('Dismiss', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
-              SizedBox(width: 12.0),
+              SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {},
@@ -75,8 +75,8 @@ class ForumTaskCard extends StatelessWidget {
                     backgroundColor: cyan,
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    padding: EdgeInsets.symmetric(vertical: 12.0),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   ),
                   child: const Text('Reply', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),

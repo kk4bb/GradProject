@@ -5,6 +5,7 @@ import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../../shared/resources/colors_manager.dart';
+import '../../../../../../../shared/config/api_constants.dart';
 
 
 class ForumQuestionCard extends StatelessWidget {
@@ -17,6 +18,7 @@ class ForumQuestionCard extends StatelessWidget {
   final String status;
   final Color statusColor;
   final bool isPreview; // If true, truncates text for the list view
+  final String? authorAvatarUrl;
 
   const ForumQuestionCard({
     required this.authorName,
@@ -28,6 +30,7 @@ class ForumQuestionCard extends StatelessWidget {
     required this.status,
     required this.statusColor,
     this.isPreview = false,
+    this.authorAvatarUrl,
     super.key,
   });
 
@@ -99,9 +102,24 @@ class ForumQuestionCard extends StatelessWidget {
               CircleAvatar(
                 radius: 14,
                 backgroundColor: ColorsManager.blue,
-                child: Text(
-                  authorName[0].toUpperCase(),
-                  style: TextStyle(color: ColorsManager.white, fontWeight: FontWeight.bold, fontSize: 12),
+                child: ClipOval(
+                  child: authorAvatarUrl != null && authorAvatarUrl!.isNotEmpty
+                      ? Image.network(
+                          authorAvatarUrl!.startsWith('http')
+                              ? authorAvatarUrl!
+                              : '${ApiConstants.baseUrl.replaceAll('api/', '')}${authorAvatarUrl!.startsWith('/') ? authorAvatarUrl!.substring(1) : authorAvatarUrl!}',
+                          width: 28,
+                          height: 28,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Text(
+                            authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
+                            style: TextStyle(color: ColorsManager.white, fontWeight: FontWeight.bold, fontSize: 12),
+                          ),
+                        )
+                      : Text(
+                          authorName.isNotEmpty ? authorName[0].toUpperCase() : 'U',
+                          style: TextStyle(color: ColorsManager.white, fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
                 ),
               ),
               SizedBox(width: 8),

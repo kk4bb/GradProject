@@ -8,6 +8,7 @@ namespace CampusConnect.Application.Interfaces
     {
         Task<StudentDashboardDto> GetStudentDashboardAsync(string studentId);
         Task<StudentProfileDto> GetStudentProfileAsync(string studentId);
+        Task<string> UploadProfilePictureAsync(string userId, Microsoft.AspNetCore.Http.IFormFile file);
         Task<bool> IsInstructorForStudentAsync(string instructorId, string studentId);
     }
 }

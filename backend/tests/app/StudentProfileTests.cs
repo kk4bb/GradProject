@@ -1,9 +1,11 @@
 using CampusConnect.Application.Dtos.Dashboard;
 using CampusConnect.Application.Dtos.Student;
+using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
 using CampusConnect.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +48,8 @@ namespace CampusConnect.Tests.App
             context.Enrollments.Add(new Enrollment { StudentId = userId, CourseId = 1 });
             await context.SaveChangesAsync();
 
-            var service = new StudentService(context);
+            var fileStorageMock = new Mock<IFileStorageService>();
+            var service = new StudentService(context, fileStorageMock.Object);
 
             // Act
             var result = await service.GetStudentProfileAsync(userId);
@@ -92,12 +95,13 @@ namespace CampusConnect.Tests.App
             context.Courses.Add(course);
             context.Enrollments.Add(new Enrollment { StudentId = studentId, CourseId = 1 });
             
-            context.Quizzes.Add(new Quiz { Id = 1, Title = "Quiz 1", CourseId = 1 });
+            context.Quizzes.Add(new Quiz { Id = 1, Title = "Quiz 1", Description = "Test Description", CourseId = 1 });
             context.QuizAttempts.Add(new QuizAttempt { StudentId = studentId, QuizId = 1, Score = 85 });
 
             await context.SaveChangesAsync();
 
-            var service = new StudentService(context);
+            var fileStorageMock = new Mock<IFileStorageService>();
+            var service = new StudentService(context, fileStorageMock.Object);
 
             // Act
             var result = await service.GetStudentDashboardAsync(studentId);

@@ -16,6 +16,7 @@ namespace CampusConnect.Domain.Entities
 
         public DateTime DueDate { get; set; }
         public double Points { get; set; }
+        public string? FileUrl { get; set; }
 
         public int CourseId { get; set; }
 

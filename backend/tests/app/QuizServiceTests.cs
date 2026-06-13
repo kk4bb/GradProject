@@ -1,8 +1,12 @@
 using CampusConnect.Application.Dtos.Quiz;
+using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Context;
 using CampusConnect.Infrastructure.Services;
+using CampusConnect.Infrastructure.Hubs;
 using CampusConnect.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +25,22 @@ namespace CampusConnect.Tests.App
             return new ApplicationDbContext(options);
         }
 
+        private Mock<IHubContext<T>> GetMockHubContext<T>() where T : Hub
+        {
+            var mockHubContext = new Mock<IHubContext<T>>();
+            var mockClients = new Mock<IHubClients>();
+            var mockClientProxy = new Mock<IClientProxy>();
+            mockHubContext.Setup(h => h.Clients).Returns(mockClients.Object);
+            mockClients.Setup(c => c.Group(It.IsAny<string>())).Returns(mockClientProxy.Object);
+            return mockHubContext;
+        }
+
         [Fact]
         public async Task GetQuizForTakingAsync_HidesIsCorrect()
         {
             // Arrange
             var context = GetDbContext();
-            var quiz = new Quiz { Id = 1, Title = "Unit Test Quiz", CourseId = 1 };
+            var quiz = new Quiz { Id = 1, Title = "Unit Test Quiz", Description = "Test Description", CourseId = 1 };
             context.Quizzes.Add(quiz);
             
             var question = new Question { Id = 1, QuizId = 1, Text = "What is 1+1?" };
@@ -38,7 +52,10 @@ namespace CampusConnect.Tests.App
             context.Enrollments.Add(new Enrollment { StudentId = "student-1", CourseId = 1 });
             await context.SaveChangesAsync();
 
-            var service = new QuizService(context);
+            var quizHubMock = GetMockHubContext<QuizHub>();
+            var notificationHubMock = GetMockHubContext<NotificationHub>();
+            var gradeServiceMock = new Mock<IGradeService>();
+            var service = new QuizService(context, quizHubMock.Object, notificationHubMock.Object, gradeServiceMock.Object);
 
             // Act
             var result = await service.GetQuizForTakingAsync(1, "student-1");
@@ -54,7 +71,7 @@ namespace CampusConnect.Tests.App
         {
             // Arrange
             var context = GetDbContext();
-            var quiz = new Quiz { Id = 1, Title = "Essay Test", CourseId = 1 };
+            var quiz = new Quiz { Id = 1, Title = "Essay Test", Description = "Test Description", CourseId = 1 };
             context.Quizzes.Add(quiz);
 
             // Q1: Essay Question
@@ -63,7 +80,10 @@ namespace CampusConnect.Tests.App
             context.Enrollments.Add(new Enrollment { StudentId = "student-1", CourseId = 1 });
             await context.SaveChangesAsync();
 
-            var service = new QuizService(context);
+            var quizHubMock = GetMockHubContext<QuizHub>();
+            var notificationHubMock = GetMockHubContext<NotificationHub>();
+            var gradeServiceMock = new Mock<IGradeService>();
+            var service = new QuizService(context, quizHubMock.Object, notificationHubMock.Object, gradeServiceMock.Object);
             var submission = new QuizSubmissionDto
             {
                 Answers = new List<AnswerSubmissionDto>
@@ -85,7 +105,7 @@ namespace CampusConnect.Tests.App
         {
             // Arrange
             var context = GetDbContext();
-            var quiz = new Quiz { Id = 1, Title = "Mixed Test", CourseId = 1 };
+            var quiz = new Quiz { Id = 1, Title = "Mixed Test", Description = "Test Description", CourseId = 1 };
             context.Quizzes.Add(quiz);
 
             // Q1: MCQ (Correct)
@@ -98,7 +118,10 @@ namespace CampusConnect.Tests.App
             context.Enrollments.Add(new Enrollment { StudentId = "student-1", CourseId = 1 });
             await context.SaveChangesAsync();
 
-            var service = new QuizService(context);
+            var quizHubMock = GetMockHubContext<QuizHub>();
+            var notificationHubMock = GetMockHubContext<NotificationHub>();
+            var gradeServiceMock = new Mock<IGradeService>();
+            var service = new QuizService(context, quizHubMock.Object, notificationHubMock.Object, gradeServiceMock.Object);
             var submission = new QuizSubmissionDto
             {
                 Answers = new List<AnswerSubmissionDto>
@@ -113,8 +136,8 @@ namespace CampusConnect.Tests.App
 
             // Assert
             Assert.Equal("Pending Review", result.Status);
-            // Score should be 0 because of pending review
-            Assert.Equal(0, result.Score); 
+            // Partial score for auto-graded questions
+            Assert.Equal(1, result.Score); 
         }
     }
 }

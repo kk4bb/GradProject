@@ -24,7 +24,7 @@ class LanguageProvider extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      debugPrint('Error loading language: $e');
+      
     }
   }
 
@@ -34,7 +34,7 @@ class LanguageProvider extends ChangeNotifier {
 
     // Validate language code
     if (newLanguage != _englishCode && newLanguage != _arabicCode) {
-      debugPrint('Invalid language code: $newLanguage');
+      
       return;
     }
 
@@ -68,7 +68,7 @@ class LanguageProvider extends ChangeNotifier {
         prefs.setString(_languageKey, _englishCode);
       }
     } catch (e) {
-      debugPrint('Error saving language: $e');
+      
     }
   }
 }

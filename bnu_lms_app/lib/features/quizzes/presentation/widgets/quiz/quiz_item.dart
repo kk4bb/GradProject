@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -63,13 +62,13 @@ class QuizItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 358.w,
+            width: 358,
             decoration: BoxDecoration(
               color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
               borderRadius: BorderRadius.circular(AppSizes.radius),
             ),
             child: Padding(
-              padding: REdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -88,7 +87,7 @@ class QuizItem extends StatelessWidget {
                       // ⭐ Status badge
                       Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 6.h),
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           borderRadius:
                           BorderRadius.circular(AppSizes.radius),

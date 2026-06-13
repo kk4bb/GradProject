@@ -32,7 +32,7 @@ class TodaysScheduleSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.0),
+          SizedBox(height: 16),
 
           _buildTimelineItem(
             context, isLight,
@@ -78,7 +78,7 @@ class TodaysScheduleSection extends StatelessWidget {
         children: [
           // Time Column
           SizedBox(
-            width: 50.0,
+            width: 50,
             child: Text(
               time,
               style: (isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium)
@@ -88,22 +88,22 @@ class TodaysScheduleSection extends StatelessWidget {
 
           // Timeline Line
           Container(
-            width: 2.0,
+            width: 2,
             color: ColorsManager.grayMedium.withValues(alpha: 0.3),
-            margin: EdgeInsets.only(right: 16.0),
+            margin: EdgeInsets.only(right: 16),
           ),
 
           // Card Content
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(bottom: 16.0),
-              padding: EdgeInsets.all(16.0),
+              margin: EdgeInsets.only(bottom: 16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: isLight ? const Color(0xFFF8F9FA) : ColorsManager.darkSurface, // Slightly darker for card
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(12),
                 // Custom left border for the accent color
                 border: Border(
-                  left: BorderSide(color: accentColor, width: 4.0),
+                  left: BorderSide(color: accentColor, width: 4),
                 ),
               ),
               child: Column(
@@ -117,17 +117,17 @@ class TodaysScheduleSection extends StatelessWidget {
                       letterSpacing: 1.1,
                     ),
                   ),
-                  SizedBox(height: 4.0),
+                  SizedBox(height: 4),
                   Text(
                     title,
                     style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 6.0),
+                  SizedBox(height: 6),
                   Row(
                     children: [
-                      Icon(Icons.location_on_outlined, size: 14.0, color: ColorsManager.grayMedium),
-                      SizedBox(width: 4.0),
+                      Icon(Icons.location_on_outlined, size: 14, color: ColorsManager.grayMedium),
+                      SizedBox(width: 4),
                       Text(
                         location,
                         style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall,

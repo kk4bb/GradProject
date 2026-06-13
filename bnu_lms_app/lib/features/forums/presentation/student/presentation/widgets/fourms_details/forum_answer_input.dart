@@ -10,10 +10,12 @@ import '../../../../../../../shared/resources/colors_manager.dart';
 class ForumAnswerInput extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onSubmit;
+  final FocusNode? focusNode;
 
   const ForumAnswerInput({
     required this.controller,
     required this.onSubmit,
+    this.focusNode,
     super.key,
   });
 
@@ -69,6 +71,7 @@ class ForumAnswerInput extends StatelessWidget {
                     ),
                     child: TextField(
                       controller: controller,
+                      focusNode: focusNode,
                       maxLines: 1,
                       style: TextStyle(
                         color: isLight

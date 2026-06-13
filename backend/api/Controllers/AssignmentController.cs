@@ -2,11 +2,13 @@ using CampusConnect.Application.Dtos.Assignment;
 using CampusConnect.Application.Interfaces;
 using CampusConnect.Infrastructure.Hubs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -19,11 +21,13 @@ namespace CampusConnect.API.Controllers
     {
         private readonly IAssignmentService _assignmentService;
         private readonly IHubContext<AssignmentHub> _hubContext;
+        private readonly IWebHostEnvironment _env;
 
-        public AssignmentController(IAssignmentService assignmentService, IHubContext<AssignmentHub> hubContext)
+        public AssignmentController(IAssignmentService assignmentService, IHubContext<AssignmentHub> hubContext, IWebHostEnvironment env)
         {
             _assignmentService = assignmentService;
             _hubContext = hubContext;
+            _env = env;
         }
 
         [HttpGet("course/{courseId}")]
@@ -95,6 +99,23 @@ namespace CampusConnect.API.Controllers
         {
             try
             {
+                if (file != null && file.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "assignments");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    dto.FileUrl = $"/uploads/assignments/{uniqueFileName}";
+                }
+
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
                 var assignmentId = await _assignmentService.CreateAssignmentAsync(dto.CourseId, dto, userId, isTA);

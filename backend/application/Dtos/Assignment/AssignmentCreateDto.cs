@@ -9,5 +9,6 @@ namespace CampusConnect.Application.Dtos.Assignment
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
         public double Points { get; set; }
+        public string? FileUrl { get; set; }
     }
 }

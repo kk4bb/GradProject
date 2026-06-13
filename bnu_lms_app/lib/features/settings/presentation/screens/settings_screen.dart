@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 
@@ -32,7 +31,7 @@ class SettingsScreen extends StatelessWidget {
           icon: Icon(
             Icons.arrow_back_ios_new,
             color: isLight ? ColorsManager.black : ColorsManager.white,
-            size: 22.sp,
+            size: 22,
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -44,7 +43,7 @@ class SettingsScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: REdgeInsets.symmetric(
+        padding: EdgeInsets.symmetric(
           horizontal: AppSizes.horizontalPadding,
           vertical: AppSizes.verticalSectionSpacing,
         ),
@@ -81,16 +80,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             SizedBox(height: AppSizes.smallSpacing),
 
-            /// NOTIFICATIONS
-            SettingsBox(
-              icon: IconsManager.notification,
-              title: localizations.notifications,
-              subtitle: localizations.on,
-              hasSwitch: true,
-              switchValue: true,
-              onToggle: (value) {},
-              isLight: isLight,
-            ),
+
           ],
         ),
       ),
@@ -129,7 +119,7 @@ class SettingsScreen extends StatelessWidget {
                 Navigator.pop(dialogContext);
               },
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 12),
             _buildLanguageOption(
               context: dialogContext,
               label: localizations.arabic,
@@ -157,9 +147,9 @@ class SettingsScreen extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected
               ? (isLight ? ColorsManager.lightBlue : ColorsManager.blue.withValues(alpha: 0.15))
@@ -172,7 +162,7 @@ class SettingsScreen extends StatelessWidget {
                 : ColorsManager.grayMedium.withValues(alpha: 0.2)),
             width: isSelected ? 2 : 1,
           ),
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
@@ -183,9 +173,9 @@ class SettingsScreen extends StatelessWidget {
                   : (isLight
                   ? ColorsManager.grayMedium
                   : ColorsManager.darkTextSecondary),
-              size: 24.sp,
+              size: 24,
             ),
-            SizedBox(width: 12.w),
+            SizedBox(width: 12),
             Text(
               label,
               style: isLight

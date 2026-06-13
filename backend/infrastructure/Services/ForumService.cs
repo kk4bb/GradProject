@@ -54,22 +54,28 @@ namespace CampusConnect.Infrastructure.Services
                     PostCount = d.Posts.Count,
                     Status    = d.Status,
                     CreatedAt = d.CreatedAt.ToString("o"),
-                    AuthorName = d.Posts.OrderBy(p => p.CreatedAt)
-                                  .Select(p => _context.Users.Where(u => u.Id == p.UserId).Select(u => u.FirstName + " " + u.LastName).FirstOrDefault())
-                                  .FirstOrDefault() ?? "Unknown",
+                    AuthorName = _context.Users.Where(u => u.Id == d.UserId).Select(u => u.FirstName + " " + u.LastName).FirstOrDefault() ?? "Unknown",
+                    AuthorAvatarUrl = _context.Users.Where(u => u.Id == d.UserId).Select(u => u.ProfilePictureUrl).FirstOrDefault(),
                     Content   = d.Content,
                 }).ToListAsync();
         }
 
-        public async Task<int> CreateDiscussionAsync(int courseId, CreateDiscussionDto dto, string userId, string authorName)
+        public async Task<int> CreateDiscussionAsync(int courseId, CreateDiscussionDto dto, string userId, string authorName, string? authorAvatarUrl)
         {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                authorName = $"{user.FirstName} {user.LastName}".Trim();
+                authorAvatarUrl = user.ProfilePictureUrl;
+            }
             var discussion = new Discussion
             {
                 CourseId   = courseId,
+                UserId     = userId,
                 Title      = dto.Title,
-                Content    = dto.Content,
+                Content    = dto.Content ?? "",
                 Status     = "OPEN",
-                CreatedAt  = DateTime.UtcNow,
+                CreatedAt  = DateTime.UtcNow
             };
             _context.Discussions.Add(discussion);
             await _context.SaveChangesAsync();
@@ -77,7 +83,7 @@ namespace CampusConnect.Infrastructure.Services
             // اتبعتت كأوبجكت مباشر
             await _hubContext.Clients.Group(courseId.ToString()).SendAsync("ReceiveNewDiscussion", new {
                 id = discussion.Id, title = discussion.Title, postCount = 0, status = discussion.Status,
-                createdAt = discussion.CreatedAt.ToString("o"), authorName = authorName, content = discussion.Content
+                createdAt = discussion.CreatedAt.ToString("o"), authorName = authorName, authorAvatarUrl = authorAvatarUrl, content = discussion.Content
             });
 
             return discussion.Id;
@@ -119,6 +125,10 @@ namespace CampusConnect.Infrastructure.Services
                                     .Where(u => u.Id == p.UserId)
                                     .Select(u => $"{u.FirstName} {u.LastName}")
                                     .FirstOrDefault() ?? "Unknown",
+                    AuthorAvatarUrl = _context.Users
+                                    .Where(u => u.Id == p.UserId)
+                                    .Select(u => u.ProfilePictureUrl)
+                                    .FirstOrDefault(),
                     Content      = p.Content,
                     CommentCount = p.Comments.Count,
                     IsCorrect    = p.IsCorrect,
@@ -132,13 +142,23 @@ namespace CampusConnect.Infrastructure.Services
                                         .Where(u => u.Id == c.UserId)
                                         .Select(u => $"{u.FirstName} {u.LastName}")
                                         .FirstOrDefault() ?? "Unknown",
+                        AuthorAvatarUrl = _context.Users
+                                        .Where(u => u.Id == c.UserId)
+                                        .Select(u => u.ProfilePictureUrl)
+                                        .FirstOrDefault(),
                         Content    = c.Content,
                     }).ToList()
                 }).ToListAsync();
         }
 
-        public async Task<int> CreatePostAsync(int discussionId, PostCreateDto dto, string userId, string role, string authorName)
+        public async Task<int> CreatePostAsync(int discussionId, PostCreateDto dto, string userId, string role, string authorName, string? authorAvatarUrl)
         {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                authorName = $"{user.FirstName} {user.LastName}".Trim();
+                authorAvatarUrl = user.ProfilePictureUrl;
+            }
             var discussion = await _context.Discussions.FindAsync(discussionId);
             if (discussion == null) throw new Exception("Discussion not found.");
 
@@ -158,7 +178,7 @@ namespace CampusConnect.Infrastructure.Services
 
             // تم التعديل: اتبعتت كأوبجكت مباشر
             await _hubContext.Clients.Group(discussion.CourseId.ToString()).SendAsync("ReceiveNewPost", new {
-                id = post.Id, discussionId = discussion.Id, authorName = authorName, content = post.Content,
+                id = post.Id, discussionId = discussion.Id, authorName = authorName, authorAvatarUrl = authorAvatarUrl, content = post.Content,
                 commentCount = 0, isCorrect = false, votes = 0, createdAt = post.CreatedAt.ToString("o"), approvedByRole = ""
             });
 
@@ -195,7 +215,39 @@ namespace CampusConnect.Infrastructure.Services
                 .Include(p => p.Discussion)
                 .FirstOrDefaultAsync(p => p.Id == postId);
             if (post == null) throw new Exception("Post not found.");
-            post.Votes += isUpvote ? 1 : -1;
+
+            // Find existing vote for this user on this post
+            var existingVote = await _context.PostVotes
+                .FirstOrDefaultAsync(v => v.PostId == postId && v.UserId == userId);
+
+            if (existingVote != null)
+            {
+                if (existingVote.IsUpvote == isUpvote)
+                {
+                    // User clicked the same vote button again -> Remove the vote
+                    _context.PostVotes.Remove(existingVote);
+                    post.Votes += isUpvote ? -1 : 1;
+                }
+                else
+                {
+                    // User switched their vote (e.g. from Down to Up, or Up to Down)
+                    existingVote.IsUpvote = isUpvote;
+                    post.Votes += isUpvote ? 2 : -2;
+                }
+            }
+            else
+            {
+                // New vote
+                var newVote = new PostVote
+                {
+                    PostId = postId,
+                    UserId = userId,
+                    IsUpvote = isUpvote
+                };
+                _context.PostVotes.Add(newVote);
+                post.Votes += isUpvote ? 1 : -1;
+            }
+
             await _context.SaveChangesAsync();
 
             // تم التعديل: اتبعتت كأوبجكت مباشر

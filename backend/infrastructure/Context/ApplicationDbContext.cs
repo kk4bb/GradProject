@@ -24,11 +24,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Discussion> Discussions { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<PostVote> PostVotes { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Announcement> Announcements { get; set; }
     public DbSet<AttendanceSession> AttendanceSessions { get; set; }
     public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
     public DbSet<ChatSession> ChatSessions { get; set; }
     public DbSet<ChatMessage> ChatMessages { get; set; }
+    public DbSet<GradeRecord> GradeRecords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,6 +125,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(p => p.Comments)
             .HasForeignKey(c => c.PostId);
 
+        // PostVote ↔ Post
+        modelBuilder.Entity<PostVote>()
+            .HasOne(pv => pv.Post)
+            .WithMany()
+            .HasForeignKey(pv => pv.PostId);
+
         // QuizAttempt ↔ Quiz
         modelBuilder.Entity<QuizAttempt>()
             .HasOne<Quiz>()
@@ -159,6 +168,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // Prevent duplicate enrollment
         modelBuilder.Entity<Enrollment>()
             .HasIndex(e => new { e.StudentId, e.CourseId })
+            .IsUnique();
+
+        // GradeRecord ↔ Course
+        modelBuilder.Entity<GradeRecord>()
+            .HasOne(g => g.Course)
+            .WithMany()
+            .HasForeignKey(g => g.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // GradeRecord ↔ Student
+        modelBuilder.Entity<GradeRecord>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(g => g.StudentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Prevent duplicate GradeRecord for same student in same course
+        modelBuilder.Entity<GradeRecord>()
+            .HasIndex(g => new { g.StudentId, g.CourseId })
             .IsUnique();
     }
 }

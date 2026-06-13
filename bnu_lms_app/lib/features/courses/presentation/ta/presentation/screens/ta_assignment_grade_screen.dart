@@ -34,13 +34,13 @@ class TaAssignmentGradeScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: false,
         leading: Container(
-          margin: EdgeInsets.all(8.0),
+          margin: EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: isLight ? Colors.white : ColorsManager.darkSurface,
             shape: BoxShape.circle,
           ),
           child: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new, size: 18.0, color: cyan),
+            icon: Icon(Icons.arrow_back_ios_new, size: 18, color: cyan),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -54,7 +54,7 @@ class TaAssignmentGradeScreen extends StatelessWidget {
             ),
             Text(
               courseName,
-              style: TextStyle(fontSize: 12.0, color: cyan),
+              style: TextStyle(fontSize: 12, color: cyan),
             ),
           ],
         ),
@@ -66,14 +66,14 @@ class TaAssignmentGradeScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 1. Summary Header
             GradingSummaryCard(assignmentTitle: assignmentTitle),
 
-            SizedBox(height: 24.0),
+            SizedBox(height: 24),
 
             // 2. Filter & Title Row
             Row(
@@ -86,18 +86,18 @@ class TaAssignmentGradeScreen extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Icon(Icons.filter_list, size: 16.0, color: cyan),
-                    SizedBox(width: 4.0),
+                    Icon(Icons.filter_list, size: 16, color: cyan),
+                    SizedBox(width: 4),
                     Text(
                       'Filter',
-                      style: TextStyle(color: cyan, fontWeight: FontWeight.bold, fontSize: 12.0),
+                      style: TextStyle(color: cyan, fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                   ],
                 ),
               ],
             ),
 
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
 
             // 3. Active Grading Form (Expanded)
             const ActiveGradingCard(
@@ -106,7 +106,7 @@ class TaAssignmentGradeScreen extends StatelessWidget {
               submissionTime: 'Submitted 2h ago',
             ),
 
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
 
             // 4. Student List (Pending)
             const StudentSubmissionTile(
@@ -115,7 +115,7 @@ class TaAssignmentGradeScreen extends StatelessWidget {
               isGraded: false,
             ),
 
-            SizedBox(height: 12.0),
+            SizedBox(height: 12),
 
             // 5. Student List (Graded)
             const StudentSubmissionTile(
@@ -125,7 +125,7 @@ class TaAssignmentGradeScreen extends StatelessWidget {
               isGraded: true,
             ),
 
-            SizedBox(height: 40.0),
+            SizedBox(height: 40),
           ],
         ),
       ),

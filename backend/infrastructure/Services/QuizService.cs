@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using CampusConnect.Infrastructure.Hubs;
+using CampusConnect.Domain.Enums;
 
 namespace CampusConnect.Infrastructure.Services
 {
@@ -16,14 +17,18 @@ namespace CampusConnect.Infrastructure.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IHubContext<QuizHub> _hubContext;
+        private readonly IHubContext<NotificationHub> _notificationHubContext;
+        private readonly IGradeService _gradeService;
 
-        public QuizService(ApplicationDbContext context, IHubContext<QuizHub> hubContext)
+        public QuizService(ApplicationDbContext context, IHubContext<QuizHub> hubContext, IHubContext<NotificationHub> notificationHubContext, IGradeService gradeService)
         {
             _context = context;
             _hubContext = hubContext;
+            _notificationHubContext = notificationHubContext;
+            _gradeService = gradeService;
         }
 
-        public async Task<List<QuizDto>> GetQuizzesByCourseAsync(int courseId, string userId)
+        public async Task<List<QuizDto>> GetQuizzesByCourseAsync(int courseId, string userId, bool isTA = false)
         {
             // Permission check: Must be enrolled student or instructor
             var isEnrolled = await _context.Enrollments
@@ -32,7 +37,7 @@ namespace CampusConnect.Infrastructure.Services
             var isInstructor = await _context.Courses
                 .AnyAsync(c => c.Id == courseId && c.InstructorId == userId);
 
-            if (!isEnrolled && !isInstructor)
+            if (!isEnrolled && !isInstructor && !isTA)
                 throw new UnauthorizedAccessException("You are not authorized to view quizzes for this course.");
 
             return await _context.Quizzes
@@ -75,12 +80,14 @@ namespace CampusConnect.Infrastructure.Services
             {
                 Id = quiz.Id,
                 Title = quiz.Title,
+                DurationMinutes = quiz.DurationMinutes,
                 Questions = quiz.Questions.Select(q => new QuestionDto
                 {
                     Id = q.Id,
                     Text = q.Text,
                     ImageUrl = q.ImageUrl,
                     IsEssay = q.IsEssay,
+                    Points = q.Points,
                     Options = q.Options.Select(o => new OptionDto
                     {
                         Id = o.Id,
@@ -159,6 +166,12 @@ namespace CampusConnect.Infrastructure.Services
             _context.QuizAttempts.Add(attempt);
             await _context.SaveChangesAsync();
 
+            // Auto-aggregate if fully auto-graded
+            if (!pendingReview)
+            {
+                await _gradeService.AggregateStudentGradesAsync(quiz.CourseId, userId);
+            }
+
             return new QuizResultDto
             {
                 Score = score,
@@ -168,7 +181,7 @@ namespace CampusConnect.Infrastructure.Services
                 Breakdown = requestBreakdown ? breakdown : null
             };
         }
-        public async Task UpdateQuestionImageAsync(int questionId, string imageUrl, string userId)
+        public async Task UpdateQuestionImageAsync(int questionId, string imageUrl, string userId, bool isTA = false)
         {
             var question = await _context.Questions
                 .Include(q => q.Quiz)
@@ -178,19 +191,19 @@ namespace CampusConnect.Infrastructure.Services
             if (question == null) throw new Exception("Question not found.");
             
             // Check if the user is the instructor of the course
-            if (question.Quiz.Course.InstructorId != userId)
+            if (!isTA && question.Quiz.Course.InstructorId != userId)
                 throw new UnauthorizedAccessException("Not authorized to modify this quiz.");
 
             question.ImageUrl = imageUrl;
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Quiz> CreateQuizAsync(CreateQuizDto createQuizDto, string userId)
+        public async Task<Quiz> CreateQuizAsync(CreateQuizDto createQuizDto, string userId, bool isTA = false)
         {
             var isInstructor = await _context.Courses
                 .AnyAsync(c => c.Id == createQuizDto.CourseId && c.InstructorId == userId);
                 
-            if (!isInstructor)
+            if (!isInstructor && !isTA)
                 throw new UnauthorizedAccessException("Not authorized to create quiz for this course.");
 
             var quiz = new Quiz
@@ -255,15 +268,46 @@ namespace CampusConnect.Infrastructure.Services
                 HasAttempted = false
             };
             await _hubContext.Clients.Group(createQuizDto.CourseId.ToString()).SendAsync("ReceiveNewQuiz", quizDto);
+
+            // Create a Notification record for each enrolled student
+            var studentIds = await _context.Enrollments
+                .Where(e => e.CourseId == createQuizDto.CourseId)
+                .Select(e => e.StudentId)
+                .ToListAsync();
+
+            var quizNotifications = studentIds.Select(sid => new Notification
+            {
+                UserId = sid,
+                Title = "New Quiz Available",
+                Message = $"A new quiz '{createQuizDto.Title}' has been added to your course.",
+                Type = NotificationType.Quiz,
+                ReferenceId = quiz.Id.ToString(),
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
+            }).ToList();
+
+            if (quizNotifications.Any())
+            {
+                _context.Notifications.AddRange(quizNotifications);
+                await _context.SaveChangesAsync();
+
+                // Broadcast to each student's personal group
+                foreach (var sid in studentIds)
+                {
+                    await _notificationHubContext.Clients.Group($"User_{sid}")
+                        .SendAsync("ReceiveNotification", new { title = "New Quiz Available", message = $"A new quiz '{createQuizDto.Title}' has been added to your course." });
+                }
+            }
+
             return quiz;
         }
 
-        public async Task<bool> GradeEssayAsync(int quizId, int attemptId, double manualScore, string userId)
+        public async Task<bool> GradeEssayAsync(int quizId, int attemptId, double manualScore, string userId, bool isTA = false)
         {
             var quiz = await _context.Quizzes.Include(q => q.Course).FirstOrDefaultAsync(q => q.Id == quizId);
             if (quiz == null) throw new Exception("Quiz not found.");
 
-            if (quiz.Course.InstructorId != userId)
+            if (!isTA && quiz.Course.InstructorId != userId)
                 throw new UnauthorizedAccessException("Not authorized to grade this quiz.");
 
             var attempt = await _context.QuizAttempts.FirstOrDefaultAsync(a => a.Id == attemptId && a.QuizId == quizId);
@@ -272,15 +316,18 @@ namespace CampusConnect.Infrastructure.Services
             attempt.ManualScore = manualScore;
             attempt.Status = "Graded";
             await _context.SaveChangesAsync();
+            
+            // Auto-aggregate after manual grading
+            await _gradeService.AggregateStudentGradesAsync(quiz.CourseId, attempt.StudentId);
             return true;
         }
 
-        public async Task<bool> PublishGradesAsync(int quizId, string userId)
+        public async Task<bool> PublishGradesAsync(int quizId, string userId, bool isTA = false)
         {
             var quiz = await _context.Quizzes.Include(q => q.Course).FirstOrDefaultAsync(q => q.Id == quizId);
             if (quiz == null) throw new Exception("Quiz not found.");
 
-            if (quiz.Course.InstructorId != userId)
+            if (!isTA && quiz.Course.InstructorId != userId)
                 throw new UnauthorizedAccessException("Not authorized to publish grades for this quiz.");
 
             quiz.AreGradesPublished = true;
@@ -288,13 +335,13 @@ namespace CampusConnect.Infrastructure.Services
             return true;
         }
 
-        public async Task<bool> UpdateQuizAsync(int quizId, UpdateQuizDto dto, string instructorId)
+        public async Task<bool> UpdateQuizAsync(int quizId, UpdateQuizDto dto, string instructorId, bool isTA = false)
         {
             var quiz = await _context.Quizzes.Include(q => q.Course)
                 .FirstOrDefaultAsync(q => q.Id == quizId);
 
             if (quiz == null) throw new Exception("Quiz not found.");
-            if (quiz.Course.InstructorId != instructorId)
+            if (!isTA && quiz.Course.InstructorId != instructorId)
                 throw new UnauthorizedAccessException("Not authorized to update this quiz.");
 
             quiz.Title = dto.Title;
@@ -308,13 +355,13 @@ namespace CampusConnect.Infrastructure.Services
             return true;
         }
 
-        public async Task<List<CampusConnect.Application.Dtos.Quiz.QuizAttemptDto>> GetQuizAttemptsAsync(int quizId, string instructorId)
+        public async Task<List<CampusConnect.Application.Dtos.Quiz.QuizAttemptDto>> GetQuizAttemptsAsync(int quizId, string instructorId, bool isTA = false)
         {
             var quiz = await _context.Quizzes.Include(q => q.Course)
                 .FirstOrDefaultAsync(q => q.Id == quizId);
 
             if (quiz == null) throw new Exception("Quiz not found.");
-            if (quiz.Course.InstructorId != instructorId)
+            if (!isTA && quiz.Course.InstructorId != instructorId)
                 throw new UnauthorizedAccessException("Not authorized to view attempts.");
 
             var attempts = await _context.QuizAttempts

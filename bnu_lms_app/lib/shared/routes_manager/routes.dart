@@ -7,7 +7,14 @@ class Routes {
   // -- Core Navigation --
   static const String main = '/main'; // Main Layout (Bottom Nav)
   static const String settings = '/settings';
+  static const String editProfile = '/editProfile';
+  static const String helpCenter = '/helpCenter';
   static const String notifications = '/notifications';
+  static const String notificationDetails = '/notificationDetails';
+  static const String manageAnnouncements = '/manageAnnouncements';
+  static const String sectionAnnouncements = '/sectionAnnouncements';
+  static const String createAnnouncement = '/createAnnouncement';
+  static const String notificationPreferences = '/notificationPreferences';
   static const String aiChat = '/aiChat';
 
   // -- Student Features --
@@ -19,14 +26,28 @@ class Routes {
   static const String entrance = "/entrance";
   static const String forumsDetails = "/forumsDetails";
 
+
+
   // -- Student Quizzes --
   static const String quizzes = "/quizzes";
+  static const String quizWizard = "/quizWizard";
   static const String quizDetails = "/quizDetails";
   static const String quizQuestions = "/quizQuestions";
   static const String quizResults = "/quizResults";
-
+  static const String studentQuizDashboard = "/studentQuizDashboard";
+  static const String quizIntro = "/quizIntro";
+  static const String activeQuiz = "/activeQuiz";
+  static const String quizSubmit = "/quizSubmit";
+  
   // -- Doctor Features --
   static const String doctorDashboard = '/doctorDashboard';
   static const String doctorCoursesDetails = '/doctorCoursesDetails';
   static const String doctorQuestionDetails = '/doctorQuestionDetails';
+  static const String lectureAttendanceDetails = '/lectureAttendanceDetails';
+
+
+// -- TA Features --
+  static const String taDashboard = '/taDashboard';
+  static const String taCoursesDetails = '/taCoursesDetails';
+  static const String taAssignmentGrades = '/taAssignmentGrades';
 }

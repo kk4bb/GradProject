@@ -109,6 +109,9 @@ builder.Services.AddScoped<IAssignmentService, AssignmentService>();
 builder.Services.AddScoped<IForumService, ForumService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
+builder.Services.AddScoped<IGradeService, GradeService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IBackgroundWorker, HangfireBackgroundWorker>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddHttpClient<IAIService, AIService>();
@@ -138,6 +141,7 @@ app.MapHub<AssignmentHub>("/assignmentHub");
 app.MapHub<ForumHub>("/forumHub");
 app.MapHub<NotificationHub>("/notificationHub");
 app.MapHub<QuizHub>("/quizHub");
+app.MapHub<GradeHub>("/gradeHub");
 
 using (var scope = app.Services.CreateScope())
 {

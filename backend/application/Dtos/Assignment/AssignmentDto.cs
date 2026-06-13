@@ -13,5 +13,6 @@ namespace CampusConnect.Application.Dtos.Assignment
         public string? InstructorName { get; set; }
         public double? Grade { get; set; }
         public string? Feedback { get; set; }
+        public string? FileUrl { get; set; }
     }
 }

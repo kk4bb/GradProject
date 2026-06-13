@@ -15,10 +15,10 @@ class LabSessionCard extends StatelessWidget {
     const cyan = Color(0xFF2FBAD7);
 
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: isLight
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, 4))]
             : [],
@@ -31,49 +31,49 @@ class LabSessionCard extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
                       color: isLight ? const Color(0xFFF3F4F6) : ColorsManager.darkBackground,
-                      borderRadius: BorderRadius.circular(16.0),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
                       children: [
-                        Text('OCT', style: TextStyle(fontSize: 11.0, color: ColorsManager.grayMedium, fontWeight: FontWeight.bold)),
-                        Text('24', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w900, color: isLight ? Colors.black : Colors.white)),
+                        Text('OCT', style: TextStyle(fontSize: 11, color: ColorsManager.grayMedium, fontWeight: FontWeight.bold)),
+                        Text('24', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: isLight ? Colors.black : Colors.white)),
                       ],
                     ),
                   ),
-                  SizedBox(width: 16.0),
+                  SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'CS201: Lab Section B',
                         style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
-                            .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0),
+                            .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
-                      SizedBox(height: 6.0),
-                      Text('14:00 - 15:30 • Room 402', style: TextStyle(fontSize: 13.0, color: ColorsManager.grayMedium)),
+                      SizedBox(height: 6),
+                      Text('14:00 - 15:30 • Room 402', style: TextStyle(fontSize: 13, color: ColorsManager.grayMedium)),
                     ],
                   ),
                 ],
               ),
               Container(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: cyan.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.0),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.qr_code_rounded, color: cyan, size: 28.0),
+                child: Icon(Icons.qr_code_rounded, color: cyan, size: 28),
               ),
             ],
           ),
-          SizedBox(height: 20.0),
+          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Attendance Pending', style: TextStyle(color: ColorsManager.grayMedium, fontSize: 14.0)),
-              Text('Mark Now', style: TextStyle(color: cyan, fontWeight: FontWeight.bold, fontSize: 14.0)),
+              Text('Attendance Pending', style: TextStyle(color: ColorsManager.grayMedium, fontSize: 14)),
+              Text('Mark Now', style: TextStyle(color: cyan, fontWeight: FontWeight.bold, fontSize: 14)),
             ],
           )
         ],

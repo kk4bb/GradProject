@@ -1,6 +1,5 @@
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -9,17 +8,26 @@ import '../../../../../shared/providers/theme_provider.dart';
 
 
 class ProfileStatsGrid extends StatelessWidget {
-  const ProfileStatsGrid({super.key});
+  final String gpa;
+  final String credits;
+  final String rank;
+
+  const ProfileStatsGrid({
+    super.key,
+    required this.gpa,
+    required this.credits,
+    required this.rank,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: StatCard(label: 'GPA', value: '3.85')),
-        SizedBox(width: 12.w),
-        Expanded(child: StatCard(label: 'Credits', value: '92')),
-        SizedBox(width: 12.w),
-        Expanded(child: StatCard(label: 'Rank', value: '7th')),
+        Expanded(child: StatCard(label: 'GPA', value: gpa)),
+        SizedBox(width: 12),
+        Expanded(child: StatCard(label: 'Credits', value: credits)),
+        SizedBox(width: 12),
+        Expanded(child: StatCard(label: 'Rank', value: rank)),
       ],
     );
   }
@@ -41,10 +49,10 @@ class StatCard extends StatelessWidget {
     final isLight = themeProvider.isLightTheme();
 
     return Container(
-      padding: REdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +69,7 @@ class StatCard extends StatelessWidget {
               color: ColorsManager.blue,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 4),
           Text(
             label,
             style: isLight

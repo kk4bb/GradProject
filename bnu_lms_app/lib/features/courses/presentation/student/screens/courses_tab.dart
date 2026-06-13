@@ -3,12 +3,15 @@ import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../shared/providers/theme_provider.dart';
 import '../../../../../shared/routes_manager/routes.dart';
 import '../widgets/courses/course_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../shared/di/injection.dart';
+import '../../cubit/courses_cubit/courses_cubit.dart';
+import '../../cubit/courses_cubit/courses_state.dart';
 
 
 
@@ -17,67 +20,28 @@ class CoursesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<CoursesCubit>()..fetchEnrolledCourses(),
+      child: const _CoursesTabView(),
+    );
+  }
+}
+
+class _CoursesTabView extends StatelessWidget {
+  const _CoursesTabView();
+
+  @override
+  Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
-
-    final courses = [
-      {
-        'title': 'Advanced Programming',
-        'instructor': 'Dr. Angela Yu',
-        'category': 'Computer Science',
-        'categoryColor': const Color(0xFF5DADE2),
-        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
-        'icon': Icons.computer,
-      },
-      {
-        'title': 'Data Structures & Algorithms',
-        'instructor': 'Dr. Robert Martin',
-        'category': 'Computer Science',
-        'categoryColor': const Color(0xFF5DADE2),
-        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
-        'icon': Icons.code,
-      },
-      {
-        'title': 'Web Development',
-        'instructor': 'Prof. Sarah Johnson',
-        'category': 'Computer Science',
-        'categoryColor': const Color(0xFF5DADE2),
-        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
-        'icon': Icons.language,
-      },
-      {
-        'title': 'Database Management Systems',
-        'instructor': 'Dr. Michael Chen',
-        'category': 'Computer Science',
-        'categoryColor': const Color(0xFF5DADE2),
-        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
-        'icon': Icons.storage,
-      },
-      {
-        'title': 'Artificial Intelligence',
-        'instructor': 'Prof. Emily Watson',
-        'category': 'Computer Science',
-        'categoryColor': const Color(0xFF5DADE2),
-        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
-        'icon': Icons.psychology,
-      },
-      {
-        'title': 'Mobile App Development',
-        'instructor': 'Dr. Ahmed Hassan',
-        'category': 'Computer Science',
-        'categoryColor': const Color(0xFF5DADE2),
-        'iconBgColor': isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049),
-        'icon': Icons.phone_android,
-      },
-    ];
 
     return SafeArea(
       child: Column(
         children: [
           // Header
           Padding(
-            padding: REdgeInsets.fromLTRB(24, 16, 24, 16),
+            padding: EdgeInsets.fromLTRB(24, 16, 24, 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -92,10 +56,10 @@ class CoursesTab extends StatelessWidget {
                     // TODO: Show semester picker
                   },
                   child: Container(
-                    padding: REdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: isLight ? Color(0xFFB8E9F5) : ColorsManager.darkSurface,
-                      borderRadius: BorderRadius.circular(24.r),
+                      color: isLight ? const Color(0xFFB8E9F5) : ColorsManager.darkSurface,
+                      borderRadius: BorderRadius.circular(24),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -103,16 +67,16 @@ class CoursesTab extends StatelessWidget {
                         Text(
                           'Fall 2024',
                           style: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xFF00A3CC),
                           ),
                         ),
-                        SizedBox(width: 8.w),
+                        SizedBox(width: 8),
                         Icon(
                           Icons.keyboard_arrow_down,
                           color: const Color(0xFF00A3CC),
-                          size: 20.sp,
+                          size: 20,
                         ),
                       ],
                     ),
@@ -124,31 +88,62 @@ class CoursesTab extends StatelessWidget {
 
           // Course List
           Expanded(
-            child: ListView.builder(
-              padding: REdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              itemCount: courses.length,
-              itemBuilder: (context, index) {
-                final course = courses[index];
-                return CourseCard(
-                  title: course['title'] as String,
-                  instructor: course['instructor'] as String,
-                  category: course['category'] as String,
-                  categoryColor: course['categoryColor'] as Color,
-                  iconBgColor: course['iconBgColor'] as Color,
-                  categoryIcon: course['icon'] as IconData,
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.coursesDetails,
-                      arguments: {
-                        'courseTitle': course['title'] as String,
-                        'instructor': course['instructor'] as String,
-                        'courseCode': 'SWE-301',
-                        'icon': course['icon'] as IconData,
-                      },
+            child: BlocBuilder<CoursesCubit, CoursesState>(
+              builder: (context, state) {
+                if (state is CoursesLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is CoursesError) {
+                  return Center(
+                    child: Text(
+                      state.message,
+                      style: TextStyle(color: ColorsManager.red, fontSize: 16),
+                    ),
+                  );
+                } else if (state is CoursesLoaded) {
+                  final courses = state.courses;
+                  if (courses.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'You are not enrolled in any courses.',
+                        style: TextStyle(color: ColorsManager.grayDark, fontSize: 16),
+                      ),
                     );
-                  },
-                );
+                  }
+                  return ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    itemCount: courses.length,
+                    itemBuilder: (context, index) {
+                      final course = courses[index];
+                      // UI defaults since API doesn't have them yet
+                      const categoryColor = Color(0xFF5DADE2);
+                      final iconBgColor = isLight ? const Color(0xFFdbeafe) : const Color(0xFF223049);
+                      const icon = Icons.computer;
+
+                      return CourseCard(
+                        title: course.title,
+                        instructor: course.instructorName,
+                        category: 'Computer Science',
+                        categoryColor: categoryColor,
+                        iconBgColor: iconBgColor,
+                        categoryIcon: icon,
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            Routes.coursesDetails,
+                            arguments: {
+                              'courseId': course.id, // passing ID to details screen
+                              'courseTitle': course.title,
+                              'instructor': course.instructorName,
+                              'courseCode': 'SWE-301',
+                              'icon': icon,
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+                return const SizedBox();
               },
             ),
           ),

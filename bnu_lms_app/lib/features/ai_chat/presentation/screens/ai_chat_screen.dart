@@ -1,42 +1,67 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../shared/providers/theme_provider.dart';
+import '../../data/data_sources/ai_remote_data_source.dart';
+import '../../data/models/ai_models.dart';
+import '../cubit/ai_cubit.dart';
+import '../cubit/ai_state.dart';
+import '../widgets/ai_chat_drawer.dart';
 import '../widgets/message_buble.dart';
 import '../widgets/typing_indicator.dart';
 import '../widgets/message_input.dart';
 import '../widgets/empty_state.dart';
+import 'package:dio/dio.dart';
+import 'package:bnu_lms_app/shared/di/injection.dart';
 
-class AiChatScreen extends StatefulWidget {
-  const AiChatScreen({super.key});
+class AiChatScreen extends StatelessWidget {
+  final int? sessionId;
+
+  const AiChatScreen({super.key, this.sessionId});
 
   @override
-  State<AiChatScreen> createState() => _AiChatScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        final cubit = AICubit(AIRemoteDataSourceImpl(getIt<Dio>()));
+        if (sessionId != null && sessionId! > 0) {
+          cubit.loadMessages(sessionId!);
+        }
+        return cubit;
+      },
+      child: _AiChatBody(initialSessionId: sessionId),
+    );
+  }
 }
 
-class _AiChatScreenState extends State<AiChatScreen> {
+class _AiChatBody extends StatefulWidget {
+  final int? initialSessionId;
 
+  const _AiChatBody({this.initialSessionId});
+
+  @override
+  State<_AiChatBody> createState() => _AiChatBodyState();
+}
+
+class _AiChatBodyState extends State<_AiChatBody> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
-  final List<ChatMessage> _messages = [];
-  bool _isTyping = false;
+
+  int? _currentSessionId;
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    _initializeChat();
-  }
-
-  void _initializeChat() {
-    _messages.add(
-      ChatMessage(
-        text: 'Hello! How can I assist you today with your studies at BNU?',
-        isUser: false,
-        timestamp: DateTime.now(),
-      ),
-    );
+    _currentSessionId = widget.initialSessionId;
   }
 
   @override
@@ -45,50 +70,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
     _scrollController.dispose();
     _focusNode.dispose();
     super.dispose();
-  }
-
-  Future<void> _sendMessage() async {
-    final messageText = _messageController.text.trim();
-    if (messageText.isEmpty) return;
-
-    setState(() {
-      _messages.add(
-        ChatMessage(
-          text: messageText,
-          isUser: true,
-          timestamp: DateTime.now(),
-        ),
-      );
-      _isTyping = true;
-    });
-
-    _messageController.clear();
-    _scrollToBottom();
-
-    // Simulate AI response (replace with actual API call)
-    await Future.delayed(const Duration(milliseconds: 1500));
-
-    if (mounted) {
-      setState(() {
-        _messages.add(
-          ChatMessage(
-            text: _generateResponse(messageText),
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-        _isTyping = false;
-      });
-      _scrollToBottom();
-    }
-  }
-
-  String _generateResponse(String query) {
-    // Replace this with your actual AI API integration
-    if (query.toLowerCase().contains('quantum')) {
-      return 'Quantum entanglement is a phenomenon where two or more particles become linked in such a way that they share the same fate, no matter how far apart they are. If you measure a property of one particle, you instantly know the corresponding property of the other, even if they\'re light-years away. It\'s like having two coins that are magically linked: if one lands on heads, the other instantly lands on tails, and vice versa.';
-    }
-    return 'I understand your question. Let me help you with that. This is a demonstration response. Please integrate your AI API here for actual intelligent responses.';
   }
 
   void _scrollToBottom() {
@@ -101,6 +82,24 @@ class _AiChatScreenState extends State<AiChatScreen> {
         );
       }
     });
+  }
+
+  Future<void> _sendMessage() async {
+    final text = _messageController.text.trim();
+    if (text.isEmpty && _selectedImage == null) return;
+    
+    String? base64Image;
+    if (_selectedImage != null) {
+      final bytes = await _selectedImage!.readAsBytes();
+      base64Image = base64Encode(bytes);
+    }
+    
+    _messageController.clear();
+    setState(() {
+      _selectedImage = null;
+    });
+    
+    await context.read<AICubit>().sendMessage(_currentSessionId, text, base64Image: base64Image);
   }
 
   void _handleAttachment(BuildContext context) {
@@ -116,18 +115,28 @@ class _AiChatScreenState extends State<AiChatScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.image, color: Color(0xFF00BCD4)),
-              title: const Text('Upload Image'),
-              onTap: () {
+              title: const Text('Upload Image from Gallery'),
+              onTap: () async {
                 Navigator.pop(context);
-                // Handle image upload
+                final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+                if (pickedFile != null) {
+                  setState(() {
+                    _selectedImage = File(pickedFile.path);
+                  });
+                }
               },
             ),
             ListTile(
-              leading: const Icon(Icons.description, color: Color(0xFF00BCD4)),
-              title: const Text('Upload Document'),
-              onTap: () {
+              leading: const Icon(Icons.camera_alt, color: Color(0xFF00BCD4)),
+              title: const Text('Take a Photo'),
+              onTap: () async {
                 Navigator.pop(context);
-                // Handle document upload
+                final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+                if (pickedFile != null) {
+                  setState(() {
+                    _selectedImage = File(pickedFile.path);
+                  });
+                }
               },
             ),
           ],
@@ -136,7 +145,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
     );
   }
 
-  void _showOptions(BuildContext context) {
+  void _showOptions(BuildContext context, bool isLight) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -147,14 +156,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text('Clear Chat'),
-              onTap: () {
-                Navigator.pop(context);
-                _clearChat();
-              },
-            ),
             ListTile(
               leading: const Icon(Icons.info_outline, color: Color(0xFF00BCD4)),
               title: const Text('About AI Assistant'),
@@ -167,13 +168,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
         ),
       ),
     );
-  }
-
-  void _clearChat() {
-    setState(() {
-      _messages.clear();
-      _initializeChat();
-    });
   }
 
   void _showAboutDialog(BuildContext context) {
@@ -199,25 +193,153 @@ class _AiChatScreenState extends State<AiChatScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
 
-    return Scaffold(
-      // backgroundColor: isLight ? const Color(0xFFF5F5F5) : const Color(0xFF121212),
-      appBar: _buildAppBar(isLight),
-      body: Column(
-        children: [
-          Expanded(
-            child: _messages.isEmpty
-                ? EmptyState(isLight: isLight)
-                : _buildMessagesList(isLight),
-          ),
-          if (_isTyping) TypingIndicator(isLight: isLight),
-          MessageInput(
-            controller: _messageController,
-            focusNode: _focusNode,
-            isLight: isLight,
-            onSend: _sendMessage,
-            onAttachment: () => _handleAttachment(context),
-          ),
-        ],
+    return BlocListener<AICubit, AIState>(
+      listenWhen: (prev, curr) =>
+          curr is AIMessagesLoaded ||
+          curr is AIMessageSending ||
+          curr is AIError,
+      listener: (context, state) {
+        if (state is AIMessagesLoaded) {
+          // Persist the resolved session id (important for brand-new chats)
+          if (_currentSessionId == null || _currentSessionId == 0) {
+            setState(() => _currentSessionId = state.currentSessionId);
+          }
+          _scrollToBottom();
+        } else if (state is AIMessageSending) {
+          _scrollToBottom();
+        } else if (state is AIError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+          drawer: const AiChatDrawer(),
+        appBar: _buildAppBar(isLight),
+        body: Column(
+          children: [
+            Expanded(
+              child: BlocBuilder<AICubit, AIState>(
+                builder: (context, state) {
+                  if (state is AILoadingMessages) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF00BCD4),
+                      ),
+                    );
+                  }
+
+                  List<ChatMessageModel> messages = [];
+                  bool isSending = false;
+
+                  if (state is AIMessagesLoaded) {
+                    messages = state.messages;
+                  } else if (state is AIMessageSending) {
+                    messages = state.messages;
+                    isSending = true;
+                  }
+
+                  if (messages.isEmpty && !isSending) {
+                    return EmptyState(isLight: isLight);
+                  }
+
+                  return ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 20),
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final msg = messages[index];
+                      final isUser = msg.sender == 'User';
+                      final showAvatar = index == 0 ||
+                          (messages[index].sender !=
+                              messages[index - 1].sender);
+                      return MessageBubble(
+                        message: msg,
+                        isLight: isLight,
+                        showAvatar: showAvatar,
+                        isUser: isUser,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            // Typing indicator while the AI response is in-flight
+            BlocBuilder<AICubit, AIState>(
+              builder: (context, state) {
+                if (state is AIMessageSending) {
+                  return TypingIndicator(isLight: isLight);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            if (_selectedImage != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                            image: DecorationImage(
+                              image: FileImage(_selectedImage!),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: -8,
+                          top: -8,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedImage = null;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            MessageInput(
+              controller: _messageController,
+              focusNode: _focusNode,
+              isLight: isLight,
+              onSend: _sendMessage,
+              onAttachment: () => _handleAttachment(context),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -233,28 +355,11 @@ class _AiChatScreenState extends State<AiChatScreen> {
         ),
         onPressed: () => Navigator.pop(context),
       ),
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Container(
-          //   width: 32,
-          //   height: 32,
-          //   decoration: BoxDecoration(
-          //     gradient: const LinearGradient(
-          //       colors: [Color(0xFF00BCD4), Color(0xFF0097A7)],
-          //     ),
-          //     borderRadius: BorderRadius.circular(8),
-          //   ),
-          //   child: const Icon(Icons.auto_awesome, color: Colors.white, size: 18),
-          // ),
-          // const SizedBox(width: 12),
-          Text(
-            'AI Assistant',
-            style: isLight
-                ? AppLightTextStyles.headlineLarge
-                : AppDarkTextStyles.headlineLarge,
-          ),
-        ],
+      title: Text(
+        'AI Assistant',
+        style: isLight
+            ? AppLightTextStyles.headlineLarge
+            : AppDarkTextStyles.headlineLarge,
       ),
       actions: [
         IconButton(
@@ -262,37 +367,9 @@ class _AiChatScreenState extends State<AiChatScreen> {
             Icons.more_vert,
             color: isLight ? Colors.black87 : Colors.white,
           ),
-          onPressed: () => _showOptions(context),
+          onPressed: () => _showOptions(context, isLight),
         ),
       ],
     );
   }
-
-  Widget _buildMessagesList(bool isLight) {
-    return ListView.builder(
-      controller: _scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      itemCount: _messages.length,
-      itemBuilder: (context, index) {
-        return MessageBubble(
-          message: _messages[index],
-          isLight: isLight,
-          showAvatar: index == 0 ||
-              _messages[index].isUser != _messages[index - 1].isUser,
-        );
-      },
-    );
-  }
-}
-
-class ChatMessage {
-  final String text;
-  final bool isUser;
-  final DateTime timestamp;
-
-  ChatMessage({
-    required this.text,
-    required this.isUser,
-    required this.timestamp,
-  });
 }

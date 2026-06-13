@@ -43,6 +43,7 @@ namespace CampusConnect.Infrastructure.Services
                 .AnyAsync(e => e.CourseId == courseId && e.StudentId == userId);
 
             var course = await _context.Courses
+                .Include(c => c.Enrollments)
                 .FirstOrDefaultAsync(c => c.Id == courseId);
 
             if (course == null) return null;
@@ -57,12 +58,26 @@ namespace CampusConnect.Infrastructure.Services
             var instructor = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == course.InstructorId);
 
+            var studentIds = course.Enrollments.Select(e => e.StudentId).ToList();
+            var students = await _context.Users
+                .Where(u => studentIds.Contains(u.Id))
+                .Select(u => new CourseStudentDto
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    ProfilePictureUrl = u.ProfilePictureUrl
+                })
+                .ToListAsync();
+
             return new CourseDetailDto
             {
                 Id = course.Id,
                 Title = course.Title,
                 Description = course.Description,
                 InstructorName = instructor != null ? $"{instructor.FirstName} {instructor.LastName}" : "Unknown",
+                Students = students,
                 Modules = await _context.Modules
                     .Where(m => m.CourseId == courseId)
                     .Select(m => new ModuleDto

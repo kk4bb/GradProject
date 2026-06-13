@@ -1,0 +1,1 @@
+namespace CampusConnect.Domain.Entities { public class PostVote { public int Id { get; set; } public int PostId { get; set; } public string UserId { get; set; } public bool IsUpvote { get; set; } public Post Post { get; set; } } }

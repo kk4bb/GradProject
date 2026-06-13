@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/resources/colors_manager.dart';
-import '../screens/ai_chat_screen.dart';
+import '../../data/models/ai_models.dart';
 
 class MessageBubble extends StatelessWidget {
-  final ChatMessage message;
+  final ChatMessageModel message;
   final bool isLight;
   final bool showAvatar;
+  final bool isUser;
 
   const MessageBubble({
     super.key,
     required this.message,
     required this.isLight,
     required this.showAvatar,
+    required this.isUser,
   });
 
   @override
@@ -24,31 +26,30 @@ class MessageBubble extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment:
-        message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          if (!message.isUser) ...[
+          if (!isUser) ...[
             showAvatar
                 ? CircleAvatar(
-              radius: 18,
-              backgroundColor: isLight
-                  ? const Color(0xFFE3F2FD)
-                  : const Color(0xFF1E3A5F),
-              child: const Icon(
-                Icons.auto_awesome,
-                size: 18,
-                color: Color(0xFF00BCD4),
-              ),
-            )
+                    radius: 18,
+                    backgroundColor: isLight
+                        ? const Color(0xFFE3F2FD)
+                        : const Color(0xFF1E3A5F),
+                    child: const Icon(
+                      Icons.auto_awesome,
+                      size: 18,
+                      color: Color(0xFF00BCD4),
+                    ),
+                  )
                 : const SizedBox(width: 36),
             const SizedBox(width: 8),
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment: message.isUser
-                  ? CrossAxisAlignment.end
-                  : CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
-                if (!message.isUser && showAvatar)
+                if (!isUser && showAvatar)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 6, left: 4),
                     child: Text(
@@ -66,16 +67,18 @@ class MessageBubble extends StatelessWidget {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    gradient: message.isUser
+                    gradient: isUser
                         ? const LinearGradient(
-                      colors: [Color(0xFF00BCD4), Color(0xFF0097A7)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    )
+                            colors: [Color(0xFF00BCD4), Color(0xFF0097A7)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
                         : null,
-                    color: message.isUser
+                    color: isUser
                         ? null
-                        : (isLight ? ColorsManager.lightBackground : ColorsManager.darkSurface),
+                        : (isLight
+                            ? ColorsManager.lightBackground
+                            : ColorsManager.darkSurface),
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
                       BoxShadow(
@@ -86,11 +89,11 @@ class MessageBubble extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    message.text,
+                    message.content,
                     style: TextStyle(
                       fontSize: 15,
                       height: 1.5,
-                      color: message.isUser
+                      color: isUser
                           ? Colors.white
                           : (isLight ? Colors.black87 : Colors.white),
                     ),
@@ -99,7 +102,7 @@ class MessageBubble extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 4, left: 4, right: 4),
                   child: Text(
-                    _formatTime(message.timestamp),
+                    _formatTime(message.createdAt),
                     style: TextStyle(
                       fontSize: 11,
                       color: isLight ? Colors.grey[500] : Colors.grey[600],
@@ -109,21 +112,21 @@ class MessageBubble extends StatelessWidget {
               ],
             ),
           ),
-          if (message.isUser) ...[
+          if (isUser) ...[
             const SizedBox(width: 8),
             showAvatar
                 ? CircleAvatar(
-              radius: 18,
-              backgroundColor: const Color(0xFFFFB74D),
-              child: const Text(
-                'S',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-            )
+                    radius: 18,
+                    backgroundColor: const Color(0xFFFFB74D),
+                    child: const Text(
+                      'S',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  )
                 : const SizedBox(width: 36),
           ],
         ],

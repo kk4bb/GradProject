@@ -21,35 +21,35 @@ class TaTasksTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           children: [
             const TaTasksHeader(),
-            SizedBox(height: 24.0),
+            SizedBox(height: 24),
 
             // 1. Submissions to Grade
             _buildSectionHeader(context, 'Submissions to Grade', badgeCount: '8 Pending'),
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
             const GradingCard(),
-            SizedBox(height: 24.0),
+            SizedBox(height: 24),
 
             // 2. Labs Today
             _buildSectionHeader(context, 'Labs Today', badgeCount: null),
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
             const LabSessionCard(),
-            SizedBox(height: 24.0),
+            SizedBox(height: 24),
 
             // 3. Forum Unanswered
             _buildSectionHeader(context, 'Forum Unanswered', badgeCount: null),
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
             const ForumTaskCard(),
-            SizedBox(height: 24.0),
+            SizedBox(height: 24),
 
             // 4. Resources
             _buildSectionHeader(context, 'Resources', badgeCount: null),
-            SizedBox(height: 16.0),
+            SizedBox(height: 16),
             const ResourcesSection(),
-            SizedBox(height: 40.0),
+            SizedBox(height: 40),
           ],
         ),
       ),
@@ -67,18 +67,18 @@ class TaTasksTab extends StatelessWidget {
         Text(
           title,
           style: (isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall)
-              .copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),
+              .copyWith(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         if (badgeCount != null)
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: cyan.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               badgeCount,
-              style: TextStyle(color: cyan, fontSize: 12.0, fontWeight: FontWeight.bold),
+              style: TextStyle(color: cyan, fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ),
       ],

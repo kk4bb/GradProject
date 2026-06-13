@@ -9,11 +9,16 @@ import '../widgets/fourms_details/forum_answer_card.dart';
 import '../widgets/fourms_details/forum_answer_input.dart';
 import '../widgets/fourms_details/forum_question_card.dart';
 
+import '../../../../domain/entities/forum_entities.dart';
+import '../../../../presentation/cubit/forums_cubit.dart';
+import '../../../../presentation/cubit/forums_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 class QuestionDetailsScreen extends StatefulWidget {
-  final Map<String, dynamic> questionData;
+  final DiscussionEntity discussion;
 
   const QuestionDetailsScreen({
-    required this.questionData,
+    required this.discussion,
     super.key,
   });
 
@@ -23,25 +28,18 @@ class QuestionDetailsScreen extends StatefulWidget {
 
 class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
   final TextEditingController answerController = TextEditingController();
+  final FocusNode _replyFocusNode = FocusNode();
 
-  final List<Map<String, dynamic>> answers = [
-    {
-      'author': 'Dr. Sarah Jenkins',
-      'role': 'VERIFIED SPECIALIST',
-      'timestamp': 'Answered 1w ago',
-      'answer': 'For a Poisson distribution, a unique property is that the variance is equal to the mean (λ). If you have the parameter λ, then Var(X) = λ.\n\nThis simplifies many calculations in stochastic modeling!',
-      'votes': 142,
-      'isTopRated': true, // Doctor Approved
-    },
-    {
-      'author': 'Fatima Ali',
-      'role': 'Student',
-      'timestamp': 'Answered 5d ago',
-      'answer': 'I think you just need to look at the expected value formula. It\'s basically the same steps. λ is the magic number here!',
-      'votes': 8,
-      'isTopRated': false,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => context.read<ForumsCubit>().initSignalR());
+    Future.microtask(() {
+      if (mounted) {
+        context.read<ForumsCubit>().loadPosts(widget.discussion.id, widget.discussion.title);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +59,6 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
           style: isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge,
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_vert, color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary),
-            onPressed: () {},
-          ),
-        ],
         elevation: 0,
       ),
       body: Column(
@@ -77,19 +69,50 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Full Question Card (isPreview = false)
-                  ForumQuestionCard(
-                    authorName: widget.questionData['author'],
-                    timeAgo: widget.questionData['timeAgo'],
-                    questionTitle: widget.questionData['title'],
-                    questionBody: widget.questionData['question'],
-                    votes: widget.questionData['votes'],
-                    commentsCount: widget.questionData['commentsCount'],
-                    status: widget.questionData['status'],
-                    statusColor: widget.questionData['statusColor'],
-                    isPreview: false,
+                  Builder(
+                    builder: (context) {
+                      String author = widget.discussion.authorName ?? 'Unknown';
+                      String timeAgo = 'Just now';
+                      if (widget.discussion.createdAt != null) {
+                        final diff = DateTime.now().difference(widget.discussion.createdAt!);
+                        if (diff.inDays > 0) { timeAgo = '${diff.inDays}d ago'; }
+                        else if (diff.inHours > 0) { timeAgo = '${diff.inHours}h ago'; }
+                        else if (diff.inMinutes > 0) { timeAgo = '${diff.inMinutes}m ago'; }
+                      }
+
+                      return ForumQuestionCard(
+                        authorName: author,
+                        authorAvatarUrl: widget.discussion.authorAvatarUrl,
+                        timeAgo: timeAgo,
+                        questionTitle: widget.discussion.title,
+                        questionBody: widget.discussion.content ?? 'No content provided.',
+                        votes: 0,
+                        commentsCount: widget.discussion.postCount,
+                        status: widget.discussion.status,
+                        statusColor: widget.discussion.status == 'RESOLVED' ? ColorsManager.green : (widget.discussion.status == 'CLOSED' ? ColorsManager.grayMedium : ColorsManager.blue),
+                        isPreview: false,
+                      );
+                    }
                   ),
-                  _buildAnswersHeader(isLight),
-                  _buildAnswersList(isLight),
+                  BlocBuilder<ForumsCubit, ForumsState>(
+                    builder: (context, state) {
+                      if (state is ForumsLoading || state is ForumsActionLoading) {
+                        return const Padding(
+                          padding: EdgeInsets.all(32.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      if (state is PostsLoaded) {
+                        return Column(
+                          children: [
+                            _buildAnswersHeader(isLight, state.posts.length),
+                            _buildAnswersList(isLight, state.posts),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                   SizedBox(height: 80),
                 ],
               ),
@@ -97,8 +120,18 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
           ),
           ForumAnswerInput(
             controller: answerController,
+            focusNode: _replyFocusNode,
             onSubmit: () {
-              // Handle submit
+              final text = answerController.text.trim();
+              if (text.isNotEmpty) {
+                context.read<ForumsCubit>().createPost(
+                  widget.discussion.id,
+                  widget.discussion.title,
+                  text,
+                );
+                answerController.clear();
+                FocusScope.of(context).unfocus();
+              }
             },
           ),
         ],
@@ -106,13 +139,13 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
     );
   }
 
-  Widget _buildAnswersHeader(bool isLight) {
+  Widget _buildAnswersHeader(bool isLight, int count) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: Row(
         children: [
           Text(
-            'ALL ANSWERS (${answers.length})',
+            'ALL ANSWERS ($count)',
             style: isLight
                 ? AppLightTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold, color: ColorsManager.grayDark)
                 : AppDarkTextStyles.labelLarge.copyWith(fontWeight: FontWeight.bold, color: ColorsManager.darkTextSecondary),
@@ -131,18 +164,33 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
     );
   }
 
-  Widget _buildAnswersList(bool isLight) {
+  Widget _buildAnswersList(bool isLight, List<PostEntity> posts) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
-        children: answers.map((answer) {
+        children: posts.map((post) {
+          String postTimeAgo = 'Just now';
+          if (post.createdAt != null) {
+            final diff = DateTime.now().difference(post.createdAt!);
+            if (diff.inDays > 0) { postTimeAgo = '${diff.inDays}d ago'; }
+            else if (diff.inHours > 0) { postTimeAgo = '${diff.inHours}h ago'; }
+            else if (diff.inMinutes > 0) { postTimeAgo = '${diff.inMinutes}m ago'; }
+          }
           return ForumAnswerCard(
-            authorName: answer['author'],
-            role: answer['role'],
-            timestamp: answer['timestamp'],
-            answerText: answer['answer'],
-            votes: answer['votes'],
-            isTopRated: answer['isTopRated'],
+            authorName: post.authorName,
+            authorAvatarUrl: post.authorAvatarUrl,
+            role: 'Student', // Can be derived dynamically later
+            timestamp: postTimeAgo,
+            answerText: post.content,
+            votes: post.votes,
+            isTopRated: post.isCorrect,
+            approvedByRole: post.approvedByRole,
+            onUpvote: () => context.read<ForumsCubit>().votePost(post.id, true, widget.discussion.id, widget.discussion.title),
+            onDownvote: () => context.read<ForumsCubit>().votePost(post.id, false, widget.discussion.id, widget.discussion.title),
+            onReplyTap: () {
+              answerController.text = '@${post.authorName} ';
+              _replyFocusNode.requestFocus();
+            },
           );
         }).toList(),
       ),
@@ -152,6 +200,7 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
   @override
   void dispose() {
     answerController.dispose();
+    _replyFocusNode.dispose();
     super.dispose();
   }
 }

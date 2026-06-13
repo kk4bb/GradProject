@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -26,7 +25,7 @@ class OverviewStatsRow extends StatelessWidget {
             isLight: isLight,
           ),
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: 16),
         Expanded(
           child: StatCard(
             icon: Icons.people,
@@ -63,23 +62,23 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: isLight
-            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10.r, offset: const Offset(0, 4))]
+            ? [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 4))]
             : [],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: EdgeInsets.all(8),
             decoration: BoxDecoration(color: iconBgColor, shape: BoxShape.circle),
-            child: Icon(icon, color: iconColor, size: 20.sp),
+            child: Icon(icon, color: iconColor, size: 20),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           Text(
             value,
             style: isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge,

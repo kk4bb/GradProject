@@ -5,184 +5,167 @@ import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
+import '../../../doctor/presentation/widgets/doctor_forum_answer_card.dart';
+import '../../../student/presentation/widgets/fourms_details/forum_answer_input.dart';
+import '../../../student/presentation/widgets/fourms_details/forum_question_card.dart';
 
-import '../widgets/ta_forum_reply_card.dart';
+import '../../../../domain/entities/forum_entities.dart';
+import '../../../../presentation/cubit/forums_cubit.dart';
+import '../../../../presentation/cubit/forums_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TaQuestionDetailsScreen extends StatelessWidget {
-  const TaQuestionDetailsScreen({super.key});
+class TaQuestionDetailsScreen extends StatefulWidget {
+  final DiscussionEntity discussion;
+
+  const TaQuestionDetailsScreen({
+    required this.discussion,
+    super.key,
+  });
+
+  @override
+  State<TaQuestionDetailsScreen> createState() => _TaQuestionDetailsScreenState();
+}
+
+class _TaQuestionDetailsScreenState extends State<TaQuestionDetailsScreen> {
+  final TextEditingController answerController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => context.read<ForumsCubit>().initSignalR());
+    Future.microtask(() {
+      if (mounted) {
+        context.read<ForumsCubit>().loadPosts(widget.discussion.id, widget.discussion.title);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isLight = themeProvider.isLightTheme();
-    const cyan = Color(0xFF2FBAD7);
 
     return Scaffold(
       backgroundColor: isLight ? ColorsManager.lightBackground : ColorsManager.darkBackground,
       appBar: AppBar(
         backgroundColor: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.0, color: isLight ? ColorsManager.black : ColorsManager.white),
+          icon: Icon(Icons.arrow_back, color: isLight ? ColorsManager.black : ColorsManager.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          'Thread Details',
-          style: (isLight ? AppLightTextStyles.titleLarge : AppDarkTextStyles.titleLarge).copyWith(fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_horiz, color: isLight ? ColorsManager.black : ColorsManager.white),
-            onPressed: () {},
-          ),
-        ],
+        title: Text('Question Details', style: isLight ? AppLightTextStyles.headlineLarge : AppDarkTextStyles.headlineLarge),
+        centerTitle: true,
+        elevation: 0,
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(20.0),
-              children: [
-                // Original Question
-                _buildOriginalQuestion(isLight, cyan),
-
-                SizedBox(height: 24.0),
-
-                // Replies Header
-                Text(
-                  'Replies (3)',
-                  style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 16.0),
-
-                // Doctor Reply
-                const TaForumReplyCard(
-                  authorName: 'Dr. Sarah Wilson',
-                  role: 'DOCTOR',
-                  timeAgo: '2h ago',
-                  content: 'Yes, Alex. Using a heap-based priority queue is essential. Python\'s `heapq` module provides a min-heap implementation that will reduce your complexity from O(V²) to O(E log V).',
-                  upvotes: 12,
-                  canSuggestAsAnswer: false,
-                ),
-
-                // TA Suggested Reply (Your Reply)
-                const TaForumReplyCard(
-                  authorName: 'James Chen',
-                  role: 'TA (YOU)',
-                  timeAgo: '1h ago',
-                  content: 'I\'ve uploaded a sample snippet to the resources folder. Remember to handle the case where a shorter path to an already visited node is found!',
-                  upvotes: 4,
-                  isSuggestedByTa: true,
-                  canSuggestAsAnswer: false,
-                ),
-
-                // Student Reply
-                const TaForumReplyCard(
-                  authorName: 'Mark Johnson',
-                  role: 'STUDENT',
-                  timeAgo: '30m ago',
-                  content: 'Check out the `heapq` documentation for the `heappush` and `heappop` methods, it\'s very straightforward to use.',
-                  upvotes: 2,
-                  canSuggestAsAnswer: true, // TA can suggest this student's answer!
-                ),
-              ],
-            ),
-          ),
-
-          // Bottom Input Field
-          _buildBottomInput(isLight, cyan),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOriginalQuestion(bool isLight, Color cyan) {
-    return Container(
-      padding: EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)] : [],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(radius: 18.0, backgroundColor: cyan.withValues(alpha: 0.2), child: Text('AS', style: TextStyle(color: cyan, fontWeight: FontWeight.bold, fontSize: 12.0))),
-              SizedBox(width: 12.0),
-              Column(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Alex Smith', style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(fontWeight: FontWeight.bold)),
-                  Text('Student • CS101 • 4h ago', style: TextStyle(fontSize: 10.0, color: ColorsManager.grayMedium)),
+                  // Full Question View
+                  _buildFullQuestion(isLight),
+                  SizedBox(height: 24),
+
+                  BlocBuilder<ForumsCubit, ForumsState>(
+                    builder: (context, state) {
+                      if (state is ForumsLoading || state is ForumsActionLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is PostsLoaded) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'STUDENT RESPONSES (${state.posts.length})',
+                              style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall).copyWith(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+                            ),
+                            SizedBox(height: 12),
+                            // Student Answers List
+                              ...state.posts.map((post) {
+                                String postTimeAgo = 'Just now';
+                                if (post.createdAt != null) {
+                                  final diff = DateTime.now().difference(post.createdAt!);
+                                  if (diff.inDays > 0) { postTimeAgo = '${diff.inDays}d ago'; }
+                                  else if (diff.inHours > 0) { postTimeAgo = '${diff.inHours}h ago'; }
+                                  else if (diff.inMinutes > 0) { postTimeAgo = '${diff.inMinutes}m ago'; }
+                                }
+                                return DoctorForumAnswerCard(
+                                  authorName: post.authorName,
+                                  authorAvatarUrl: post.authorAvatarUrl,
+                                  timeAgo: postTimeAgo,
+                                  answerText: post.content,
+                                  isCorrect: post.isCorrect,
+                                  votes: post.votes,
+                                  approvedByRole: post.approvedByRole,
+                                  onMarkCorrect: () => context.read<ForumsCubit>().markAsCorrect(post.id, widget.discussion.id, widget.discussion.title),
+                                  onUpvote: () => context.read<ForumsCubit>().votePost(post.id, true, widget.discussion.id, widget.discussion.title),
+                                  onDownvote: () => context.read<ForumsCubit>().votePost(post.id, false, widget.discussion.id, widget.discussion.title),
+                                );
+                              }),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                 ],
-              )
-            ],
-          ),
-          SizedBox(height: 16.0),
-          Text(
-            'How do I implement Dijkstra\'s algorithm in Python efficiently for a large graph?',
-            style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(fontWeight: FontWeight.bold, fontSize: 18.0),
-          ),
-          SizedBox(height: 12.0),
-          Text(
-            'I\'m working on the pathfinding assignment and my current implementation is too slow. I\'m using a simple list for the priority queue. Should I be using heapq or something else to speed it up?',
-            style: TextStyle(fontSize: 13.0, color: isLight ? Colors.grey.shade700 : Colors.grey.shade300, height: 1.5),
-          ),
-          SizedBox(height: 16.0),
-          Row(
-            children: [
-              _buildTag('ALGORITHMS', cyan),
-              SizedBox(width: 8.0),
-              _buildTag('PYTHON', cyan),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTag(String text, Color cyan) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-      decoration: BoxDecoration(color: cyan.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(6.0)),
-      child: Text(text, style: TextStyle(color: cyan, fontSize: 10.0, fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Widget _buildBottomInput(bool isLight, Color cyan) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-      decoration: BoxDecoration(
-        color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -4))],
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.add_circle_outline, color: cyan, size: 28.0),
-          SizedBox(width: 12.0),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Write a reply as TA...',
-                hintStyle: TextStyle(color: ColorsManager.grayMedium, fontSize: 14.0),
-                border: InputBorder.none,
-                filled: true,
-                fillColor: isLight ? Colors.grey.shade100 : ColorsManager.darkBackground,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               ),
             ),
           ),
-          SizedBox(width: 12.0),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(color: cyan, shape: BoxShape.circle),
-            child: Icon(Icons.send, color: Colors.white, size: 18.0),
-          )
+          ForumAnswerInput(
+            controller: answerController,
+            onSubmit: () {
+              final text = answerController.text.trim();
+              if (text.isNotEmpty) {
+                context.read<ForumsCubit>().createPost(
+                  widget.discussion.id,
+                  widget.discussion.title,
+                  text,
+                );
+                answerController.clear();
+                FocusScope.of(context).unfocus();
+              }
+            },
+          ),
         ],
       ),
     );
   }
+
+  Widget _buildFullQuestion(bool isLight) {
+    final author = widget.discussion.authorName ?? 'Unknown';
+    String timeAgo = 'Just now';
+    if (widget.discussion.createdAt != null) {
+      final diff = DateTime.now().difference(widget.discussion.createdAt!);
+      if (diff.inDays > 0) { timeAgo = '${diff.inDays}d ago'; }
+      else if (diff.inHours > 0) { timeAgo = '${diff.inHours}h ago'; }
+      else if (diff.inMinutes > 0) { timeAgo = '${diff.inMinutes}m ago'; }
+    }
+
+    return ForumQuestionCard(
+      authorName: author,
+      authorAvatarUrl: widget.discussion.authorAvatarUrl,
+      timeAgo: timeAgo,
+      questionTitle: widget.discussion.title,
+      questionBody: widget.discussion.content ?? 'No content provided.',
+      votes: 0,
+      commentsCount: widget.discussion.postCount,
+      status: widget.discussion.status,
+      statusColor: widget.discussion.status == 'RESOLVED' ? ColorsManager.green : (widget.discussion.status == 'CLOSED' ? ColorsManager.grayMedium : ColorsManager.blue),
+      isPreview: false,
+    );
+  }
+
+
+
+  // Widget _buildTag(String text, Color color) {
+  //   return Container(
+  //     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  //     decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4), border: Border.all(color: color.withValues(alpha: 0.3))),
+  //     child: Text(text, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+  //   );
+  // }
 }

@@ -218,6 +218,12 @@ abstract class AppLocalizations {
   /// **'Grades'**
   String get grades;
 
+  /// No description provided for @tasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get tasks;
+
   /// No description provided for @attendance.
   ///
   /// In en, this message translates to:

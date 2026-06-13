@@ -1,7 +1,7 @@
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:bnu_lms_app/shared/config/api_constants.dart';
 
 import '../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../shared/config/theme/app_light_text_styles.dart';
@@ -13,6 +13,7 @@ class ProfileHeaderCard extends StatelessWidget {
   final String studentId;
   final int year;
   final String profileImage;
+  final String? profilePictureUrl;
 
   const ProfileHeaderCard({
     super.key,
@@ -21,6 +22,7 @@ class ProfileHeaderCard extends StatelessWidget {
     required this.studentId,
     required this.year,
     required this.profileImage,
+    this.profilePictureUrl,
   });
 
   @override
@@ -30,10 +32,10 @@ class ProfileHeaderCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: REdgeInsets.all(24),
+      padding: EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         children: [
@@ -46,11 +48,24 @@ class ProfileHeaderCard extends StatelessWidget {
               ),
             ),
             child: CircleAvatar(
-              radius: 50.r,
-              backgroundImage: AssetImage(profileImage),
+              radius: 50,
+              backgroundColor: ColorsManager.grayMedium.withValues(alpha: 0.1),
+              child: ClipOval(
+                child: profilePictureUrl != null && profilePictureUrl!.isNotEmpty
+                    ? Image.network(
+                        profilePictureUrl!.startsWith('http') 
+                            ? profilePictureUrl! 
+                            : '${ApiConstants.baseUrl.replaceAll('api/', '')}${profilePictureUrl!.startsWith('/') ? profilePictureUrl!.substring(1) : profilePictureUrl!}',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Image.asset(profileImage, width: 100, height: 100, fit: BoxFit.cover),
+                      )
+                    : Image.asset(profileImage, width: 100, height: 100, fit: BoxFit.cover),
+              ),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           Text(
             name,
             style: isLight
@@ -61,7 +76,7 @@ class ProfileHeaderCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8),
           Text(
             department,
             style: isLight
@@ -73,12 +88,12 @@ class ProfileHeaderCard extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildInfoChip('ID: $studentId', isLight),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12),
               _buildInfoChip('Year: $year', isLight),
             ],
           ),
@@ -89,17 +104,17 @@ class ProfileHeaderCard extends StatelessWidget {
 
   Widget _buildInfoChip(String text, bool isLight) {
     return Container(
-      padding: REdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: isLight
             ? ColorsManager.lightBlueAccent
             : ColorsManager.darkBackground,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 13.sp,
+          fontSize: 13,
           fontWeight: FontWeight.w600,
           color: ColorsManager.blue,
         ),

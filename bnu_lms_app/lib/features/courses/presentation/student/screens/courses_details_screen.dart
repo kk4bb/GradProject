@@ -2,23 +2,29 @@ import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import '../../../../../shared/providers/theme_provider.dart';
-import '../widgets/courses_details/assignment_item_card.dart';
+import '../../../../assignments/presentation/tabs/student_assignments_tab.dart';
 import '../widgets/courses_details/course_description_section.dart';
 import '../../shared_widgets/course_header_card.dart';
-import '../widgets/courses_details/learning_outcomes_section.dart';
-import '../widgets/courses_details/upcoming_event_card.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../shared/di/injection.dart';
+import '../../cubit/course_details_cubit/course_details_cubit.dart';
+import '../../cubit/course_details_cubit/course_details_state.dart';
+import 'package:bnu_lms_app/features/courses/domain/entities/course_entity.dart';
+
 
 
 class CourseDetailsScreen extends StatefulWidget {
+  final int courseId;
   final String courseTitle;
   final String instructor;
   final String courseCode;
   final IconData icon;
 
   const CourseDetailsScreen({
+    required this.courseId,
     required this.courseTitle,
     required this.instructor,
     this.courseCode = 'SWE-301',
@@ -44,48 +50,13 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
     'Implement and test large-scale software systems.',
   ];
 
-  final List<Map<String, dynamic>> assignments = [
-    {
-      'title': 'Project Phase 1',
-      'dueDate': 'Nov 20, 2024',
-      'status': 'Pending',
-      'statusColor': Colors.orange,
-    },
-    {
-      'title': 'Design Pattern Report',
-      'dueDate': 'Nov 15, 2024',
-      'status': 'Submitted',
-      'statusColor': ColorsManager.green,
-    },
-    {
-      'title': 'Midterm Exam',
-      'dueDate': 'Nov 10, 2024',
-      'status': 'Completed',
-      'statusColor': ColorsManager.blue,
-    },
-  ];
 
-  final List<Map<String, dynamic>> upcomingEvents = [
-    {
-      'title': 'Midterm Exam Schedule',
-      'description':
-      'The midterm exam has been scheduled for Nov 15th. Please check the \'Assignments\' tab for more details.',
-      'date': 'Nov 1, 2023',
-      'icon': Icons.event_note,
-    },
-    {
-      'title': 'Project Proposal Submissions',
-      'description':
-      'The deadline for project proposal submission is approaching. Please submit your documents before Oct 28th.',
-      'date': 'Oct 22, 2023',
-      'icon': Icons.assignment_turned_in,
-    },
-  ];
+
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -124,36 +95,50 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: isLight ? ColorsManager.black : ColorsManager.darkTextPrimary,
-            ),
-            onPressed: () {},
-          ),
-        ],
+        actions: [],
       ),
-      body: Column(
-        children: [
-          CourseHeaderCard(
-            title: widget.courseTitle,
-            instructor: widget.instructor,
-            courseCode: widget.courseCode,
-            icon: widget.icon,
-          ),
-          _buildTabBar(isLight),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildOverviewTab(isLight),
-                _buildAssignmentsTab(isLight),
-                _buildUpcomingTab(isLight),
-              ],
-            ),
-          ),
-        ],
+      body: BlocProvider(
+        create: (context) => getIt<CourseDetailsCubit>()..fetchCourseDetails(widget.courseId),
+        child: BlocBuilder<CourseDetailsCubit, CourseDetailsState>(
+          builder: (context, state) {
+            if (state is CourseDetailsLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is CourseDetailsError) {
+              return Center(child: Text(state.message, style: TextStyle(color: ColorsManager.red)));
+            } else if (state is CourseDetailsLoaded || state is CourseActionLoading || state is CourseActionError) {
+              
+              CourseDetailEntity? course;
+              if (state is CourseDetailsLoaded) course = state.course;
+              if (state is CourseActionLoading) course = state.course;
+              if (state is CourseActionError) course = state.course;
+              
+              if (course == null) return const SizedBox();
+
+              return Column(
+                children: [
+                  CourseHeaderCard(
+                    title: course.title,
+                    instructor: course.instructorName,
+                    courseCode: widget.courseCode,
+                    icon: widget.icon,
+                  ),
+
+                  _buildTabBar(isLight),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _buildOverviewTab(isLight, course),
+                        StudentAssignmentsTab(courseId: course.id),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const SizedBox();
+          },
+        ),
       ),
     );
   }
@@ -171,96 +156,30 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
         indicatorColor: ColorsManager.blue,
         indicatorWeight: 2,
         labelStyle: TextStyle(
-          fontSize: 15.sp,
+          fontSize: 15,
           fontWeight: FontWeight.w600,
         ),
         tabs: const [
           Tab(text: 'Overview'),
           Tab(text: 'Assignments'),
-          Tab(text: 'Upcoming'),
         ],
       ),
     );
   }
 
-  Widget _buildOverviewTab(bool isLight) {
+  Widget _buildOverviewTab(bool isLight, CourseDetailEntity course) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 24.h),
-          CourseDescriptionSection(description: courseDescription),
-          SizedBox(height: 32.h),
-          LearningOutcomesSection(outcomes: learningOutcomes),
-          SizedBox(height: 24.h),
+          SizedBox(height: 24),
+          CourseDescriptionSection(description: course.description.isEmpty ? courseDescription : course.description),
+          SizedBox(height: 32),
         ],
       ),
     );
   }
 
-  Widget _buildAssignmentsTab(bool isLight) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: REdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 16.h),
-            Text(
-              'All Assignments',
-              style: isLight
-                  ? AppLightTextStyles.headlineSmall.copyWith(
-                fontWeight: FontWeight.bold,
-              )
-                  : AppDarkTextStyles.headlineSmall.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 16.h),
-            ...assignments.map((assignment) {
-              return AssignmentItemCard(
-                title: assignment['title'],
-                dueDate: assignment['dueDate'],
-                status: assignment['status'],
-                statusColor: assignment['statusColor'],
-              );
-            }),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildUpcomingTab(bool isLight) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: REdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 16.h),
-            Text(
-              'Recent Announcements',
-              style: isLight
-                  ? AppLightTextStyles.headlineSmall.copyWith(
-                fontWeight: FontWeight.bold,
-              )
-                  : AppDarkTextStyles.headlineSmall.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 16.h),
-            ...upcomingEvents.map((event) {
-              return UpcomingEventCard(
-                title: event['title'],
-                date: event['date'],
-                description: event['description'],
-                icon: event['icon'],
-              );
-            }),
-          ],
-        ),
-      ),
-    );
-  }
+
 }

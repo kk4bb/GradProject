@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../resources/colors_manager.dart';
 
 
 class CustomTextFormField extends StatefulWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hintText;
   final TextStyle? hintStyle;
   final String? Function(String?)? validator;
@@ -16,10 +15,11 @@ class CustomTextFormField extends StatefulWidget {
   final Widget? suffixIcon;
   final Color? prefixIconColor;
   final Color? fillColor;
+  final int maxLines;
 
   const CustomTextFormField({
     super.key,
-    required this.controller,
+    this.controller,
     required this.hintText,
     this.hintStyle,
     this.validator,
@@ -30,6 +30,7 @@ class CustomTextFormField extends StatefulWidget {
     this.suffixIcon,
     this.prefixIconColor,
     this.fillColor,
+    this.maxLines = 1,
   });
 
   @override
@@ -38,46 +39,49 @@ class CustomTextFormField extends StatefulWidget {
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
   late bool isObscure;
+  late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
     isObscure = widget.isPassword;
+    _controller = widget.controller ?? TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: widget.controller,
+      controller: _controller,
+      maxLines: widget.maxLines,
       keyboardType: widget.keyboardType,
       style: widget.style ,
       obscureText: isObscure,
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: widget.hintStyle,
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         filled: true,
         fillColor: widget.fillColor ?? ColorsManager.white,
 
         // Consistent border design with 0px border and radius 15
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
         ),
 
@@ -102,7 +106,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           icon: Icon(
             isObscure ? Icons.visibility_off : Icons.visibility,
             color: ColorsManager.white,
-            size: 24.w,
+            size: 24,
           ),
         )
             : null,

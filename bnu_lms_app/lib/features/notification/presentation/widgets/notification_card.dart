@@ -1,102 +1,145 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../shared/config/theme/app_dark_text_styles.dart';
-import '../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../shared/providers/theme_provider.dart';
 import '../../../../shared/resources/colors_manager.dart';
 
+enum NotificationType { announcement, quiz, assignment, grade, forum, system }
+
 class NotificationCard extends StatelessWidget {
+  final NotificationType type;
   final String title;
-  final String description;
+  final String body;
   final String time;
-  final IconData icon;
-  final Color indicatorColor;
+  final bool isUnread;
+  final VoidCallback? onTap;
 
   const NotificationCard({
     super.key,
+    required this.type,
     required this.title,
-    required this.description,
+    required this.body,
     required this.time,
-    required this.icon,
-    required this.indicatorColor,
+    this.isUnread = false,
+    this.onTap,
   });
+
+  IconData _getIcon() {
+    switch (type) {
+      case NotificationType.grade:        return Icons.star_border;
+      case NotificationType.assignment:   return Icons.error_outline;
+      case NotificationType.announcement: return Icons.campaign_outlined;
+      case NotificationType.quiz:         return Icons.help_outline;
+      case NotificationType.forum:        return Icons.forum_outlined;
+      case NotificationType.system:       return Icons.settings_outlined;
+    }
+  }
+
+  Color _getIconColor(bool isDark) {
+    if (type == NotificationType.grade)      return ColorsManager.blue;
+    if (type == NotificationType.assignment) return ColorsManager.red;
+    return isDark ? ColorsManager.darkTextSecondary : ColorsManager.grayMedium;
+  }
+
+  Color _getIconBgColor(bool isDark) {
+    if (isDark) return ColorsManager.darkBackground;
+    return ColorsManager.white;
+  }
 
   @override
   Widget build(BuildContext context) {
-    var themeProvider = Provider.of<ThemeProvider>(context);
-    final isLight = themeProvider.isLightTheme();
+    final isDarkMode = Provider.of<ThemeProvider>(context).isDarkTheme();
 
-    return Container(
-      width: double.infinity,
-      constraints: BoxConstraints(minHeight: 110.h),
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: isLight
-            ? [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
-                )
-              ]
-            : null,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Status Dot
-          Container(
-            width: 10.w,
-            height: 10.w,
-            margin: EdgeInsets.only(top: 6.h, right: 12.w),
-            decoration: BoxDecoration(
-              color: indicatorColor,
-              shape: BoxShape.circle,
-            ),
+    final Color cardBgColor = isUnread
+        ? (isDarkMode ? const Color(0xFF0C242A) : const Color(0xFFEAF8FB))
+        : (isDarkMode ? ColorsManager.darkSurface : ColorsManager.white);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: cardBgColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDarkMode ? ColorsManager.darkBackground : const Color(0xFFF1F5F9),
           ),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: isLight
-                      ? AppLightTextStyles.bodyMedium
-                      : AppDarkTextStyles.bodyMedium.copyWith(color: ColorsManager.darkTextPrimary),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  description,
-                  style: isLight
-                      ? AppLightTextStyles.bodySmall
-                      : AppDarkTextStyles.bodySmall,
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  time,
-                  style: isLight
-                      ? AppLightTextStyles.bodySmall
-                      : AppDarkTextStyles.bodySmall,
-                ),
-              ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: _getIconBgColor(isDarkMode),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                _getIcon(),
+                color: _getIconColor(isDarkMode),
+                size: 24,
+              ),
             ),
-          ),
-
-          // Right icon (color adjusts to theme)
-          Icon(
-            icon,
-            color: isLight
-                ? ColorsManager.grayDark
-                : ColorsManager.darkTextSecondary,
-            size: 20.sp,
-          )
-        ],
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            color: isDarkMode ? ColorsManager.darkTextPrimary : ColorsManager.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            time,
+                            style: TextStyle(
+                              color: isDarkMode ? ColorsManager.darkTextSecondary : ColorsManager.grayMedium,
+                              fontSize: 12,
+                            ),
+                          ),
+                          if (isUnread) ...[
+                            SizedBox(width: 4),
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: type == NotificationType.assignment
+                                    ? ColorsManager.red
+                                    : ColorsManager.blue,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ]
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    body,
+                    style: TextStyle(
+                      color: isDarkMode ? ColorsManager.darkTextSecondary : ColorsManager.grayDark,
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

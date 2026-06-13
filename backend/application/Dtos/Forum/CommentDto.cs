@@ -4,6 +4,7 @@ namespace CampusConnect.Application.Dtos.Forum
     {
         public int Id { get; set; }
         public string AuthorName { get; set; }
+        public string? AuthorAvatarUrl { get; set; }
         public string Content { get; set; }
     }
 }

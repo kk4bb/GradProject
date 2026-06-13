@@ -11,6 +11,7 @@ namespace CampusConnect.Infrastructure.Context
         public string Faculty { get; set; }
         public int? AcademicYear { get; set; }
         public int? CreditHours { get; set; }
+        public string? ProfilePictureUrl { get; set; }
 
         // For Instructors
         public virtual ICollection<Course> AssignedCourses { get; set; } = new List<Course>();

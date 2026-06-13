@@ -6,6 +6,7 @@ namespace CampusConnect.Application.Dtos.Quiz
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public int DurationMinutes { get; set; }
         public List<QuestionDto> Questions { get; set; }
     }
 }

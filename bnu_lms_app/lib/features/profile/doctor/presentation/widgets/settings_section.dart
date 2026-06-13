@@ -1,12 +1,12 @@
 import 'package:bnu_lms_app/shared/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../../../shared/providers/theme_provider.dart';
 import '../../../../../../shared/resources/colors_manager.dart';
+import '../../../../auth/presentation/cubit/auth_cubit.dart';
 
 class SettingsSection extends StatelessWidget {
   const SettingsSection({super.key});
@@ -19,16 +19,23 @@ class SettingsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Settings', style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
             color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-            borderRadius: BorderRadius.circular(20.r),
-            boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10.r, offset: const Offset(0, 4))] : [],
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: isLight ? [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4))] : [],
           ),
           child: Column(
             children: [
-              _buildSettingsItem(context, Icons.person_outline, 'Edit Profile'),
+              _buildSettingsItem(
+                context, 
+                Icons.person_outline, 
+                'Edit Profile',
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.editProfile);
+                },
+              ),
               _buildDivider(),
               _buildSettingsItem(context, Icons.lock_outline, 'Security & Password'),
               _buildDivider(),
@@ -42,9 +49,31 @@ class SettingsSection extends StatelessWidget {
                 },
               ),
               _buildDivider(),
-              _buildSettingsItem(context, Icons.help_outline, 'Help Center'),
+              _buildSettingsItem(
+                context, 
+                Icons.help_outline, 
+                'Help Center',
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.helpCenter);
+                },
+              ),
               _buildDivider(),
-              _buildSettingsItem(context, Icons.logout, 'Log Out', isLogout: true),
+              _buildSettingsItem(
+                context, 
+                Icons.logout, 
+                'Log Out', 
+                isLogout: true,
+                onTap: () async {
+                  await context.read<AuthCubit>().logout();
+                  if (context.mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context, 
+                      Routes.login, 
+                      (route) => false,
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),
@@ -59,8 +88,8 @@ class SettingsSection extends StatelessWidget {
     final iconColor = isLogout ? ColorsManager.red : ColorsManager.grayMedium;
 
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
-      leading: Icon(icon, color: iconColor, size: 24.sp),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      leading: Icon(icon, color: iconColor, size: 24),
       title: Text(
         title,
         style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(
@@ -68,7 +97,7 @@ class SettingsSection extends StatelessWidget {
           fontWeight: isLogout ? FontWeight.bold : FontWeight.w600,
         ),
       ),
-      trailing: isLogout ? null : Icon(Icons.arrow_forward_ios, size: 16.sp, color: ColorsManager.grayMedium),
+      trailing: isLogout ? null : Icon(Icons.arrow_forward_ios, size: 16, color: ColorsManager.grayMedium),
       // Assigned the onTap parameter to the ListTile
       onTap: onTap,
     );

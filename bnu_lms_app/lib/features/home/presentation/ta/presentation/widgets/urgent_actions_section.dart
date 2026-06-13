@@ -35,7 +35,7 @@ class UrgentActionsSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.0),
+          SizedBox(height: 16),
 
           // Card 1: Urgent Review (Red)
           _buildUrgentCard(
@@ -48,7 +48,7 @@ class UrgentActionsSection extends StatelessWidget {
             baseColor: ColorsManager.red,
             isUrgent: true,
           ),
-          SizedBox(height: 12.0),
+          SizedBox(height: 12),
 
           // Card 2: Meeting (Blue)
           _buildUrgentCard(
@@ -82,10 +82,10 @@ class UrgentActionsSection extends StatelessWidget {
         : baseColor.withValues(alpha: 0.15);
 
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: bgColor, width: 1),
         boxShadow: isLight
             ? [
@@ -101,14 +101,14 @@ class UrgentActionsSection extends StatelessWidget {
         children: [
           // Circular Icon
           Container(
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: baseColor, // Solid color for icon bg
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: Colors.white, size: 20.0),
+            child: Icon(icon, color: Colors.white, size: 20),
           ),
-          SizedBox(width: 14.0),
+          SizedBox(width: 14),
 
           // Texts
           Expanded(
@@ -118,11 +118,11 @@ class UrgentActionsSection extends StatelessWidget {
                 Text(
                   title,
                   style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0),
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 14),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 4.0),
+                SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: (isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall)
@@ -137,10 +137,10 @@ class UrgentActionsSection extends StatelessWidget {
 
           // Action Button (Small pill)
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               color: isLight ? ColorsManager.white : ColorsManager.darkBackground,
-              borderRadius: BorderRadius.circular(20.0),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(color: baseColor.withValues(alpha: 0.3)),
             ),
             child: Text(

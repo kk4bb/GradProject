@@ -50,48 +50,59 @@ public class SeedController : ControllerBase
                 }
             }
 
-            // ── 2. Users ──────────────────────────────────────────────────────
-            var doctor = await EnsureUser(log,
-                "dr.smith@campusconnect.edu", "John", "Smith",
+            // 🎓 2. Users 🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓
+            var ahmed = await EnsureUser(log,
+                "ahmed@bnu.edu.eg", "Ahmed", "Mahmoud",
                 "Faculty of Computer Science", "Instructor");
 
-            await EnsureUser(log,
-                "ta.ahmed@campusconnect.edu", "Ahmed", "Hassan",
+            var tariq = await EnsureUser(log,
+                "tariq@bnu.edu.eg", "Tariq", "Hassan",
+                "Faculty of Computer Science", "Instructor");
+
+            var mazen = await EnsureUser(log,
+                "mazen@bnu.edu.eg", "Mazen", "Tamer",
                 "Faculty of Computer Science", "TA");
 
-            await EnsureUser(log,
-                "john.doe@example.com", "John", "Doe",
+            var seif = await EnsureUser(log,
+                "seif@bnu.edu.eg", "Seif", "Essam",
                 "Faculty of Computer Science", "Student",
-                academicYear: 2, creditHours: 72);
+                academicYear: 4, creditHours: 120);
 
-            await EnsureUser(log,
-                "sara.ali@example.com", "Sara", "Ali",
+            var fayez = await EnsureUser(log,
+                "fayez@bnu.edu.eg", "Ahmed", "Fayez",
                 "Faculty of Computer Science", "Student",
-                academicYear: 2, creditHours: 68);
+                academicYear: 4, creditHours: 120);
 
-            // ── 3. Courses (owned by doctor) ──────────────────────────────────
-            var cs101 = await EnsureCourse(log,
-                "CS101 - Introduction to Programming",
-                "Fundamentals of programming using Python.",
-                doctor.Id);
+            // 🎓 3. Courses 🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓
+            var ase = await EnsureCourse(log,
+                "Advanced Software Engineering",
+                "Advanced topics in software engineering, architecture, and design patterns.",
+                ahmed.Id);
 
-            var ds201 = await EnsureCourse(log,
-                "DS201 - Data Structures",
-                "Arrays, linked lists, stacks, queues, trees, and graphs.",
-                doctor.Id);
+            var dbSys = await EnsureCourse(log,
+                "Database Systems & Architecture",
+                "In-depth database systems architecture and implementation.",
+                ahmed.Id);
 
-            var db301 = await EnsureCourse(log,
-                "DB301 - Database Systems",
-                "Relational model, SQL, normalization, and transactions.",
-                doctor.Id);
+            var dip = await EnsureCourse(log,
+                "Digital Image Processing",
+                "Fundamentals of image processing and computer vision algorithms.",
+                tariq.Id);
 
-            // ── 4. Enroll all students in all courses ─────────────────────────
-            var students = await _userManager.GetUsersInRoleAsync("Student");
+            var dc = await EnsureCourse(log,
+                "Data Compression",
+                "Lossless and lossy data compression algorithms.",
+                tariq.Id);
+
+            // 🎓 4. Assign TA 🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓
+            await EnsureEnrollment(log, mazen.Id, ase.Id, ase.Title);
+            
+            // 🎓 5. Enroll Students 🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓🎓
+            var students = new[] { seif, fayez };
             foreach (var student in students)
             {
-                await EnsureEnrollment(log, student.Id, cs101.Id, cs101.Title);
-                await EnsureEnrollment(log, student.Id, ds201.Id, ds201.Title);
-                await EnsureEnrollment(log, student.Id, db301.Id, db301.Title);
+                await EnsureEnrollment(log, student.Id, ase.Id, ase.Title);
+                await EnsureEnrollment(log, student.Id, dbSys.Id, dbSys.Title);
             }
 
             return Ok(new
@@ -100,16 +111,18 @@ public class SeedController : ControllerBase
                 log,
                 credentials = new[]
                 {
-                    new { role = "Instructor", email = "dr.smith@campusconnect.edu", password = "Password123!" },
-                    new { role = "TA",         email = "ta.ahmed@campusconnect.edu", password = "Password123!" },
-                    new { role = "Student",    email = "john.doe@example.com",       password = "Password123!" },
-                    new { role = "Student",    email = "sara.ali@example.com",       password = "Password123!" },
+                    new { role = "Instructor", email = "ahmed@bnu.edu.eg", password = "Password123!" },
+                    new { role = "Instructor", email = "tariq@bnu.edu.eg", password = "Password123!" },
+                    new { role = "TA",         email = "mazen@bnu.edu.eg", password = "Password123!" },
+                    new { role = "Student",    email = "seif@bnu.edu.eg",  password = "Password123!" },
+                    new { role = "Student",    email = "fayez@bnu.edu.eg", password = "Password123!" },
                 },
                 courses = new[]
                 {
-                    new { id = cs101.Id, title = cs101.Title },
-                    new { id = ds201.Id, title = ds201.Title },
-                    new { id = db301.Id, title = db301.Title },
+                    new { id = ase.Id, title = ase.Title },
+                    new { id = dbSys.Id, title = dbSys.Title },
+                    new { id = dip.Id, title = dip.Title },
+                    new { id = dc.Id, title = dc.Title },
                 }
             });
         }

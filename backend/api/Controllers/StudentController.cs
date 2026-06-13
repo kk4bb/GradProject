@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using CampusConnect.Infrastructure.Helpers;
 
 namespace CampusConnect.API.Controllers
 {
@@ -74,6 +76,25 @@ namespace CampusConnect.API.Controllers
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var profile = await _studentService.GetStudentProfileAsync(currentUserId);
             return Ok(profile);
+        }
+
+        [HttpPost("profile/picture")]
+        public async Task<IActionResult> UploadProfilePicture([FromForm] IFormFile file)
+        {
+            if (file == null) return BadRequest("File is required.");
+            if (!FileUploadHelper.IsValidFile(file, out var errorMessage))
+                return BadRequest(errorMessage);
+
+            try
+            {
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var fileUrl = await _studentService.UploadProfilePictureAsync(currentUserId, file);
+                return Ok(new { Url = fileUrl });
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

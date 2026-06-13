@@ -14,7 +14,7 @@ class ResourcesSection extends StatelessWidget {
     return Row(
       children: [
         Expanded(child: _buildResourceCard(context, Icons.menu_book_rounded, 'Syllabus')),
-        SizedBox(width: 16.0),
+        SizedBox(width: 16),
         Expanded(child: _buildResourceCard(context, Icons.people_alt_rounded, 'Student List')),
       ],
     );
@@ -25,22 +25,22 @@ class ResourcesSection extends StatelessWidget {
     const cyan = Color(0xFF2FBAD7);
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 24.0),
+      padding: EdgeInsets.symmetric(vertical: 24),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: isLight
             ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))]
             : [],
       ),
       child: Column(
         children: [
-          Icon(icon, color: cyan, size: 32.0),
-          SizedBox(height: 12.0),
+          Icon(icon, color: cyan, size: 32),
+          SizedBox(height: 12),
           Text(
             label,
             style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium)
-                .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0),
+                .copyWith(fontWeight: FontWeight.bold, fontSize: 14),
           ),
         ],
       ),

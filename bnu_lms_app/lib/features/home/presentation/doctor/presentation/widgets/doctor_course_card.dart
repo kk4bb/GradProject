@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../shared/config/theme/app_dark_text_styles.dart';
@@ -11,8 +10,8 @@ import '../../../../../../shared/widgets/custom_elevated_button.dart'; // Make s
 class DoctorCourseCard extends StatelessWidget {
   final String academicYear;
   final String courseName;
-  final String studentsCount;
-  final String timeString;
+  final String courseCode;
+  final String instructorName;
   final IconData courseIcon;
   final VoidCallback onManageTap;
 
@@ -20,8 +19,8 @@ class DoctorCourseCard extends StatelessWidget {
     super.key,
     required this.academicYear,
     required this.courseName,
-    required this.studentsCount,
-    required this.timeString,
+    required this.courseCode,
+    required this.instructorName,
     required this.courseIcon,
     required this.onManageTap,
   });
@@ -33,15 +32,15 @@ class DoctorCourseCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: isLight
             ? [
           BoxShadow(
             color: ColorsManager.black.withValues(alpha: 0.04),
-            blurRadius: 10.r,
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ]
@@ -56,10 +55,10 @@ class DoctorCourseCard extends StatelessWidget {
             children: [
               // Academic Year Tag
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: isLight ? ColorsManager.lightBlueAccent : ColorsManager.darkBackground,
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   academicYear.toUpperCase(),
@@ -76,7 +75,7 @@ class DoctorCourseCard extends StatelessWidget {
               ),
               // Course Icon
               Container(
-                padding: EdgeInsets.all(8.w),
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: isLight ? ColorsManager.lightBlueAccent : ColorsManager.darkBackground,
                   shape: BoxShape.circle,
@@ -84,13 +83,13 @@ class DoctorCourseCard extends StatelessWidget {
                 child: Icon(
                   courseIcon,
                   color: ColorsManager.blue,
-                  size: 20.sp,
+                  size: 20,
                 ),
               ),
             ],
           ),
 
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
 
           // Course Title
           Text(
@@ -100,36 +99,40 @@ class DoctorCourseCard extends StatelessWidget {
                 : AppDarkTextStyles.headlineSmall.copyWith(fontWeight: FontWeight.w700),
           ),
 
-          SizedBox(height: 12.h),
+          SizedBox(height: 12),
 
-          // Details Row (Students & Time)
+          // Details Row (Code & Instructor)
           Row(
             children: [
-              Icon(Icons.people_outline, size: 16.sp, color: ColorsManager.grayMedium),
-              SizedBox(width: 4.w),
+              Icon(Icons.qr_code, size: 16, color: ColorsManager.grayMedium),
+              SizedBox(width: 4),
               Text(
-                studentsCount,
+                courseCode,
                 style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium,
               ),
-              SizedBox(width: 16.w),
-              Icon(Icons.access_time, size: 16.sp, color: ColorsManager.grayMedium),
-              SizedBox(width: 4.w),
-              Text(
-                timeString,
-                style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium,
+              SizedBox(width: 16),
+              Icon(Icons.person_outline, size: 16, color: ColorsManager.grayMedium),
+              SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  instructorName,
+                  style: isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
 
           // Replaced with CustomElevatedButton
           CustomElevatedButton(
             label: 'Manage Course',
             onTap: onManageTap,
             backgroundColor: ColorsManager.blue,
-            radius: 12.r, // Matches previous styling
-            verticalPadding: 14.h, // Matches previous styling
+            radius: 12, // Matches previous styling
+            verticalPadding: 14, // Matches previous styling
           ),
         ],
       ),
