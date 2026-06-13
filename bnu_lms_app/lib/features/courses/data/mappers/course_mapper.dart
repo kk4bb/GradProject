@@ -18,7 +18,18 @@ extension CourseDetailMapper on CourseDetailModel {
         title: title,
         description: description,
         instructorName: instructorName,
+        students: students.map((s) => s.toEntity).toList(),
         modules: modules.map((m) => m.toEntity).toList(),
+      );
+}
+
+extension CourseStudentMapper on CourseStudentModel {
+  CourseStudentEntity get toEntity => CourseStudentEntity(
+        id: id,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        profilePictureUrl: profilePictureUrl,
       );
 }
 

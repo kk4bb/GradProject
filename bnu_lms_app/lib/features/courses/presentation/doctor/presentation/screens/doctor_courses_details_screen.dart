@@ -116,7 +116,7 @@ class DoctorCourseDetailsScreen extends StatelessWidget {
                       child: TabBarView(
                         children: [
                           // 1. Students Tab
-                          CourseStudentsTab(courseId: course.id),
+                          CourseStudentsTab(students: course.students),
 
                           // 2. Materials Tab
                           const CourseMaterialsTab(),

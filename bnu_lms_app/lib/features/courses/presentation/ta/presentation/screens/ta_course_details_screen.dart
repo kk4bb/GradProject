@@ -124,7 +124,7 @@ class TaCourseDetailsScreen extends StatelessWidget {
                       child: TabBarView(
                         children: [
                           // 1. Students (Reused)
-                          CourseStudentsTab(courseId: course.id),
+                          CourseStudentsTab(students: course.students),
 
                           // 2. Materials (Reused)
                           const CourseMaterialsTab(),

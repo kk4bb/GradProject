@@ -24,6 +24,7 @@ class CourseDetailEntity extends Equatable {
   final String title;
   final String description;
   final String instructorName;
+  final List<CourseStudentEntity> students;
   final List<ModuleEntity> modules;
 
   const CourseDetailEntity({
@@ -31,11 +32,31 @@ class CourseDetailEntity extends Equatable {
     required this.title,
     required this.description,
     required this.instructorName,
+    required this.students,
     required this.modules,
   });
 
   @override
-  List<Object?> get props => [id, title, description, instructorName, modules];
+  List<Object?> get props => [id, title, description, instructorName, students, modules];
+}
+
+class CourseStudentEntity extends Equatable {
+  final String id;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String? profilePictureUrl;
+
+  const CourseStudentEntity({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    this.profilePictureUrl,
+  });
+
+  @override
+  List<Object?> get props => [id, firstName, lastName, email, profilePictureUrl];
 }
 
 class ModuleEntity extends Equatable {

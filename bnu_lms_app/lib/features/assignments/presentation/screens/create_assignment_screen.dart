@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../shared/config/theme/app_light_text_styles.dart';
 import '../../../../shared/providers/theme_provider.dart';
@@ -22,6 +23,8 @@ class _CreateAssignmentScreenState extends State<CreateAssignmentScreen> {
   final TextEditingController _descController = TextEditingController();
   final TextEditingController _pointsController = TextEditingController();
   DateTime? _selectedDate;
+  String? _selectedFilePath;
+  String? _selectedFileName;
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +147,7 @@ class _CreateAssignmentScreenState extends State<CreateAssignmentScreen> {
                         description: _descController.text,
                         points: double.tryParse(_pointsController.text) ?? 0,
                         dueDate: _selectedDate ?? DateTime.now(),
+                        filePath: _selectedFilePath,
                       );
                     }),
                     style: ElevatedButton.styleFrom(
@@ -216,23 +220,41 @@ class _CreateAssignmentScreenState extends State<CreateAssignmentScreen> {
 
   Widget _buildAttachArea(BuildContext context) {
     final isLight = Provider.of<ThemeProvider>(context).isLightTheme();
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 24),
-      decoration: BoxDecoration(
-        color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ColorsManager.blue.withValues(alpha: 0.3), style: BorderStyle.solid),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.attach_file, color: ColorsManager.blue, size: 32),
-          SizedBox(height: 8),
-          Text(
-            'Tap to browse files', 
-            style: isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium
-          ),
-        ],
+    return GestureDetector(
+      onTap: () async {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf'],
+        );
+
+        if (result != null) {
+          setState(() {
+            _selectedFilePath = result.files.single.path;
+            _selectedFileName = result.files.single.name;
+          });
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 24),
+        decoration: BoxDecoration(
+          color: isLight ? ColorsManager.white : ColorsManager.darkSurface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: ColorsManager.blue.withValues(alpha: 0.3), style: BorderStyle.solid),
+        ),
+        child: Column(
+          children: [
+            Icon(Icons.attach_file, color: ColorsManager.blue, size: 32),
+            SizedBox(height: 8),
+            Text(
+              _selectedFileName ?? 'Tap to browse files (PDF only)', 
+              style: (isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium).copyWith(
+                color: _selectedFileName != null ? ColorsManager.blue : null,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

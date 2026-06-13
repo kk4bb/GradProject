@@ -41,7 +41,7 @@ class AssignmentModel {
       instructorName: json['instructorName'] as String?,
       grade: (json['grade'] as num?)?.toDouble(),
       feedback: json['feedback'] as String?,
-      filePath: json['filePath'] as String?,
+      filePath: json['fileUrl'] as String? ?? json['filePath'] as String?,
       attempts: json['attempts'] as int?,
     );
   }
