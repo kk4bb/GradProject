@@ -46,6 +46,8 @@ namespace CampusConnect.Infrastructure.Services
                 .Include(c => c.Enrollments)
                 .FirstOrDefaultAsync(c => c.Id == courseId);
 
+            Console.WriteLine($"DEBUG: Course: {course?.Title}, Enrollments count: {course?.Enrollments?.Count}");
+
             if (course == null) return null;
 
             var isInstructor = course.InstructorId == userId;
@@ -166,6 +168,24 @@ namespace CampusConnect.Infrastructure.Services
             _context.EducationalContents.Add(content);
             await _context.SaveChangesAsync();
             return content.Id;
+        }
+
+        public async Task DeleteContentAsync(int contentId, string userId, bool isTA = false)
+        {
+            var content = await _context.EducationalContents
+                .Include(ec => ec.Lesson)
+                .ThenInclude(l => l.Module)
+                .ThenInclude(m => m.Course)
+                .FirstOrDefaultAsync(ec => ec.Id == contentId);
+
+            if (content == null)
+                throw new Exception("Content not found.");
+
+            if (!isTA && content.Lesson.Module.Course.InstructorId != userId)
+                throw new UnauthorizedAccessException("Not authorized to modify this course.");
+
+            _context.EducationalContents.Remove(content);
+            await _context.SaveChangesAsync();
         }
     }
 }

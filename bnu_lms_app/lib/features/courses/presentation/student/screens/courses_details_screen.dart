@@ -1,3 +1,4 @@
+import 'package:bnu_lms_app/features/courses/presentation/student/widgets/courses_details/student_course_quizzes_tab.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_dark_text_styles.dart';
 import 'package:bnu_lms_app/shared/config/theme/app_light_text_styles.dart';
 import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
@@ -6,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../../shared/providers/theme_provider.dart';
 import '../../../../assignments/presentation/tabs/student_assignments_tab.dart';
 import '../widgets/courses_details/course_description_section.dart';
+import '../widgets/courses_details/student_materials_tab.dart';
 import '../../shared_widgets/course_header_card.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +15,7 @@ import '../../../../../shared/di/injection.dart';
 import '../../cubit/course_details_cubit/course_details_cubit.dart';
 import '../../cubit/course_details_cubit/course_details_state.dart';
 import 'package:bnu_lms_app/features/courses/domain/entities/course_entity.dart';
+import '../../../../../features/quizzes/presentation/cubit/quiz_list_cubit.dart';
 
 
 
@@ -56,7 +59,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -129,7 +132,12 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
                       controller: _tabController,
                       children: [
                         _buildOverviewTab(isLight, course),
+                        const StudentMaterialsTab(),
                         StudentAssignmentsTab(courseId: course.id),
+                        BlocProvider(
+                          create: (_) => getIt<QuizListCubit>(),
+                          child: StudentCourseQuizzesTab(courseId: course.id),
+                        ),
                       ],
                     ),
                   ),
@@ -161,7 +169,9 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
         ),
         tabs: const [
           Tab(text: 'Overview'),
+          Tab(text: 'Materials'),
           Tab(text: 'Assignments'),
+          Tab(text: 'Quizzes'),
         ],
       ),
     );

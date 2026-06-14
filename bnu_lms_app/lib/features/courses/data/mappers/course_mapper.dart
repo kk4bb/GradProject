@@ -54,5 +54,6 @@ extension EducationalContentMapper on EducationalContentModel {
         id: id,
         contentType: contentType,
         fileUrl: fileUrl,
+        originalFileName: originalFileName,
       );
 }

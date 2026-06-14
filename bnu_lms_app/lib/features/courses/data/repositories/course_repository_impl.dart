@@ -96,4 +96,33 @@ class CourseRepositoryImpl implements CourseRepository {
       return Left(Failure('Failed to add content: ${e.toString()}'));
     }
   }
+
+  @override
+  Future<Either<Failure, int>> uploadContent({
+    required int lessonId,
+    required String contentType,
+    required String filePath,
+    required String fileName,
+  }) async {
+    try {
+      final id = await _remoteDataSource.uploadContent(lessonId, contentType, filePath, fileName);
+      return Right(id);
+    } on RemoteException catch (e) {
+      return Left(Failure(e.message));
+    } catch (e) {
+      return Left(Failure('Failed to upload content: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteContent(int contentId) async {
+    try {
+      await _remoteDataSource.deleteContent(contentId);
+      return const Right(null);
+    } on RemoteException catch (e) {
+      return Left(Failure(e.message));
+    } catch (e) {
+      return Left(Failure('Failed to delete content: ${e.toString()}'));
+    }
+  }
 }

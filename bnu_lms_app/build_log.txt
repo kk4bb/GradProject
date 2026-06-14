@@ -1,0 +1,654 @@
+[  +17 ms] executing: uname -m
+[   +2 ms] Exit code 0 from: uname -m
+[        ] x86_64
+[   +4 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[        ] Artifact Instance of 'GradleWrapper' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterSdk' is not required, skipping update.
+[        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
+[        ] executing: [/home/kab/utils/libs/flutter/] git -c log.showSignature=false log HEAD -n 1 --pretty=format:%ad --date=iso
+[   +2 ms] Exit code 0 from: git -c log.showSignature=false log HEAD -n 1 --pretty=format:%ad --date=iso
+[        ] 2026-03-03 16:03:22 -0800
+[   +7 ms] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterEngineStamp' is not required, skipping update.
+[        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[  +16 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[        ] Artifact Instance of 'GradleWrapper' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterEngineStamp' is not required, skipping update.
+[        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterSdk' is not required, skipping update.
+[        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
+[  +18 ms] executing: [/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/] /home/kab/utils/libs/flutter/bin/cache/dart-sdk/bin/dart pub --suppress-analytics --directory . get --example
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (103.0.0 available)
+  analyzer 10.0.1 (13.3.0 available)
+  archive 4.0.7 (4.0.9 available)
+  async 2.13.0 (2.13.1 available)
+  bloc 9.1.0 (9.2.1 available)
+  crypto 3.0.6 (3.0.7 available)
+  cupertino_icons 1.0.8 (1.0.9 available)
+  dart_style 3.1.5 (3.1.9 available)
+  device_info_plus 12.4.0 (13.1.0 available)
+  device_info_plus_platform_interface 7.0.3 (8.1.0 available)
+  ffi 2.1.4 (2.2.0 available)
+  file_picker 8.3.7 (11.0.2 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_localization 0.3.3 (0.4.0 available)
+  flutter_native_splash 2.4.7 (2.4.8 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  flutter_secure_storage 10.0.0 (10.3.1 available)
+  flutter_secure_storage_darwin 0.2.0 (0.4.0 available)
+  flutter_secure_storage_linux 3.0.0 (3.0.1 available)
+  flutter_secure_storage_web 2.1.0 (2.1.1 available)
+  flutter_secure_storage_windows 4.1.0 (4.2.2 available)
+  flutter_slidable 3.1.2 (4.0.3 available)
+  google_fonts 6.3.2 (8.1.0 available)
+  http 1.5.0 (1.6.0 available)
+  image 4.5.4 (4.9.1 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  injectable_generator 3.0.2 (3.1.0 available)
+  js 0.6.7 (0.7.2 available)
+  json_annotation 4.11.0 (4.12.0 available)
+  lean_builder 0.1.10 (1.2.0 available)
+  lints 5.1.1 (6.1.0 available)
+  location 5.0.3 (8.0.1 available)
+  location_platform_interface 3.1.2 (6.0.1 available)
+  location_web 4.2.0 (6.0.1 available)
+  matcher 0.12.19 (0.12.20 available)
+  meta 1.17.0 (1.18.3 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider_android 2.2.20 (2.3.1 available)
+  path_provider_foundation 2.4.3 (2.6.0 available)
+  permission_handler 12.0.1 (12.0.3 available)
+  permission_handler_apple 9.4.7 (9.4.10 available)
+  petitparser 7.0.1 (7.0.2 available)
+  posix 6.0.3 (6.5.0 available)
+  qr 3.0.2 (4.0.0 available)
+  shared_preferences 2.5.3 (2.5.5 available)
+  shared_preferences_android 2.4.15 (2.4.26 available)
+  shared_preferences_foundation 2.5.5 (2.5.6 available)
+  shared_preferences_platform_interface 2.4.1 (2.4.2 available)
+  sse 4.1.8 (4.2.0 available)
+  sse_channel 0.1.1 (0.2.2 available)
+  test_api 0.7.10 (0.7.12 available)
+  universal_io 2.2.2 (2.3.1 available)
+  url_launcher_android 6.3.30 (6.3.32 available)
+  vector_math 2.2.0 (2.4.0 available)
+  vm_service 15.0.2 (15.2.0 available)
+  win32 5.15.0 (6.3.0 available)
+  win32_registry 2.1.0 (3.0.3 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies!
+59 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+[ +577 ms] Found plugin url_launcher at /home/kab/.pub-cache/hosted/pub.dev/url_launcher-6.3.2/
+[   +2 ms] Found plugin url_launcher_windows at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_windows-3.1.5/
+[   +1 ms] Found plugin url_launcher_web at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_web-2.4.3/
+[   +1 ms] Found plugin url_launcher_macos at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_macos-3.2.5/
+[        ] Found plugin url_launcher_linux at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_linux-3.2.2/
+[        ] Found plugin url_launcher_ios at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_ios-6.4.1/
+[   +1 ms] Found plugin url_launcher_android at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.30/
+[   +3 ms] Found plugin shared_preferences at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3/
+[        ] Found plugin shared_preferences_windows at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.4.1/
+[        ] Found plugin path_provider_windows at /home/kab/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
+[   +1 ms] Found plugin shared_preferences_web at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_web-2.4.3/
+[        ] Found plugin shared_preferences_linux at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.4.1/
+[        ] Found plugin path_provider_linux at /home/kab/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+[        ] Found plugin shared_preferences_foundation at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.5/
+[        ] Found plugin shared_preferences_android at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.15/
+[   +2 ms] Found plugin permission_handler at /home/kab/.pub-cache/hosted/pub.dev/permission_handler-12.0.1/
+[        ] Found plugin permission_handler_windows at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_windows-0.2.1/
+[        ] Found plugin permission_handler_html at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_html-0.1.3+5/
+[        ] Found plugin permission_handler_apple at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.7/
+[        ] Found plugin permission_handler_android at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_android-13.0.1/
+[        ] Found plugin mobile_scanner at /home/kab/.pub-cache/hosted/pub.dev/mobile_scanner-7.2.0/
+[        ] Found plugin location at /home/kab/.pub-cache/hosted/pub.dev/location-5.0.3/
+[        ] Found plugin location_web at /home/kab/.pub-cache/hosted/pub.dev/location_web-4.2.0/
+[   +1 ms] Found plugin image_picker at /home/kab/.pub-cache/hosted/pub.dev/image_picker-1.2.2/
+[        ] Found plugin image_picker_windows at /home/kab/.pub-cache/hosted/pub.dev/image_picker_windows-0.2.2/
+[   +1 ms] Found plugin file_selector_windows at /home/kab/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+5/
+[        ] Found plugin image_picker_macos at /home/kab/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.2+1/
+[        ] Found plugin file_selector_macos at /home/kab/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.5/
+[   +1 ms] Found plugin image_picker_linux at /home/kab/.pub-cache/hosted/pub.dev/image_picker_linux-0.2.2/
+[        ] Found plugin file_selector_linux at /home/kab/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.4/
+[        ] Found plugin image_picker_ios at /home/kab/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.13+3/
+[        ] Found plugin image_picker_for_web at /home/kab/.pub-cache/hosted/pub.dev/image_picker_for_web-3.1.1/
+[        ] Found plugin image_picker_android at /home/kab/.pub-cache/hosted/pub.dev/image_picker_android-0.8.13+17/
+[   +1 ms] Found plugin flutter_plugin_android_lifecycle at /home/kab/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.34/
+[   +1 ms] Found plugin path_provider at /home/kab/.pub-cache/hosted/pub.dev/path_provider-2.1.5/
+[        ] Found plugin path_provider_foundation at /home/kab/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.3/
+[        ] Found plugin path_provider_android at /home/kab/.pub-cache/hosted/pub.dev/path_provider_android-2.2.20/
+[   +1 ms] Found plugin flutter_secure_storage at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.0.0/
+[        ] Found plugin flutter_secure_storage_windows at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_windows-4.1.0/
+[   +3 ms] Found plugin flutter_secure_storage_web at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_web-2.1.0/
+[        ] Found plugin flutter_secure_storage_linux at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_linux-3.0.0/
+[   +1 ms] Found plugin flutter_secure_storage_darwin at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_darwin-0.2.0/
+[   +1 ms] Found plugin flutter_native_splash at /home/kab/.pub-cache/hosted/pub.dev/flutter_native_splash-2.4.7/
+[   +5 ms] Found plugin flutter_localization at /home/kab/.pub-cache/hosted/pub.dev/flutter_localization-0.3.3/
+[   +3 ms] Found plugin file_picker at /home/kab/.pub-cache/hosted/pub.dev/file_picker-8.3.7/
+[   +1 ms] Found plugin device_info_plus at /home/kab/.pub-cache/hosted/pub.dev/device_info_plus-12.4.0/
+[  +42 ms] Found plugin url_launcher at /home/kab/.pub-cache/hosted/pub.dev/url_launcher-6.3.2/
+[        ] Found plugin url_launcher_windows at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_windows-3.1.5/
+[        ] Found plugin url_launcher_web at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_web-2.4.3/
+[        ] Found plugin url_launcher_macos at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_macos-3.2.5/
+[        ] Found plugin url_launcher_linux at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_linux-3.2.2/
+[        ] Found plugin url_launcher_ios at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_ios-6.4.1/
+[        ] Found plugin url_launcher_android at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.30/
+[   +1 ms] Found plugin shared_preferences at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3/
+[        ] Found plugin shared_preferences_windows at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.4.1/
+[        ] Found plugin path_provider_windows at /home/kab/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
+[   +1 ms] Found plugin shared_preferences_web at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_web-2.4.3/
+[        ] Found plugin shared_preferences_linux at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.4.1/
+[        ] Found plugin path_provider_linux at /home/kab/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+[        ] Found plugin shared_preferences_foundation at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.5/
+[        ] Found plugin shared_preferences_android at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.15/
+[   +1 ms] Found plugin permission_handler at /home/kab/.pub-cache/hosted/pub.dev/permission_handler-12.0.1/
+[        ] Found plugin permission_handler_windows at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_windows-0.2.1/
+[        ] Found plugin permission_handler_html at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_html-0.1.3+5/
+[        ] Found plugin permission_handler_apple at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.7/
+[        ] Found plugin permission_handler_android at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_android-13.0.1/
+[        ] Found plugin mobile_scanner at /home/kab/.pub-cache/hosted/pub.dev/mobile_scanner-7.2.0/
+[        ] Found plugin location at /home/kab/.pub-cache/hosted/pub.dev/location-5.0.3/
+[        ] Found plugin location_web at /home/kab/.pub-cache/hosted/pub.dev/location_web-4.2.0/
+[        ] Found plugin image_picker at /home/kab/.pub-cache/hosted/pub.dev/image_picker-1.2.2/
+[        ] Found plugin image_picker_windows at /home/kab/.pub-cache/hosted/pub.dev/image_picker_windows-0.2.2/
+[        ] Found plugin file_selector_windows at /home/kab/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+5/
+[        ] Found plugin image_picker_macos at /home/kab/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.2+1/
+[        ] Found plugin file_selector_macos at /home/kab/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.5/
+[        ] Found plugin image_picker_linux at /home/kab/.pub-cache/hosted/pub.dev/image_picker_linux-0.2.2/
+[        ] Found plugin file_selector_linux at /home/kab/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.4/
+[        ] Found plugin image_picker_ios at /home/kab/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.13+3/
+[        ] Found plugin image_picker_for_web at /home/kab/.pub-cache/hosted/pub.dev/image_picker_for_web-3.1.1/
+[        ] Found plugin image_picker_android at /home/kab/.pub-cache/hosted/pub.dev/image_picker_android-0.8.13+17/
+[        ] Found plugin flutter_plugin_android_lifecycle at /home/kab/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.34/
+[        ] Found plugin path_provider at /home/kab/.pub-cache/hosted/pub.dev/path_provider-2.1.5/
+[        ] Found plugin path_provider_foundation at /home/kab/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.3/
+[        ] Found plugin path_provider_android at /home/kab/.pub-cache/hosted/pub.dev/path_provider_android-2.2.20/
+[        ] Found plugin flutter_secure_storage at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.0.0/
+[        ] Found plugin flutter_secure_storage_windows at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_windows-4.1.0/
+[   +1 ms] Found plugin flutter_secure_storage_web at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_web-2.1.0/
+[        ] Found plugin flutter_secure_storage_linux at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_linux-3.0.0/
+[        ] Found plugin flutter_secure_storage_darwin at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_darwin-0.2.0/
+[        ] Found plugin flutter_native_splash at /home/kab/.pub-cache/hosted/pub.dev/flutter_native_splash-2.4.7/
+[   +2 ms] Found plugin flutter_localization at /home/kab/.pub-cache/hosted/pub.dev/flutter_localization-0.3.3/
+[   +1 ms] Found plugin file_picker at /home/kab/.pub-cache/hosted/pub.dev/file_picker-8.3.7/
+[   +1 ms] Found plugin device_info_plus at /home/kab/.pub-cache/hosted/pub.dev/device_info_plus-12.4.0/
+[   +8 ms] Skipping generating web_plugin_registrant.dart because it is up-to-date.
+[  +19 ms] Found plugin url_launcher at /home/kab/.pub-cache/hosted/pub.dev/url_launcher-6.3.2/
+[        ] Found plugin url_launcher_windows at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_windows-3.1.5/
+[        ] Found plugin url_launcher_web at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_web-2.4.3/
+[        ] Found plugin url_launcher_macos at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_macos-3.2.5/
+[        ] Found plugin url_launcher_linux at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_linux-3.2.2/
+[        ] Found plugin url_launcher_ios at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_ios-6.4.1/
+[        ] Found plugin url_launcher_android at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.30/
+[   +1 ms] Found plugin shared_preferences at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3/
+[        ] Found plugin shared_preferences_windows at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.4.1/
+[        ] Found plugin path_provider_windows at /home/kab/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
+[   +1 ms] Found plugin shared_preferences_web at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_web-2.4.3/
+[        ] Found plugin shared_preferences_linux at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.4.1/
+[        ] Found plugin path_provider_linux at /home/kab/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+[        ] Found plugin shared_preferences_foundation at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.5/
+[        ] Found plugin shared_preferences_android at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.15/
+[   +1 ms] Found plugin permission_handler at /home/kab/.pub-cache/hosted/pub.dev/permission_handler-12.0.1/
+[        ] Found plugin permission_handler_windows at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_windows-0.2.1/
+[        ] Found plugin permission_handler_html at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_html-0.1.3+5/
+[        ] Found plugin permission_handler_apple at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.7/
+[        ] Found plugin permission_handler_android at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_android-13.0.1/
+[        ] Found plugin mobile_scanner at /home/kab/.pub-cache/hosted/pub.dev/mobile_scanner-7.2.0/
+[        ] Found plugin location at /home/kab/.pub-cache/hosted/pub.dev/location-5.0.3/
+[        ] Found plugin location_web at /home/kab/.pub-cache/hosted/pub.dev/location_web-4.2.0/
+[   +1 ms] Found plugin image_picker at /home/kab/.pub-cache/hosted/pub.dev/image_picker-1.2.2/
+[        ] Found plugin image_picker_windows at /home/kab/.pub-cache/hosted/pub.dev/image_picker_windows-0.2.2/
+[        ] Found plugin file_selector_windows at /home/kab/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+5/
+[        ] Found plugin image_picker_macos at /home/kab/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.2+1/
+[        ] Found plugin file_selector_macos at /home/kab/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.5/
+[        ] Found plugin image_picker_linux at /home/kab/.pub-cache/hosted/pub.dev/image_picker_linux-0.2.2/
+[        ] Found plugin file_selector_linux at /home/kab/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.4/
+[        ] Found plugin image_picker_ios at /home/kab/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.13+3/
+[        ] Found plugin image_picker_for_web at /home/kab/.pub-cache/hosted/pub.dev/image_picker_for_web-3.1.1/
+[        ] Found plugin image_picker_android at /home/kab/.pub-cache/hosted/pub.dev/image_picker_android-0.8.13+17/
+[        ] Found plugin flutter_plugin_android_lifecycle at /home/kab/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.34/
+[        ] Found plugin path_provider at /home/kab/.pub-cache/hosted/pub.dev/path_provider-2.1.5/
+[        ] Found plugin path_provider_foundation at /home/kab/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.3/
+[        ] Found plugin path_provider_android at /home/kab/.pub-cache/hosted/pub.dev/path_provider_android-2.2.20/
+[        ] Found plugin flutter_secure_storage at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.0.0/
+[        ] Found plugin flutter_secure_storage_windows at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_windows-4.1.0/
+[        ] Found plugin flutter_secure_storage_web at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_web-2.1.0/
+[        ] Found plugin flutter_secure_storage_linux at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_linux-3.0.0/
+[        ] Found plugin flutter_secure_storage_darwin at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_darwin-0.2.0/
+[        ] Found plugin flutter_native_splash at /home/kab/.pub-cache/hosted/pub.dev/flutter_native_splash-2.4.7/
+[   +2 ms] Found plugin flutter_localization at /home/kab/.pub-cache/hosted/pub.dev/flutter_localization-0.3.3/
+[   +1 ms] Found plugin file_picker at /home/kab/.pub-cache/hosted/pub.dev/file_picker-8.3.7/
+[   +1 ms] Found plugin device_info_plus at /home/kab/.pub-cache/hosted/pub.dev/device_info_plus-12.4.0/
+[   +2 ms] Generating /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+[        ] Skipping generating GeneratedPluginRegistrant.java because it is up-to-date.
+[   +1 ms] Skipping generating generated_plugin_registrant.h because it is up-to-date.
+[        ] Skipping generating generated_plugin_registrant.cc because it is up-to-date.
+[        ] Skipping generating generated_plugins.cmake because it is up-to-date.
+[        ] Skipping generating generated_plugin_registrant.h because it is up-to-date.
+[        ] Skipping generating generated_plugin_registrant.cc because it is up-to-date.
+[        ] Skipping generating generated_plugins.cmake because it is up-to-date.
+[        ] Skipping generating GeneratedPluginRegistrant.h because it is up-to-date.
+[        ] Skipping generating GeneratedPluginRegistrant.m because it is up-to-date.
+[        ] Skipping generating GeneratedPluginRegistrant.swift because it is up-to-date.
+[  +38 ms] Building Linux application...
+[   +3 ms] executing: [/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/release/] cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DFLUTTER_TARGET_PLATFORM=linux-x64 /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux
+[ +182 ms] -- The CXX compiler identification is Clang 22.1.6
+[   +7 ms] -- Detecting CXX compiler ABI info
+[  +60 ms] -- Detecting CXX compiler ABI info - done
+[   +6 ms] -- Check for working CXX compiler: /usr/bin/clang++ - skipped
+[        ] -- Detecting CXX compile features
+[        ] -- Detecting CXX compile features - done
+[  +24 ms] -- Found PkgConfig: /usr/bin/pkg-config (found version "2.5.1")
+[        ] -- Checking for module 'gtk+-3.0'
+[  +13 ms] --   Found gtk+-3.0, version 3.24.52
+[  +71 ms] -- Checking for module 'glib-2.0'
+[   +6 ms] --   Found glib-2.0, version 2.88.1
+[  +16 ms] -- Checking for module 'gio-2.0'
+[   +5 ms] --   Found gio-2.0, version 2.88.1
+[  +24 ms] -- Checking for module 'libsecret-1>=0.18.4'
+[   +6 ms] --   Found libsecret-1, version 0.21.7
+[  +26 ms] -- Configuring done (0.4s)
+[  +18 ms] -- Generating done (0.0s)
+[        ] -- Build files have been written to: /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/release
+[   +7 ms] executing: ninja -C /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/release install
+[  +11 ms] ninja: Entering directory `/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/release'
+[+10095 ms] [1/16] Generating /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/libflutter_linux_gtk.so, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_basic_message_channel.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_binary_codec.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_binary_messenger.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_dart_project.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_engine.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_json_message_codec.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_json_method_codec.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_message_codec.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_method_call.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_method_channel.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_method_codec.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_method_response.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_plugin_registrar.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_plugin_registry.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_standard_message_codec.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_standard_method_codec.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_string_codec.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_value.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_view.h, /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/flutter_linux.h, _phony_
+[   +4 ms] FAILED: [code=1] /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/libflutter_linux_gtk.so /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_basic_message_channel.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_binary_codec.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_binary_messenger.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_dart_project.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_engine.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_json_message_codec.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_json_method_codec.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_message_codec.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_method_call.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_method_channel.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_method_codec.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_method_response.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_plugin_registrar.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_plugin_registry.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_standard_message_codec.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_standard_method_codec.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_string_codec.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_value.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/fl_view.h /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/linux/flutter/ephemeral/flutter_linux/flutter_linux.h flutter/_phony_ /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/release/flutter/_phony_ 
+[        ] cd /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/build/linux/x64/release/flutter && /usr/bin/cmake -E env FLUTTER_ROOT=/home/kab/utils/libs/flutter PROJECT_DIR=/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app DART_DEFINES=RkxVVFRFUl9WRVJTSU9OPTMuNDEuNA==,RkxVVFRFUl9DSEFOTkVMPXN0YWJsZQ==,RkxVVFRFUl9HSVRfVVJMPWh0dHBzOi8vZ2l0aHViLmNvbS9mbHV0dGVyL2ZsdXR0ZXIuZ2l0,RkxVVFRFUl9GUkFNRVdPUktfUkVWSVNJT049ZmYzN2JlZjYwMw==,RkxVVFRFUl9FTkdJTkVfUkVWSVNJT049ZTRiOGRjYTNmMQ==,RkxVVFRFUl9EQVJUX1ZFUlNJT049My4xMS4x DART_OBFUSCATION=false TRACK_WIDGET_CREATION=true TREE_SHAKE_ICONS=true PACKAGE_CONFIG=/run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/package_config.json FLUTTER_TARGET=lib/main.dart /home/kab/utils/libs/flutter/packages/flutter_tools/bin/tool_backend.sh linux-x64 Release
+[        ] [  +16 ms] executing: uname -m
+[        ] [   +2 ms] Exit code 0 from: uname -m
+[        ] [        ] x86_64
+[        ] [   +5 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'GradleWrapper' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterSdk' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
+[        ] [   +4 ms] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterEngineStamp' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[        ] [  +26 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'GradleWrapper' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterEngineStamp' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterSdk' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
+[        ] [        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
+[        ] [  +18 ms] Initializing file store
+[        ] [  +17 ms] dart_build: Starting due to {}
+[   +1 ms] [        ] gen_localizations: Starting due to {}
+[        ] [  +61 ms] gen_dart_plugin_registrant: Starting due to {InvalidatedReasonKind.inputChanged: The following inputs have updated contents: /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/package_config.json}
+[        ] [   +1 ms] unpack_linux: Starting due to {}
+[        ] [ +414 ms] unpack_linux: Complete
+[        ] [ +338 ms] gen_localizations: Complete
+[        ] [  +23 ms] No packages with native assets. Skipping native assets compilation.
+[        ] [   +1 ms] dart_build: Complete
+[        ] [        ] install_code_assets: Starting due to {}
+[        ] [   +1 ms] Writing native assets json to file:///run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/flutter_build/2e017785427703de8ddbbba130e55f92/native_assets.json.
+[        ] [   +1 ms] Writing /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/flutter_build/2e017785427703de8ddbbba130e55f92/native_assets.json done.
+[        ] [        ] install_code_assets: Complete
+[        ] [  +21 ms] Found plugin url_launcher at /home/kab/.pub-cache/hosted/pub.dev/url_launcher-6.3.2/
+[        ] [   +2 ms] Found plugin url_launcher_windows at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_windows-3.1.5/
+[        ] [   +2 ms] Found plugin url_launcher_web at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_web-2.4.3/
+[        ] [        ] Found plugin url_launcher_macos at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_macos-3.2.5/
+[        ] [        ] Found plugin url_launcher_linux at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_linux-3.2.2/
+[        ] [        ] Found plugin url_launcher_ios at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_ios-6.4.1/
+[        ] [        ] Found plugin url_launcher_android at /home/kab/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.30/
+[        ] [   +5 ms] Found plugin shared_preferences at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3/
+[        ] [   +1 ms] Found plugin shared_preferences_windows at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.4.1/
+[        ] [   +1 ms] Found plugin path_provider_windows at /home/kab/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
+[        ] [   +2 ms] Found plugin shared_preferences_web at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_web-2.4.3/
+[        ] [        ] Found plugin shared_preferences_linux at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.4.1/
+[        ] [        ] Found plugin path_provider_linux at /home/kab/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+[        ] [   +1 ms] Found plugin shared_preferences_foundation at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.5/
+[        ] [        ] Found plugin shared_preferences_android at /home/kab/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.15/
+[        ] [   +1 ms] Found plugin permission_handler at /home/kab/.pub-cache/hosted/pub.dev/permission_handler-12.0.1/
+[        ] [        ] Found plugin permission_handler_windows at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_windows-0.2.1/
+[        ] [   +1 ms] Found plugin permission_handler_html at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_html-0.1.3+5/
+[        ] [   +1 ms] Found plugin permission_handler_apple at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.7/
+[        ] [        ] Found plugin permission_handler_android at /home/kab/.pub-cache/hosted/pub.dev/permission_handler_android-13.0.1/
+[        ] [   +5 ms] Found plugin mobile_scanner at /home/kab/.pub-cache/hosted/pub.dev/mobile_scanner-7.2.0/
+[        ] [        ] Found plugin location at /home/kab/.pub-cache/hosted/pub.dev/location-5.0.3/
+[        ] [        ] Found plugin location_web at /home/kab/.pub-cache/hosted/pub.dev/location_web-4.2.0/
+[        ] [   +1 ms] Found plugin image_picker at /home/kab/.pub-cache/hosted/pub.dev/image_picker-1.2.2/
+[        ] [        ] Found plugin image_picker_windows at /home/kab/.pub-cache/hosted/pub.dev/image_picker_windows-0.2.2/
+[        ] [   +1 ms] Found plugin file_selector_windows at /home/kab/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+5/
+[        ] [        ] Found plugin image_picker_macos at /home/kab/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.2+1/
+[        ] [        ] Found plugin file_selector_macos at /home/kab/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.5/
+[        ] [        ] Found plugin image_picker_linux at /home/kab/.pub-cache/hosted/pub.dev/image_picker_linux-0.2.2/
+[        ] [        ] Found plugin file_selector_linux at /home/kab/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.4/
+[        ] [        ] Found plugin image_picker_ios at /home/kab/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.13+3/
+[        ] [   +1 ms] Found plugin image_picker_for_web at /home/kab/.pub-cache/hosted/pub.dev/image_picker_for_web-3.1.1/
+[        ] [        ] Found plugin image_picker_android at /home/kab/.pub-cache/hosted/pub.dev/image_picker_android-0.8.13+17/
+[        ] [        ] Found plugin flutter_plugin_android_lifecycle at /home/kab/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.34/
+[        ] [   +1 ms] Found plugin path_provider at /home/kab/.pub-cache/hosted/pub.dev/path_provider-2.1.5/
+[        ] [        ] Found plugin path_provider_foundation at /home/kab/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.3/
+[        ] [        ] Found plugin path_provider_android at /home/kab/.pub-cache/hosted/pub.dev/path_provider_android-2.2.20/
+[        ] [   +1 ms] Found plugin flutter_secure_storage at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.0.0/
+[        ] [        ] Found plugin flutter_secure_storage_windows at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_windows-4.1.0/
+[        ] [   +3 ms] Found plugin flutter_secure_storage_web at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_web-2.1.0/
+[        ] [        ] Found plugin flutter_secure_storage_linux at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_linux-3.0.0/
+[        ] [   +1 ms] Found plugin flutter_secure_storage_darwin at /home/kab/.pub-cache/hosted/pub.dev/flutter_secure_storage_darwin-0.2.0/
+[        ] [   +1 ms] Found plugin flutter_native_splash at /home/kab/.pub-cache/hosted/pub.dev/flutter_native_splash-2.4.7/
+[        ] [   +5 ms] Found plugin flutter_localization at /home/kab/.pub-cache/hosted/pub.dev/flutter_localization-0.3.3/
+[        ] [   +3 ms] Found plugin file_picker at /home/kab/.pub-cache/hosted/pub.dev/file_picker-8.3.7/
+[        ] [   +2 ms] Found plugin device_info_plus at /home/kab/.pub-cache/hosted/pub.dev/device_info_plus-12.4.0/
+[        ] [  +13 ms] gen_dart_plugin_registrant: Complete
+[        ] [   +2 ms] kernel_snapshot_program: Starting due to {}
+[   +1 ms] [   +6 ms] /home/kab/utils/libs/flutter/bin/cache/dart-sdk/bin/dartaotruntime /home/kab/utils/libs/flutter/bin/cache/dart-sdk/bin/snapshots/frontend_server_aot.dart.snapshot --sdk-root /home/kab/utils/libs/flutter/bin/cache/artifacts/engine/common/flutter_patched_sdk_product/ --target=flutter --no-print-incremental-dependencies -DFLUTTER_VERSION=3.41.4 -DFLUTTER_CHANNEL=stable -DFLUTTER_GIT_URL=https://github.com/flutter/flutter.git -DFLUTTER_FRAMEWORK_REVISION=ff37bef603 -DFLUTTER_ENGINE_REVISION=e4b8dca3f1 -DFLUTTER_DART_VERSION=3.11.1 -Ddart.vm.profile=false -Ddart.vm.product=true --delete-tostring-package-uri=dart:ui --delete-tostring-package-uri=package:flutter --aot --tfa --target-os linux --packages /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/package_config.json --output-dill /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/flutter_build/2e017785427703de8ddbbba130e55f92/app.dill --depfile /run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/flutter_build/2e017785427703de8ddbbba130e55f92/kernel_snapshot_program.d --source file:///run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/flutter_build/dart_plugin_registrant.dart --source package:flutter/src/dart_plugin_registrant.dart -Dflutter.dart_plugin_registrant=file:///run/media/kab/hdd/Learn/Code/GradProject/bnu_lms_app/.dart_tool/flutter_build/dart_plugin_registrant.dart --verbosity=error package:bnu_lms_app/main.dart
+[        ] [ +178 ms] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:274:3: Error: Variables must be declared using the keywords 'const', 'final', 'var' or a type name.
+[        ] [   +1 ms] Try adding the name of the type of the variable or the keyword 'var'.
+[        ] [        ]   import 'package:url_launcher/url_launcher.dart';
+[        ] [        ]   ^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:274:3: Error: Expected ';' after this.
+[        ] [        ]   import 'package:url_launcher/url_launcher.dart';
+[        ] [        ]   ^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:274:10: Error: Expected a class member, but got ''package:url_launcher/url_launcher.dart''.
+[        ] [        ]   import 'package:url_launcher/url_launcher.dart';
+[        ] [        ]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:274:50: Error: Expected a class member, but got ';'.
+[        ] [        ]   import 'package:url_launcher/url_launcher.dart';
+[        ] [        ]                                                  ^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:275:3: Error: Variables must be declared using the keywords 'const', 'final', 'var' or a type name.
+[        ] [        ] Try adding the name of the type of the variable or the keyword 'var'.
+[        ] [        ]   import '../../../../../../../shared/config/api_constants.dart';
+[        ] [        ]   ^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:275:3: Error: Expected ';' after this.
+[        ] [        ]   import '../../../../../../../shared/config/api_constants.dart';
+[        ] [        ]   ^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:275:10: Error: Expected a class member, but got ''../../../../../../../shared/config/api_constants.dart''.
+[        ] [        ]   import '../../../../../../../shared/config/api_constants.dart';
+[        ] [        ]          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:275:65: Error: Expected a class member, but got ';'.
+[        ] [        ]   import '../../../../../../../shared/config/api_constants.dart';
+[        ] [        ]                                                                 ^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:276:3: Error: Expected a class member, but got '...'.
+[        ] [        ]   ...
+[        ] [        ]   ^^^
+[        ] [ +733 ms] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:275:3: Error: 'import' is already declared in this scope.
+[        ] [        ]   import '../../../../../../../shared/config/api_constants.dart';
+[        ] [        ]   ^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:274:3: Context: Previous declaration of 'import'.
+[        ] [        ]   import 'package:url_launcher/url_launcher.dart';
+[        ] [        ]   ^^^^^^
+[        ] [+2449 ms] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:294:23: Error: The getter 'ApiConstants' isn't defined for the type '_CourseMaterialsTabState'.
+[        ] [        ]  - '_CourseMaterialsTabState' is from 'package:bnu_lms_app/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart' ('lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing getter, or defining a getter or field named 'ApiConstants'.
+[        ] [        ]           final url = ApiConstants.fullUrl(content.fileUrl);
+[        ] [        ]                       ^^^^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:296:21: Error: The method 'canLaunchUrl' isn't defined for the type '_CourseMaterialsTabState'.
+[        ] [        ]  - '_CourseMaterialsTabState' is from 'package:bnu_lms_app/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart' ('lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing method, or defining a method named 'canLaunchUrl'.
+[        ] [        ]           if (await canLaunchUrl(uri)) {
+[        ] [        ]                     ^^^^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:297:40: Error: The getter 'LaunchMode' isn't defined for the type '_CourseMaterialsTabState'.
+[        ] [        ]  - '_CourseMaterialsTabState' is from 'package:bnu_lms_app/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart' ('lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing getter, or defining a getter or field named 'LaunchMode'.
+[        ] [        ]             await launchUrl(uri, mode: LaunchMode.externalApplication);
+[        ] [        ]                                        ^^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart:297:19: Error: The method 'launchUrl' isn't defined for the type '_CourseMaterialsTabState'.
+[        ] [        ]  - '_CourseMaterialsTabState' is from 'package:bnu_lms_app/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart' ('lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing method, or defining a method named 'launchUrl'.
+[        ] [        ]             await launchUrl(uri, mode: LaunchMode.externalApplication);
+[        ] [        ]                   ^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_quizzes_tab.dart:69:71: Error: The getter 'Routes' isn't defined for the type '_CourseQuizzesTabState'.
+[        ] [        ]  - '_CourseQuizzesTabState' is from 'package:bnu_lms_app/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_quizzes_tab.dart' ('lib/features/courses/presentation/doctor/presentation/widgets/courses_details_tabs/course_quizzes_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing getter, or defining a getter or field named 'Routes'.
+[        ] [        ]                         onPressed: () => Navigator.pushNamed(context, Routes.quizWizard),
+[        ] [        ]                                                                       ^^^^^^
+[        ] [   +3 ms] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:116:1: Error: Expected ';' after this.
+[        ] [        ] import 'package:url_launcher/url_launcher.dart';
+[        ] [        ] ^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:117:1: Error: Expected ';' after this.
+[        ] [        ] import '../../../../../../../shared/config/api_constants.dart';
+[        ] [        ] ^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:118:1: Error: Expected an identifier, but got '...'.
+[        ] [        ] Try inserting an identifier before '...'.
+[        ] [        ] ...
+[        ] [        ] ^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:118:1: Error: Expected ';' after this.
+[        ] [        ] ...
+[        ] [        ] ^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:134:1: Error: Expected an identifier, but got '...'.
+[        ] [        ] Try inserting an identifier before '...'.
+[        ] [        ] ...
+[        ] [        ] ^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:136:9: Error: Expected ',' before this.
+[        ] [        ]         margin: const EdgeInsets.only(left: 32, right: 16, bottom: 8),
+[        ] [        ]         ^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:133:23: Error: Too many positional arguments: 0 allowed, but 1 found.
+[        ] [        ] Try removing the extra positional arguments.
+[        ] [        ]       child: Container(
+[        ] [        ]                       ^
+[        ] [        ] /home/kab/utils/libs/flutter/packages/flutter/lib/src/widgets/container.dart:255:3: Context: Found this candidate, but the arguments don't match.
+[        ] [        ]   Container({
+[        ] [        ]   ^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:116:1: Error: The getter 'import' isn't defined for the type 'StudentMaterialsTab'.
+[        ] [        ]  - 'StudentMaterialsTab' is from 'package:bnu_lms_app/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart' ('lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing getter, or defining a getter or field named 'import'.
+[        ] [        ] import 'package:url_launcher/url_launcher.dart';
+[        ] [        ] ^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:117:1: Error: The getter 'import' isn't defined for the type 'StudentMaterialsTab'.
+[        ] [        ]  - 'StudentMaterialsTab' is from 'package:bnu_lms_app/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart' ('lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing getter, or defining a getter or field named 'import'.
+[        ] [        ] import '../../../../../../../shared/config/api_constants.dart';
+[        ] [        ] ^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:121:21: Error: The getter 'ApiConstants' isn't defined for the type 'StudentMaterialsTab'.
+[        ] [        ]  - 'StudentMaterialsTab' is from 'package:bnu_lms_app/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart' ('lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing getter, or defining a getter or field named 'ApiConstants'.
+[        ] [        ]         final url = ApiConstants.fullUrl(content.fileUrl);
+[        ] [        ]                     ^^^^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:123:19: Error: The method 'canLaunchUrl' isn't defined for the type 'StudentMaterialsTab'.
+[        ] [        ]  - 'StudentMaterialsTab' is from 'package:bnu_lms_app/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart' ('lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing method, or defining a method named 'canLaunchUrl'.
+[        ] [        ]         if (await canLaunchUrl(uri)) {
+[        ] [        ]                   ^^^^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:124:38: Error: The getter 'LaunchMode' isn't defined for the type 'StudentMaterialsTab'.
+[        ] [        ]  - 'StudentMaterialsTab' is from 'package:bnu_lms_app/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart' ('lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing getter, or defining a getter or field named 'LaunchMode'.
+[        ] [        ]           await launchUrl(uri, mode: LaunchMode.externalApplication);
+[        ] [        ]                                      ^^^^^^^^^^
+[        ] [        ] lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart:124:17: Error: The method 'launchUrl' isn't defined for the type 'StudentMaterialsTab'.
+[        ] [        ]  - 'StudentMaterialsTab' is from 'package:bnu_lms_app/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart' ('lib/features/courses/presentation/student/widgets/courses_details/student_materials_tab.dart').
+[        ] [        ] Try correcting the name to the name of an existing method, or defining a method named 'launchUrl'.
+[        ] [        ]           await launchUrl(uri, mode: LaunchMode.externalApplication);
+[        ] [        ]                 ^^^^^^^^^
+[        ] [+5281 ms] Persisting file store
+[        ] [   +1 ms] Done persisting file store
+[        ] [   +2 ms] Target kernel_snapshot_program failed: Exception
+[        ]            #0      KernelSnapshot.build (package:flutter_tools/src/build_system/targets/common.dart:289:7)
+[        ]            <asynchronous suspension>
+[        ]            #1      _BuildInstance._invokeInternal (package:flutter_tools/src/build_system/build_system.dart:937:9)
+[        ]            <asynchronous suspension>
+[        ]            #2      Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+[        ]            <asynchronous suspension>
+[        ]            #3      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:875:32)
+[        ]            <asynchronous suspension>
+[        ]            #4      Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+[        ]            <asynchronous suspension>
+[        ]            #5      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:875:32)
+[        ]            <asynchronous suspension>
+[        ]            #6      Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+[        ]            <asynchronous suspension>
+[        ]            #7      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:875:32)
+[        ]            <asynchronous suspension>
+[        ]            #8      FlutterBuildSystem.build (package:flutter_tools/src/build_system/build_system.dart:684:16)
+[        ]            <asynchronous suspension>
+[        ]            #9      AssembleCommand.runCommand (package:flutter_tools/src/commands/assemble.dart:365:32)
+[        ]            <asynchronous suspension>
+[        ]            #10     FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1590:27)
+[        ]            <asynchronous suspension>
+[        ]            #11     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]            <asynchronous suspension>
+[        ]            #12     CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+[        ]            <asynchronous suspension>
+[        ]            #13     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+[        ]            <asynchronous suspension>
+[        ]            #14     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]            <asynchronous suspension>
+[        ]            #15     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+[        ]            <asynchronous suspension>
+[        ]            #16     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+[        ]            <asynchronous suspension>
+[        ]            #17     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+[        ]            <asynchronous suspension>
+[        ]            #18     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]            <asynchronous suspension>
+[        ]            #19     main (package:flutter_tools/executable.dart:103:3)
+[        ]            <asynchronous suspension>
+[        ] [        ] "flutter assemble" took 9,677ms.
+[        ] [  +22 ms] 
+[        ]            #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+[        ]            #1      AssembleCommand.runCommand (package:flutter_tools/src/commands/assemble.dart:383:7)
+[        ]            <asynchronous suspension>
+[        ]            #2      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1590:27)
+[        ]            <asynchronous suspension>
+[        ]            #3      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]            <asynchronous suspension>
+[        ]            #4      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+[        ]            <asynchronous suspension>
+[        ]            #5      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+[        ]            <asynchronous suspension>
+[        ]            #6      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]            <asynchronous suspension>
+[        ]            #7      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+[        ]            <asynchronous suspension>
+[        ]            #8      FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+[        ]            <asynchronous suspension>
+[        ]            #9      run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+[        ]            <asynchronous suspension>
+[        ]            #10     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]            <asynchronous suspension>
+[        ]            #11     main (package:flutter_tools/executable.dart:103:3)
+[        ]            <asynchronous suspension>
+[        ] [        ] Running 1 shutdown hook
+[        ] [        ] Shutdown hooks complete
+[        ] [ +172 ms] exiting with code 1
+[        ] ninja: build stopped: subcommand failed.
+[   +2 ms] Building Linux application... (completed in 10.6s)
+[        ] "flutter linux" took 11,460ms.
+[  +16 ms] Build process failed
+[        ] 
+           #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+           #1      _runBuild (package:flutter_tools/src/linux/build_linux.dart:219:5)
+           <asynchronous suspension>
+           #2      buildLinux (package:flutter_tools/src/linux/build_linux.dart:100:5)
+           <asynchronous suspension>
+           #3      BuildLinuxCommand.runCommand (package:flutter_tools/src/commands/build_linux.dart:95:5)
+           <asynchronous suspension>
+           #4      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1590:27)
+           <asynchronous suspension>
+           #5      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+           <asynchronous suspension>
+           #8      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #9      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+           <asynchronous suspension>
+           #10     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+           <asynchronous suspension>
+           #11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #13     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+
+[        ] Running 1 shutdown hook
+[        ] Shutdown hooks complete
+[  +76 ms] exiting with code 1

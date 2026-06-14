@@ -72,6 +72,8 @@ import '../../features/courses/domain/use_cases/get_course_details_use_case.dart
     as _i1055;
 import '../../features/courses/domain/use_cases/get_enrolled_courses_use_case.dart'
     as _i773;
+import '../../features/courses/domain/use_cases/upload_content_use_case.dart'
+    as _i853;
 import '../../features/courses/presentation/cubit/course_details_cubit/course_details_cubit.dart'
     as _i445;
 import '../../features/courses/presentation/cubit/courses_cubit/courses_cubit.dart'
@@ -334,6 +336,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i773.GetEnrolledCoursesUseCase>(
       () => _i773.GetEnrolledCoursesUseCase(gh<_i749.CourseRepository>()),
     );
+    gh.lazySingleton<_i853.UploadContentUseCase>(
+      () => _i853.UploadContentUseCase(gh<_i749.CourseRepository>()),
+    );
     gh.lazySingleton<_i763.GetMyProfileUseCase>(
       () => _i763.GetMyProfileUseCase(gh<_i894.ProfileRepository>()),
     );
@@ -344,6 +349,16 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i764.QuizTakingCubit(
         gh<_i829.SubmitQuizUseCase>(),
         gh<_i927.GetQuizForTakingUseCase>(),
+      ),
+    );
+    gh.factory<_i445.CourseDetailsCubit>(
+      () => _i445.CourseDetailsCubit(
+        gh<_i1055.GetCourseDetailsUseCase>(),
+        gh<_i865.CreateModuleUseCase>(),
+        gh<_i113.AddLessonUseCase>(),
+        gh<_i448.AddContentUseCase>(),
+        gh<_i853.UploadContentUseCase>(),
+        gh<_i749.CourseRepository>(),
       ),
     );
     gh.factory<_i382.CoursesCubit>(
@@ -360,14 +375,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i688.QuizResultsCubit>(
       () => _i688.QuizResultsCubit(gh<_i409.GetStudentAttemptUseCase>()),
-    );
-    gh.factory<_i445.CourseDetailsCubit>(
-      () => _i445.CourseDetailsCubit(
-        gh<_i1055.GetCourseDetailsUseCase>(),
-        gh<_i865.CreateModuleUseCase>(),
-        gh<_i113.AddLessonUseCase>(),
-        gh<_i448.AddContentUseCase>(),
-      ),
     );
     gh.lazySingleton<_i36.ProfileCubit>(
       () => _i36.ProfileCubit(

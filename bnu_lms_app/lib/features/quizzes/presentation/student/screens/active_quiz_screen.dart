@@ -8,7 +8,8 @@ import 'package:bnu_lms_app/shared/resources/colors_manager.dart';
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../cubit/quiz_taking_cubit.dart';
+import 'package:bnu_lms_app/shared/config/api_constants.dart';
+import 'package:bnu_lms_app/features/quizzes/presentation/cubit/quiz_taking_cubit.dart';
 
 class ActiveQuizScreen extends StatefulWidget {
   final int quizId;
@@ -231,6 +232,20 @@ class _ActiveQuizScreenState extends State<ActiveQuizScreen> with WidgetsBinding
                     currentQ.text,
                     style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(height: 1.5),
                   ),
+                  if (currentQ.imageUrl != null && currentQ.imageUrl!.isNotEmpty) ...[
+                    SizedBox(height: 16),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        currentQ.imageUrl!.startsWith('http')
+                            ? currentQ.imageUrl!
+                            : '${ApiConstants.baseUrl.replaceAll('api/', '')}${currentQ.imageUrl!.startsWith('/') ? currentQ.imageUrl!.substring(1) : currentQ.imageUrl!}',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const SizedBox(), // Hide if image fails to load
+                      ),
+                    ),
+                  ],
                   SizedBox(height: 32),
 
                   // Options or Essay
@@ -252,7 +267,7 @@ class _ActiveQuizScreenState extends State<ActiveQuizScreen> with WidgetsBinding
                     ...options.asMap().entries.map((entry) {
                       return Padding(
                         padding: EdgeInsets.only(bottom: 12),
-                        child: _buildOptionCard(isLight, surfaceColor, entry.key, String.fromCharCode(65 + entry.key), entry.value.text, entry.value.id, currentQ.id),
+                        child: _buildOptionCard(isLight, surfaceColor, entry.key, String.fromCharCode(65 + entry.key), entry.value.text, entry.value.id.toInt(), currentQ.id),
                       );
                     }),
 

@@ -11,6 +11,8 @@ class QuizModel {
   final int questionCount;
   final double totalMarks;
   final bool hasAttempted;
+  final int attemptsAllowed;
+  final int attemptsTaken;
 
   QuizModel({
     required this.id,
@@ -25,6 +27,8 @@ class QuizModel {
     required this.questionCount,
     this.totalMarks = 0.0,
     this.hasAttempted = false,
+    this.attemptsAllowed = 1,
+    this.attemptsTaken = 0,
   });
 
   factory QuizModel.fromJson(Map<String, dynamic> json) {
@@ -45,6 +49,8 @@ class QuizModel {
       questionCount: json['questionCount'] ?? 0,
       totalMarks: (json['totalMarks'] as num?)?.toDouble() ?? (json['questionCount'] ?? 0) * 10.0,
       hasAttempted: json['hasAttempted'] ?? false,
+      attemptsAllowed: json['attemptsAllowed'] ?? 1,
+      attemptsTaken: json['attemptsTaken'] ?? 0,
     );
   }
 
@@ -62,6 +68,8 @@ class QuizModel {
       'questionCount': questionCount,
       'totalMarks': totalMarks,
       'hasAttempted': hasAttempted,
+      'attemptsAllowed': attemptsAllowed,
+      'attemptsTaken': attemptsTaken,
     };
   }
 }

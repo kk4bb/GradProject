@@ -20,6 +20,8 @@ class QuizMappers {
       questionCount: model.questionCount,
       totalMarks: model.totalMarks,
       hasAttempted: model.hasAttempted,
+      attemptsAllowed: model.attemptsAllowed,
+      attemptsTaken: model.attemptsTaken,
     );
   }
 

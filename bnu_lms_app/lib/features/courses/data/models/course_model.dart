@@ -45,7 +45,7 @@ class CourseDetailModel {
         title: json['title'] as String? ?? '',
         description: json['description'] as String? ?? '',
         instructorName: json['instructorName'] as String? ?? 'Unknown',
-        students: (json['students'] as List<dynamic>?)
+        students: (json['enrolledStudents'] as List<dynamic>?)
                 ?.map((e) => CourseStudentModel.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             [],
@@ -128,17 +128,23 @@ class EducationalContentModel {
   final int id;
   final String contentType;
   final String fileUrl;
+  final String? originalFileName;
 
   const EducationalContentModel({
     required this.id,
     required this.contentType,
     required this.fileUrl,
+    this.originalFileName,
   });
 
-  factory EducationalContentModel.fromJson(Map<String, dynamic> json) =>
-      EducationalContentModel(
-        id: json['id'] as int,
-        contentType: json['contentType'] as String? ?? '',
-        fileUrl: json['fileUrl'] as String? ?? '',
-      );
+  factory EducationalContentModel.fromJson(Map<String, dynamic> json) {
+    print('DEBUG: Parsing content ID: ${json['id']}');
+    print('DEBUG: Received originalFileName: ${json['originalFileName']}');
+    return EducationalContentModel(
+      id: json['id'] as int,
+      contentType: json['contentType'] as String? ?? '',
+      fileUrl: json['fileUrl'] as String? ?? '',
+      originalFileName: json['originalFileName'] as String?,
+    );
+  }
 }

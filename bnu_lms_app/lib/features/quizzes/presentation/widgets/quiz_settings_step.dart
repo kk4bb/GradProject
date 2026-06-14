@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'package:bnu_lms_app/features/quizzes/presentation/cubit/quiz_grading_cubit.dart';
+import 'package:bnu_lms_app/features/courses/presentation/cubit/courses_cubit/courses_cubit.dart';
+import 'package:bnu_lms_app/features/courses/presentation/cubit/courses_cubit/courses_state.dart';
 
 import '../../../../shared/config/theme/app_dark_text_styles.dart';
 import '../../../../shared/config/theme/app_light_text_styles.dart';
@@ -24,26 +26,33 @@ class _QuizSettingsStepState extends State<QuizSettingsStep> {
   late TextEditingController _startDateController;
   late TextEditingController _endDateController;
   late TextEditingController _durationController;
+  int? _selectedCourseId;
+  bool _allowMultipleAttempts = false;
 
   @override
   void initState() {
     super.initState();
-    final cubit = context.read<QuizGradingCubit>();
-    _titleController = TextEditingController(text: cubit.creationTitle);
-    _descriptionController = TextEditingController(text: cubit.creationDescription);
+    final quizCubit = context.read<QuizGradingCubit>();
+    _titleController = TextEditingController(text: quizCubit.creationTitle);
+    _descriptionController = TextEditingController(text: quizCubit.creationDescription);
+    _selectedCourseId = quizCubit.creationCourseId;
+    _allowMultipleAttempts = quizCubit.creationAllowMultipleAttempts;
     
     // Format dates if they exist
     _startDateController = TextEditingController(
-      text: cubit.creationStartDate != null 
-          ? "${cubit.creationStartDate!.year}-${cubit.creationStartDate!.month.toString().padLeft(2, '0')}-${cubit.creationStartDate!.day.toString().padLeft(2, '0')} ${cubit.creationStartDate!.hour.toString().padLeft(2, '0')}:${cubit.creationStartDate!.minute.toString().padLeft(2, '0')}"
+      text: quizCubit.creationStartDate != null 
+          ? "${quizCubit.creationStartDate!.year}-${quizCubit.creationStartDate!.month.toString().padLeft(2, '0')}-${quizCubit.creationStartDate!.day.toString().padLeft(2, '0')} ${quizCubit.creationStartDate!.hour.toString().padLeft(2, '0')}:${quizCubit.creationStartDate!.minute.toString().padLeft(2, '0')}"
           : ""
     );
     _endDateController = TextEditingController(
-      text: cubit.creationEndDate != null 
-          ? "${cubit.creationEndDate!.year}-${cubit.creationEndDate!.month.toString().padLeft(2, '0')}-${cubit.creationEndDate!.day.toString().padLeft(2, '0')} ${cubit.creationEndDate!.hour.toString().padLeft(2, '0')}:${cubit.creationEndDate!.minute.toString().padLeft(2, '0')}"
+      text: quizCubit.creationEndDate != null 
+          ? "${quizCubit.creationEndDate!.year}-${quizCubit.creationEndDate!.month.toString().padLeft(2, '0')}-${quizCubit.creationEndDate!.day.toString().padLeft(2, '0')} ${quizCubit.creationEndDate!.hour.toString().padLeft(2, '0')}:${quizCubit.creationEndDate!.minute.toString().padLeft(2, '0')}"
           : ""
     );
-    _durationController = TextEditingController(text: cubit.creationDuration);
+    _durationController = TextEditingController(text: quizCubit.creationDuration);
+
+    // Fetch courses
+    context.read<CoursesCubit>().fetchAssignedCourses();
   }
 
   @override
@@ -124,6 +133,13 @@ class _QuizSettingsStepState extends State<QuizSettingsStep> {
       } catch (_) {}
     }
 
+    if (_selectedCourseId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select an associated course."), backgroundColor: ColorsManager.red),
+      );
+      return;
+    }
+
     // Update Cubit with basic settings before moving to questions
     context.read<QuizGradingCubit>().updateQuizSettings(
       _titleController.text.trim(), 
@@ -131,6 +147,8 @@ class _QuizSettingsStepState extends State<QuizSettingsStep> {
       _durationController.text.trim(),
       startDate,
       endDate,
+      _allowMultipleAttempts,
+      courseId: _selectedCourseId,
     );
     widget.onNext();
   }
@@ -155,7 +173,7 @@ class _QuizSettingsStepState extends State<QuizSettingsStep> {
           SizedBox(height: 16),
           _buildTextField(isLight, inputFillColor, 'Description', 'Provide instructions for the students...', maxLines: 3, controller: _descriptionController),
           SizedBox(height: 16),
-          _buildDropdown(isLight, inputFillColor, 'Associated Course', ['Advanced Software Engineering', 'UI/UX Design']),
+          _buildCourseDropdown(isLight, inputFillColor),
 
           SizedBox(height: 32),
           Text(
@@ -181,7 +199,23 @@ class _QuizSettingsStepState extends State<QuizSettingsStep> {
             children: [
               Expanded(child: _buildTextField(isLight, inputFillColor, 'Duration', '60', suffix: 'MINS', controller: _durationController)),
               SizedBox(width: 16),
-              Expanded(child: _buildDropdown(isLight, inputFillColor, 'Allowed Attempts', ['1 Attempt', '2 Attempts', 'Unlimited'])),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Allow Multiple Attempts', style: (isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium).copyWith(fontWeight: FontWeight.w600)),
+                    Switch(
+                      value: _allowMultipleAttempts,
+                      onChanged: (value) {
+                        setState(() {
+                          _allowMultipleAttempts = value;
+                        });
+                      },
+                      activeColor: const Color(0xFF26C6DA),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
 
@@ -211,6 +245,8 @@ class _QuizSettingsStepState extends State<QuizSettingsStep> {
                         _durationController.text.trim(),
                         startDate,
                         endDate,
+                        _allowMultipleAttempts,
+                        courseId: _selectedCourseId,
                       );
                       context.read<QuizGradingCubit>().saveDraft();
                     },
@@ -284,6 +320,75 @@ class _QuizSettingsStepState extends State<QuizSettingsStep> {
               borderSide: const BorderSide(color: Color(0xFF26C6DA), width: 1.5),
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCourseDropdown(bool isLight, Color fillColor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Associated Course', style: (isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium).copyWith(fontWeight: FontWeight.w600)),
+        SizedBox(height: 8),
+        BlocBuilder<CoursesCubit, CoursesState>(
+          builder: (context, state) {
+            if (state is CoursesLoading) {
+              return Container(
+                height: 50,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(color: fillColor, borderRadius: BorderRadius.circular(12)),
+                child: Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: const Color(0xFF26C6DA)))),
+              );
+            }
+
+            if (state is CoursesError) {
+              return Text(state.message, style: TextStyle(color: ColorsManager.red, fontSize: 12));
+            }
+
+            if (state is CoursesLoaded) {
+              final courses = state.courses;
+              if (courses.isEmpty) {
+                return Text('No assigned courses found.', style: TextStyle(color: ColorsManager.grayMedium, fontSize: 12));
+              }
+
+              // Ensure _selectedCourseId is valid if it was pre-set
+              if (_selectedCourseId != null && !courses.any((c) => c.id == _selectedCourseId)) {
+                _selectedCourseId = null;
+              }
+
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                decoration: BoxDecoration(
+                  color: fillColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<int>(
+                    isExpanded: true,
+                    hint: Text('Select Course', style: (isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium).copyWith(color: ColorsManager.grayMedium)),
+                    value: _selectedCourseId,
+                    icon: Icon(Icons.keyboard_arrow_down, color: ColorsManager.grayMedium),
+                    dropdownColor: isLight ? ColorsManager.white : const Color(0xFF1A2A30),
+                    style: isLight ? AppLightTextStyles.bodyMedium : AppDarkTextStyles.bodyMedium,
+                    onChanged: (int? newValue) {
+                      setState(() {
+                        _selectedCourseId = newValue;
+                      });
+                    },
+                    items: courses.map<DropdownMenuItem<int>>((course) {
+                      return DropdownMenuItem<int>(
+                        value: course.id,
+                        child: Text(course.title),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              );
+            }
+
+            return const SizedBox();
+          },
         ),
       ],
     );

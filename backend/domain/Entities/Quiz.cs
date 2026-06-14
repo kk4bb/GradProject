@@ -24,6 +24,8 @@ namespace CampusConnect.Domain.Entities
         public DateTime EndDate { get; set; }
         public int DurationMinutes { get; set; }
 
+        public int AttemptsAllowed { get; set; } = 1;
+
         public ICollection<Question> Questions { get; set; }
     }
 }

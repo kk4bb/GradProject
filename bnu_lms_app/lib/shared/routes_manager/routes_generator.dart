@@ -153,8 +153,11 @@ class RoutesGenerator {
         return MaterialPageRoute(builder: (_) => const GateScreen());
       case Routes.quizWizard:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => getIt<QuizGradingCubit>(),
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => getIt<QuizGradingCubit>()),
+              BlocProvider(create: (_) => getIt<CoursesCubit>()),
+            ],
             child: const QuizCreationWizardScreen(),
           ),
         );

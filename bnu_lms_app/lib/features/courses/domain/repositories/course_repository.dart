@@ -26,4 +26,13 @@ abstract class CourseRepository {
     required String type,
     required String url,
   });
+
+  Future<Either<Failure, int>> uploadContent({
+    required int lessonId,
+    required String contentType,
+    required String filePath,
+    required String fileName,
+  });
+
+  Future<Either<Failure, void>> deleteContent(int contentId);
 }

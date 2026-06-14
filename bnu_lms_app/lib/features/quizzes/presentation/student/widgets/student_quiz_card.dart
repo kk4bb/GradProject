@@ -176,9 +176,9 @@ class StudentQuizCard extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  if (status == 'Live' || status == 'In Progress' || status == 'Available soon') {
+                  if (status == 'Live' || status == 'In Progress' || status == 'Available soon' || status == 'READY') {
                     Navigator.pushNamed(context, Routes.quizIntro, arguments: {'quiz': quiz});
-                  } else if (status == 'Graded' || status == 'Submitted') {
+                  } else if (status == 'GRADED' || status == 'SUBMITTED') {
                     Navigator.pushNamed(context, Routes.quizResults, arguments: {'quiz': quiz});
                   }
                 },

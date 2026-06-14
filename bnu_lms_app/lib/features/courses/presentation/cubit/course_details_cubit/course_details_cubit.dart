@@ -3,10 +3,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../domain/entities/course_entity.dart';
+import '../../../domain/repositories/course_repository.dart';
 import '../../../domain/use_cases/add_content_use_case.dart';
 import '../../../domain/use_cases/add_lesson_use_case.dart';
 import '../../../domain/use_cases/create_module_use_case.dart';
 import '../../../domain/use_cases/get_course_details_use_case.dart';
+import '../../../domain/use_cases/upload_content_use_case.dart';
 import 'course_details_state.dart';
 
 @injectable
@@ -15,6 +17,8 @@ class CourseDetailsCubit extends Cubit<CourseDetailsState> {
   final CreateModuleUseCase _createModule;
   final AddLessonUseCase _addLesson;
   final AddContentUseCase _addContent;
+  final UploadContentUseCase _uploadContent;
+  final CourseRepository _courseRepository;
 
   CourseDetailEntity? _currentCourse;
 
@@ -23,6 +27,8 @@ class CourseDetailsCubit extends Cubit<CourseDetailsState> {
     this._createModule,
     this._addLesson,
     this._addContent,
+    this._uploadContent,
+    this._courseRepository,
   ) : super(const CourseDetailsInitial());
 
   Future<void> fetchCourseDetails(int id) async {
@@ -75,6 +81,45 @@ class CourseDetailsCubit extends Cubit<CourseDetailsState> {
       (failure) => emit(CourseActionError(failure.message, _currentCourse!)),
       (_) {
         emit(const CourseActionSuccess('Content added successfully'));
+        fetchCourseDetails(_currentCourse!.id);
+      },
+    );
+  }
+
+  Future<void> uploadContent({
+    required int lessonId,
+    required String contentType,
+    required String filePath,
+    required String fileName,
+  }) async {
+    if (_currentCourse == null) return;
+    emit(CourseActionLoading(_currentCourse!));
+
+    final result = await _uploadContent(
+      lessonId: lessonId,
+      contentType: contentType,
+      filePath: filePath,
+      fileName: fileName,
+    );
+
+    result.fold(
+      (failure) => emit(CourseActionError(failure.message, _currentCourse!)),
+      (_) {
+        emit(const CourseActionSuccess('File uploaded successfully'));
+        fetchCourseDetails(_currentCourse!.id);
+      },
+    );
+  }
+
+  Future<void> deleteContent(int contentId) async {
+    if (_currentCourse == null) return;
+    emit(CourseActionLoading(_currentCourse!));
+
+    final result = await _courseRepository.deleteContent(contentId);
+    result.fold(
+      (failure) => emit(CourseActionError(failure.message, _currentCourse!)),
+      (_) {
+        emit(const CourseActionSuccess('Content deleted successfully'));
         fetchCourseDetails(_currentCourse!.id);
       },
     );

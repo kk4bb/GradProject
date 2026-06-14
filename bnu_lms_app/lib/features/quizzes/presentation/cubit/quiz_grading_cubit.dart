@@ -34,8 +34,10 @@ class QuizGradingCubit extends Cubit<QuizGradingState> {
   String creationTitle = '';
   String creationDescription = '';
   String creationDuration = '60';
+  int? creationCourseId;
   DateTime? creationStartDate;
   DateTime? creationEndDate;
+  bool creationAllowMultipleAttempts = false;
   List<Map<String, dynamic>> creationQuestions = [];
 
   QuizGradingCubit(this.gradeEssayUseCase, this.publishGradesUseCase, this.createQuizUseCase) : super(QuizGradingInitial());
@@ -72,19 +74,24 @@ class QuizGradingCubit extends Cubit<QuizGradingState> {
 
   // Mock methods for Quiz Creation Wizard (Publish / Save Draft)
   Future<void> publishQuiz() async {
+    if (creationCourseId == null) {
+      emit(QuizGradingError("Please select an associated course."));
+      return;
+    }
     emit(QuizGradingLoading());
     try {
       final quizEntity = QuizEntity(
         id: 0, // id is 0 for new quizzes
         title: creationTitle,
         description: creationDescription.isEmpty ? "Quiz Description" : creationDescription,
-        courseId: 1, // DUMMY: Assuming courseId 1 for now, or update if there's a course context
+        courseId: creationCourseId!,
         areGradesPublished: false,
         isAutoGraded: true, // Assuming auto-graded by default or bind to UI if it exists
         startDate: creationStartDate ?? DateTime.now(),
         endDate: creationEndDate ?? DateTime.now().add(const Duration(days: 1)),
         durationMinutes: int.tryParse(creationDuration) ?? 60,
         questionCount: creationQuestions.length,
+        attemptsAllowed: creationAllowMultipleAttempts ? 2 : 1,
         creationQuestions: creationQuestions,
       );
 
@@ -113,12 +120,16 @@ class QuizGradingCubit extends Cubit<QuizGradingState> {
     emit(QuizGradingSuccess("Draft saved successfully."));
   }
 
-  void updateQuizSettings(String title, String description, String duration, DateTime startDate, DateTime endDate) {
+  void updateQuizSettings(String title, String description, String duration, DateTime startDate, DateTime endDate, bool allowMultipleAttempts, {int? courseId}) {
     creationTitle = title;
     creationDescription = description;
     creationDuration = duration;
     creationStartDate = startDate;
     creationEndDate = endDate;
+    creationAllowMultipleAttempts = allowMultipleAttempts;
+    if (courseId != null) {
+      creationCourseId = courseId;
+    }
     emit(QuizCreationDataUpdated(creationTitle, creationDuration, creationQuestions));
   }
 

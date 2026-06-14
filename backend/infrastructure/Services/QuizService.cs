@@ -215,6 +215,7 @@ namespace CampusConnect.Infrastructure.Services
                 StartDate = createQuizDto.StartDate,
                 EndDate = createQuizDto.EndDate,
                 IsAutoGraded = createQuizDto.IsAutoGraded,
+                AttemptsAllowed = createQuizDto.AllowMultipleAttempts ? 2 : 1,
                 AreGradesPublished = false
             };
 

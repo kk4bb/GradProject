@@ -11,6 +11,8 @@ class QuizEntity {
   final int questionCount;
   final double totalMarks;
   final bool hasAttempted;
+  final int attemptsAllowed;
+  final int attemptsTaken;
   final List<Map<String, dynamic>>? creationQuestions;
 
   QuizEntity({
@@ -26,6 +28,8 @@ class QuizEntity {
     required this.questionCount,
     this.totalMarks = 0.0,
     this.hasAttempted = false,
+    this.attemptsAllowed = 1,
+    this.attemptsTaken = 0,
     this.creationQuestions,
   });
 }

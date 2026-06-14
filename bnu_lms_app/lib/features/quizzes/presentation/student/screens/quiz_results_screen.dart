@@ -50,7 +50,10 @@ class QuizResultsScreen extends StatelessWidget {
               );
             } else if (state is QuizResultsLoaded) {
               final attempt = state.attempt;
-              if (attempt.status == 'Pending Review' || !quiz.areGradesPublished) {
+              // Allow viewing if explicitly published OR if status already indicates it's graded/completed
+              final bool isGradedOrCompleted = attempt.status == 'Graded' || attempt.status == 'Completed';
+              
+              if (attempt.status == 'Pending Review' || (!quiz.areGradesPublished && !isGradedOrCompleted)) {
                 return _buildPendingUi(isLight, context);
               }
               

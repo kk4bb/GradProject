@@ -15,5 +15,6 @@ namespace CampusConnect.Application.Interfaces
         Task<int> CreateModuleAsync(int courseId, string title, string userId, bool isTA = false);
         Task<int> AddLessonAsync(int moduleId, string title, string userId, bool isTA = false);
         Task<int> AddContentToLessonAsync(int lessonId, string type, string url, string userId, bool isTA = false);
+        Task DeleteContentAsync(int contentId, string userId, bool isTA = false);
     }
 }

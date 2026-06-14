@@ -93,13 +93,15 @@ class EducationalContentEntity extends Equatable {
   final int id;
   final String contentType;
   final String fileUrl;
+  final String? originalFileName;
 
   const EducationalContentEntity({
     required this.id,
     required this.contentType,
     required this.fileUrl,
+    this.originalFileName,
   });
 
   @override
-  List<Object?> get props => [id, contentType, fileUrl];
+  List<Object?> get props => [id, contentType, fileUrl, originalFileName];
 }

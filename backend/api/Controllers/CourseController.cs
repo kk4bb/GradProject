@@ -112,5 +112,21 @@ namespace CampusConnect.API.Controllers
             catch (UnauthorizedAccessException ex) { return Forbid(ex.Message); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
+
+        [HttpDelete("content/{id}")]
+        [Authorize(Roles = "Instructor,TA")]
+        public async Task<IActionResult> DeleteContent(int id)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var isTA = User.IsInRole("TA") || User.IsInRole("TeachingAssistant");
+                
+                await _courseService.DeleteContentAsync(id, userId, isTA);
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException ex) { return Forbid(ex.Message); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
     }
 }

@@ -10,12 +10,12 @@ import '../../../../../../shared/resources/colors_manager.dart';
 
 class StudentRosterCard extends StatelessWidget {
   final String name;
-  final String id;
+  final String? id;
   final String? avatarUrl;
 
   const StudentRosterCard({
     required this.name,
-    required this.id,
+    this.id,
     this.avatarUrl,
     super.key,
   });
@@ -60,7 +60,8 @@ class StudentRosterCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name, style: isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium),
-                Text(id, style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall),
+                if (id != null)
+                  Text(id!, style: isLight ? AppLightTextStyles.labelSmall : AppDarkTextStyles.labelSmall),
               ],
             ),
           ),

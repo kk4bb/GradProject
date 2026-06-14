@@ -12,6 +12,7 @@ namespace CampusConnect.Application.Dtos.Quiz
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsAutoGraded { get; set; }
+        public bool AllowMultipleAttempts { get; set; }
         public List<QuestionDto>? Questions { get; set; }
     }
 }

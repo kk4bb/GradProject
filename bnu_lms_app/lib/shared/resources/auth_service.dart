@@ -18,7 +18,21 @@ class AuthService {
       data: {'email': email, 'password': password},
     );
 
-    final token = response.data['token'] as String;
+    final dynamic data = response.data;
+    String? token;
+
+    if (data is Map<String, dynamic>) {
+      token = data['token'] as String?;
+    } else if (data is List && data.isNotEmpty) {
+      // If it's a list, try taking the first element
+      token = data[0].toString();
+    } else if (data is String) {
+      token = data;
+    }
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Could not parse token from response: $data');
+    }
 
     // Save token securely for future requests
     await _storage.write(key: 'jwt_token', value: token);

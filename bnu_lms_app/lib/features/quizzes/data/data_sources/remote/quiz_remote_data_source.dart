@@ -80,6 +80,7 @@ class QuizRemoteDataSourceImpl implements QuizRemoteDataSource {
         "endDate": quiz.endDate.toIso8601String(),
         "durationMinutes": quiz.durationMinutes,
         "isAutoGraded": quiz.isAutoGraded,
+        "allowMultipleAttempts": quiz.attemptsAllowed > 1,
         if (quiz.creationQuestions != null)
           "questions": quiz.creationQuestions!.map((q) => {
             "text": q['text'],

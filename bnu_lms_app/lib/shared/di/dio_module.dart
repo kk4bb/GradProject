@@ -47,6 +47,11 @@ class _AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // Skip adding auth header for login and register requests
+    if (options.path.contains('auth/login') || options.path.contains('auth/register')) {
+      return handler.next(options);
+    }
+
     final token = await _storage.read(key: 'jwt_token');
     if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';

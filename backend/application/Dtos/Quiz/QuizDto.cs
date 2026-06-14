@@ -14,5 +14,7 @@ namespace CampusConnect.Application.Dtos.Quiz
         public double TotalMarks { get; set; }
         public string Description { get; set; }
         public int CourseId { get; set; }
+        public int AttemptsAllowed { get; set; }
+        public int AttemptsTaken { get; set; }
     }
 }
