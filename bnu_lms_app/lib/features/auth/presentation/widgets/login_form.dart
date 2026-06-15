@@ -203,19 +203,6 @@ class _LoginFormState extends State<LoginForm> {
                         ],
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        // TODO: Navigate to Forgot Password
-                      },
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: cyan,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
 
