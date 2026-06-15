@@ -223,64 +223,76 @@ class _QuizSettingsStepState extends State<QuizSettingsStep> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              BlocBuilder<QuizGradingCubit, QuizGradingState>(
-                builder: (context, state) {
-                  final isLoading = state is QuizGradingLoading;
-                  return OutlinedButton(
-                    onPressed: isLoading ? null : () {
-                      DateTime startDate = DateTime.now();
-                      DateTime endDate = DateTime.now().add(const Duration(days: 1));
-                      
-                      if (_startDateController.text.isNotEmpty) {
-                        try { startDate = DateTime.parse(_startDateController.text.replaceFirst(' ', 'T')); } catch (_) {}
-                      }
-                      if (_endDateController.text.isNotEmpty) {
-                        try { endDate = DateTime.parse(_endDateController.text.replaceFirst(' ', 'T')); } catch (_) {}
-                      }
+              Expanded(
+                child: BlocBuilder<QuizGradingCubit, QuizGradingState>(
+                  builder: (context, state) {
+                    final isLoading = state is QuizGradingLoading;
+                    return OutlinedButton(
+                      onPressed: isLoading ? null : () {
+                        DateTime startDate = DateTime.now();
+                        DateTime endDate = DateTime.now().add(const Duration(days: 1));
+                        
+                        if (_startDateController.text.isNotEmpty) {
+                          try { startDate = DateTime.parse(_startDateController.text.replaceFirst(' ', 'T')); } catch (_) {}
+                        }
+                        if (_endDateController.text.isNotEmpty) {
+                          try { endDate = DateTime.parse(_endDateController.text.replaceFirst(' ', 'T')); } catch (_) {}
+                        }
 
-                      // Update settings first, then save draft
-                      context.read<QuizGradingCubit>().updateQuizSettings(
-                        _titleController.text.trim(), 
-                        _descriptionController.text.trim(),
-                        _durationController.text.trim(),
-                        startDate,
-                        endDate,
-                        _allowMultipleAttempts,
-                        courseId: _selectedCourseId,
-                      );
-                      context.read<QuizGradingCubit>().saveDraft();
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: isLight ? ColorsManager.grayMedium : ColorsManager.grayDark),
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: isLoading 
-                      ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: isLight ? ColorsManager.black : ColorsManager.white))
-                      : Text(
-                          'Save as Draft',
-                          style: (isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium).copyWith(fontWeight: FontWeight.bold),
-                        ),
-                  );
-                },
-              ),
-              ElevatedButton(
-                onPressed: _handleNext,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF26C6DA),
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 0,
+                        // Update settings first, then save draft
+                        context.read<QuizGradingCubit>().updateQuizSettings(
+                          _titleController.text.trim(), 
+                          _descriptionController.text.trim(),
+                          _durationController.text.trim(),
+                          startDate,
+                          endDate,
+                          _allowMultipleAttempts,
+                          courseId: _selectedCourseId,
+                        );
+                        context.read<QuizGradingCubit>().saveDraft();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: isLight ? ColorsManager.grayMedium : ColorsManager.grayDark),
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: isLoading 
+                        ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: isLight ? ColorsManager.black : ColorsManager.white))
+                        : Text(
+                            'Save as Draft',
+                            style: (isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium).copyWith(fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                    );
+                  },
                 ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Add Questions',
-                      style: AppDarkTextStyles.labelMedium.copyWith(color: ColorsManager.white, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, color: ColorsManager.white, size: 16),
-                  ],
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _handleNext,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF26C6DA),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          'Add Questions',
+                          style: AppDarkTextStyles.labelMedium.copyWith(color: ColorsManager.white, fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(Icons.arrow_forward, color: ColorsManager.white, size: 16),
+                    ],
+                  ),
                 ),
               ),
             ],

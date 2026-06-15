@@ -108,62 +108,70 @@ class _InstructorManageAnnouncementsScreenState extends State<InstructorManageAn
                       ? AppLightTextStyles.labelMedium.copyWith(color: ColorsManager.grayMedium)
                       : AppDarkTextStyles.labelMedium.copyWith(color: ColorsManager.darkTextSecondary),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: isLight ? const Color(0xFFF1F5F9) : ColorsManager.darkSurface,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: BlocBuilder<CoursesCubit, CoursesState>(
-                    builder: (context, state) {
-                      if (state is CoursesLoading) {
-                        return const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        );
-                      } else if (state is CoursesLoaded) {
-                        final courses = state.courses;
-                        if (courses.isEmpty) return const Text('No courses');
+                SizedBox(width: 16),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isLight ? const Color(0xFFF1F5F9) : ColorsManager.darkSurface,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: BlocBuilder<CoursesCubit, CoursesState>(
+                      builder: (context, state) {
+                        if (state is CoursesLoading) {
+                          return const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          );
+                        } else if (state is CoursesLoaded) {
+                          final courses = state.courses;
+                          if (courses.isEmpty) return const Text('No courses');
 
-                        if (_selectedCourseId == null && courses.isNotEmpty) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (mounted && _selectedCourseId == null) {
-                              setState(() => _selectedCourseId = courses.first.id);
-                              context.read<NotificationCubit>().getManageCourseAnnouncements(courses.first.id);
-                            }
-                          });
-                        }
-
-                        return DropdownButtonHideUnderline(
-                          child: DropdownButton<int>(
-                            value: _selectedCourseId ?? (courses.isNotEmpty ? courses.first.id : null),
-                            icon: Icon(Icons.keyboard_arrow_down, size: 16, color: isLight ? ColorsManager.grayDark : ColorsManager.white),
-                            style: TextStyle(
-                              color: isLight ? ColorsManager.black : ColorsManager.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            dropdownColor: isLight ? ColorsManager.white : ColorsManager.darkSurface,
-                            onChanged: (int? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  _selectedCourseId = newValue;
-                                });
-                                context.read<NotificationCubit>().getManageCourseAnnouncements(newValue);
+                          if (_selectedCourseId == null && courses.isNotEmpty) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted && _selectedCourseId == null) {
+                                setState(() => _selectedCourseId = courses.first.id);
+                                context.read<NotificationCubit>().getManageCourseAnnouncements(courses.first.id);
                               }
-                            },
-                            items: courses.map((c) {
-                              return DropdownMenuItem<int>(
-                                value: c.id,
-                                child: Text(c.title),
-                              );
-                            }).toList(),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
+                            });
+                          }
+
+                          return DropdownButtonHideUnderline(
+                            child: DropdownButton<int>(
+                              isExpanded: true,
+                              value: _selectedCourseId ?? (courses.isNotEmpty ? courses.first.id : null),
+                              icon: Icon(Icons.keyboard_arrow_down, size: 16, color: isLight ? ColorsManager.grayDark : ColorsManager.white),
+                              style: TextStyle(
+                                color: isLight ? ColorsManager.black : ColorsManager.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              dropdownColor: isLight ? ColorsManager.white : ColorsManager.darkSurface,
+                              onChanged: (int? newValue) {
+                                if (newValue != null) {
+                                  setState(() {
+                                    _selectedCourseId = newValue;
+                                  });
+                                  context.read<NotificationCubit>().getManageCourseAnnouncements(newValue);
+                                }
+                              },
+                              items: courses.map((c) {
+                                return DropdownMenuItem<int>(
+                                  value: c.id,
+                                  child: Text(
+                                    c.title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
                   ),
                 ),
               ],

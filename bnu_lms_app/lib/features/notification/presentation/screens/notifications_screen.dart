@@ -155,12 +155,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> with SingleTi
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Stay updated on your coursework',
-                  style: isLight
-                      ? AppLightTextStyles.labelMedium.copyWith(color: ColorsManager.grayMedium)
-                      : AppDarkTextStyles.labelMedium.copyWith(color: ColorsManager.darkTextSecondary),
+                Expanded(
+                  child: Text(
+                    'Stay updated on your coursework',
+                    style: isLight
+                        ? AppLightTextStyles.labelMedium.copyWith(color: ColorsManager.grayMedium)
+                        : AppDarkTextStyles.labelMedium.copyWith(color: ColorsManager.darkTextSecondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
+                SizedBox(width: 8),
                 GestureDetector(
                   onTap: () => context.read<NotificationCubit>().markAllAsRead(),
                   child: Text(
@@ -177,26 +182,29 @@ class _NotificationsScreenState extends State<NotificationsScreen> with SingleTi
           // TabBar with Quiz Screen Style
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Container(
-              height: 44,
-              decoration: BoxDecoration(
-                color: isLight ? ColorsManager.grayMedium.withValues(alpha: 0.1) : const Color(0xFF131F24),
-                borderRadius: BorderRadius.circular(22),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabAlignment: TabAlignment.start,
-                indicator: BoxDecoration(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  color: isLight ? ColorsManager.grayMedium.withValues(alpha: 0.1) : const Color(0xFF131F24),
                   borderRadius: BorderRadius.circular(22),
-                  color: const Color(0xFF26C6DA),
                 ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: ColorsManager.white,
-                unselectedLabelColor: ColorsManager.grayMedium,
-                dividerColor: Colors.transparent,
-                labelStyle: (isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium).copyWith(fontWeight: FontWeight.bold),
-                tabs: _filters.map((f) => Tab(text: f)).toList(),
+                child: TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    color: const Color(0xFF26C6DA),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelColor: ColorsManager.white,
+                  unselectedLabelColor: ColorsManager.grayMedium,
+                  dividerColor: Colors.transparent,
+                  labelStyle: (isLight ? AppLightTextStyles.labelMedium : AppDarkTextStyles.labelMedium).copyWith(fontWeight: FontWeight.bold),
+                  tabs: _filters.map((f) => Tab(text: f)).toList(),
+                ),
               ),
             ),
           ),

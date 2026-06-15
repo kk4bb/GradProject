@@ -120,10 +120,15 @@ class InstructorAssignmentsTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                assignment.title, 
-                style: isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium
+              Expanded(
+                child: Text(
+                  assignment.title, 
+                  style: isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+              SizedBox(width: 8),
               Icon(Icons.more_vert, color: ColorsManager.grayMedium, size: 20),
             ],
           ),

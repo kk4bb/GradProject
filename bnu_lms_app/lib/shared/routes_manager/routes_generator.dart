@@ -19,7 +19,6 @@ import 'package:bnu_lms_app/features/courses/presentation/doctor/presentation/sc
 import 'package:bnu_lms_app/features/courses/presentation/doctor/presentation/screens/lecture_attendance_details_screen.dart';
 import 'package:bnu_lms_app/features/courses/presentation/student/screens/courses_details_screen.dart';
 
-import 'package:bnu_lms_app/features/gate/presentation/screens/gate_screen.dart';
 import 'package:bnu_lms_app/features/grades/presentation/student/screens/grades_dashboard_screen.dart';
 import 'package:bnu_lms_app/features/courses/presentation/cubit/courses_cubit/courses_cubit.dart';
 
@@ -149,8 +148,7 @@ class RoutesGenerator {
         );
       case Routes.attendance:
         return MaterialPageRoute(builder: (_) => const AttendanceScreen());
-      case Routes.entrance:
-        return MaterialPageRoute(builder: (_) => const GateScreen());
+
       case Routes.quizWizard:
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(

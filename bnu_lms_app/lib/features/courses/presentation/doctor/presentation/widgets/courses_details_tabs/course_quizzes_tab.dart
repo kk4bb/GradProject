@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../quizzes/presentation/cubit/quiz_list_cubit.dart';
 import '../../../../../../quizzes/presentation/student/widgets/student_quiz_card.dart';
 import 'package:intl/intl.dart';
-import '../../../../../../../shared/routes_manager/routes.dart';
 
 class CourseQuizzesTab extends StatefulWidget {
   final int courseId;
@@ -41,27 +40,9 @@ class _CourseQuizzesTabState extends State<CourseQuizzesTab> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Active Assessments',
-                    style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () => Navigator.pushNamed(context, Routes.quizWizard),
-                    icon: const Icon(Icons.add, color: Colors.white),
-                    label: Text(
-                      'Create Quiz',
-                      style: (isLight ? AppLightTextStyles.titleMedium : AppDarkTextStyles.titleMedium).copyWith(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorsManager.blue,
-                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
-                ],
+              Text(
+                'Active Assessments',
+                style: isLight ? AppLightTextStyles.headlineSmall : AppDarkTextStyles.headlineSmall,
               ),
               SizedBox(height: 20),
               if (state is QuizListLoading)

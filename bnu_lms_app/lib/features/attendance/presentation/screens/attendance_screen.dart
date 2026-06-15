@@ -373,7 +373,9 @@ class _CourseAttendanceCardContent extends StatelessWidget {
                         );
                       }
                       if (state is StudentDashboardLoaded) {
-                        return Row(
+                        return Wrap(
+                          spacing: 12,
+                          runSpacing: 4,
                           children: [
                             _MiniStat(
                               label: 'Rate',
@@ -381,13 +383,11 @@ class _CourseAttendanceCardContent extends StatelessWidget {
                                   '${state.attendanceRate.toStringAsFixed(0)}%',
                               color: ColorsManager.blue,
                             ),
-                            SizedBox(width: 12),
                             _MiniStat(
                               label: 'Present',
                               value: '${state.presentCount}',
                               color: ColorsManager.green,
                             ),
-                            SizedBox(width: 12),
                             _MiniStat(
                               label: 'Absent',
                               value: '${state.absentCount}',
